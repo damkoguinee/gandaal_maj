@@ -1,0 +1,82 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Liste des modules{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg');">
+
+        {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            {% set mois = {
+                '01': 'Janvier',
+                '02': 'Février',
+                '03': 'Mars',
+                '04': 'Avril',
+                '05': 'Mai',
+                '06': 'Juin',
+                '07': 'Juillet',
+                '08': 'Août',
+                '09': 'Septembre',
+                '10': 'Octobre',
+                '11': 'Novembre',
+                '12': 'Décembre'
+            } %}
+
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="bg-info text-white" colspan="5">
+                            <a class='btn btn-primary' href="{{ path('app_gandaal_administration_pedagogie_admin_configuration_module_new', {etablissement : etablissement.id}) }}">Ajouter</a>
+                            Liste des modules
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>N°</th>
+                        <th>Nom</th>
+                        <th>Cursus</th>
+                        <th>Période</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for configuration_module in configuration_modules %}
+                        <tr>
+                            <td class='text-center'>{{ loop.index }}</td>
+                            <td>{{ configuration_module.nom }}</td>
+                            <td>
+                                {% if configuration_module.cursus|length > 0 %}
+                                    <ul>
+                                        {% for cursus in configuration_module.cursus %}
+                                            <li>{{ cursus.nom }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    Aucun cursus
+                                {% endif %}
+                            </td>
+                            <td class='text-center'>
+                                {{ mois[configuration_module.periode] ?? 'Période inconnue' }}
+                            </td>
+                            <td class='text-center'>
+                                {# <a class='btn btn-success' href="{{ path('app_gandaal_administration_pedagogie_admin_configuration_module_show', {'id': configuration_module.id, etablissement : etablissement.id}) }}">
+                                    <i class="fa fa-eye"></i>
+                                </a> #}
+                                <a class='btn btn-warning' href="{{ path('app_gandaal_administration_pedagogie_admin_configuration_module_edit', {'id': configuration_module.id, etablissement : etablissement.id}) }}">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5">Aucun enregistrement</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

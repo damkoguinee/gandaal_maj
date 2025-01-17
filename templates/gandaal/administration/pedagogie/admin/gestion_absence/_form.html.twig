@@ -1,0 +1,25 @@
+{{ form_errors(form) }}
+{{ form_start(form) }}
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.etat) }}
+        </div>
+
+        <div class="col-sm-12 col-md-10">
+            {{ form_row(form.commentaireJustificatif) }}
+        </div>
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.justificatif) }}
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.dateJustificatif) }}
+        </div>
+    </div>
+    <button class="btn btn-primary" name="submit_button">{{ button_label|default('Valider') }}</button>
+
+{{ form_end(form) }}

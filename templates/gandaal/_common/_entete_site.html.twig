@@ -1,0 +1,21 @@
+<div class="alert alert-success text-center fs-5 fw-bold" style="display: flex; justify-content:space-around; ">
+    <a class="btn btn-light" href="javascript:history.back()">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+
+    <a class="btn btn-primary" href="{{path("app_gandaal_etablissement_home", {etablissement : etablissement.id})}}">Accueil</a>
+    {% if is_granted("ROLE_ADMIN") %}    
+        <a class="btn btn-warning" href="{{path("app_gandaal_admin_site_cursus_index", {etablissement : etablissement.id })}}">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+        </a>
+    {% endif %}
+
+    <div>
+        <label class="text-success ml-5"><i class="fa fa-user"></i> {{app.user.username}}</label>    
+
+        <a class="btn btn-danger" href="{{path("app_logout")}}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+
+    </div>         
+</div>

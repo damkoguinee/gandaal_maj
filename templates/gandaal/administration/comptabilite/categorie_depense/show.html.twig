@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Categoriedepense{% endblock %}
+
+{% block body %}
+    <h1>Categoriedepense</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ categorie_depense.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ categorie_depense.nom }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_comptabilite_categorie_depense_index') }}">back to list</a>
+
+    <a href="{{ path('app_gandaal_administration_comptabilite_categorie_depense_edit', {'id': categorie_depense.id}) }}">edit</a>
+
+    {{ include('gandaal/administration/comptabilite/categorie_depense/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Gestion des absences{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+
+        {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            
+            <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                <thead class="sticky-top bg-light text-center">
+                    <form>
+                        <tr>
+                            <th colspan="10" class="text-center bg-info text-white">
+                                <div class="row align-items-center ">
+                                    <div class="col-5">Liste des contrôles non justifiés Année scolaire {{ promo - 1 }} - {{ promo }}</div>
+                                    <div class="col-2">
+                                        <input type="date" name="periode" value="{{periode}}" class="form-control" max="{{"now"|date("Y-m-d")}}" onchange="this.form.submit()">
+                                    </div> 
+                                    <div class="col-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Récherchez....">
+                                    </div>
+                                    <div class="col-2">
+                                        <select name="type" id="type" class="form-select" onchange="this.form.submit()">
+                                            <option value=""></option>
+                                            <option value="absence" {{type == 'absence' ? "selected" : ""}}>Absences</option>
+                                            <option value="retard" {{type == 'retard' ? "selected" : ""}}>Retards</option>
+                                            <option value="exclusion" {{type == 'exclusion' ? "selected" : ""}}>Exclusions</option>
+                                        </select>
+                                    </div>   
+                                </div>
+                            </th>
+                        </tr>
+                    </form>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Date</th>
+                        <th class="bg-info text-white">Type</th>
+                        <th class="bg-info text-white">Matière</th>
+                        <th class="bg-info text-white">Matricule</th>
+                        <th class="bg-info text-white">Prénom & Nom</th>
+                        <th class="bg-info text-white">Né(e) le</th>
+                        <th class="bg-info text-white">Téléphone</th>
+                        <th class="bg-info text-white">Classe</th>
+                        <th class="bg-info text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, controle in controles %}
+                    {# {{dump(controle)}} #}
+                        <form action="">
+                            <tr>
+                                <td class="text-center">{{ key + 1 }}</td>
+                                <td class="text-center">{{ controle.event ? controle.event.start|date("d/m/Y H:i") : controle.dateControl|date("d/m/Y H:i") }}</td>
+                                <td class="text-center">{{ (controle.type == "absence global") ? 'absence' : controle.type }}</td>
+                                <td class="text-center">{{ controle.event ? (controle.event.matiere.nom|capitalize) :'' }}</td>
+                                <td class="text-center">{{ controle.inscription.eleve.matricule|strtoupper }}</td>
+                                <td>{{ controle.inscription.eleve.prenom|ucwords ~ " " ~ controle.inscription.eleve.nom|strtoupper }}</td>
+                                <td class="text-center">{{ controle.inscription.eleve.dateNaissance|date("d/m/Y") }}</td>
+                                <td class="text-center">{{ controle.inscription.eleve.telephone }}</td>
+                                <td class="text-center">{{ controle.inscription.classe.nom|strtoupper|exposantClasse|raw}}</td>
+                                
+                                <td class="text-center">
+                                    <a class="btn btn-success mx-1" href="{{ path('app_gandaal_administration_pedagogie_admin_gestion_absence_show', {'id': controle.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                    {# <a class="btn btn-warning mx-1" href="{{ path('app_gandaal_administration_scolarite_eleve_edit', { 'id': inscription.eleve.id, 'etablissement': etablissement.id }) }}"><i class="fa fa-edit"></i></a> #}
+                                </td>
+                            </tr>
+                        </form>
+                    {% else %}
+                        <tr>
+                            <td colspan="10">Aucun contrôle disponible</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>  
+                                
+            
+            </table>
+        </div>
+    </div>
+{% endblock %}

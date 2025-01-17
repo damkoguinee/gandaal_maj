@@ -1,0 +1,48 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail paiement salaire{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <h4 class='bg-warning'>Détail sur le créneau transmis de {{heure_travaille.event.enseignant.personnel.nomComplet}} matricule N° {{heure_travaille.event.enseignant.personnel.matricule}}</h4>
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <tbody>
+                    <tr>
+                        <th>Date de début</th>
+                        <td>{{ heure_travaille.event.start|date('d/m/Y à H:i') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date de fin</th>
+                        <td>{{ heure_travaille.event.end|date('d/m/Y à H:i') }}</td>
+                    </tr>
+                    
+                    <tr>
+                        <th>Date de Saisie</th>
+                        <td>{{ heure_travaille.dateSaisie ? heure_travaille.dateSaisie|date('d/m/Y H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Saisie Par</th>
+                        <td>{{ heure_travaille.saisiePar.nomComplet}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-between my-4">
+                <a class="btn btn-light" href="javascript:history.back()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+
+                <form method="post" action="{{ path('app_gandaal_administration_pedagogie_admin_heure_travaille_confirm_delete', {'id': heure_travaille.id, 'etablissement': etablissement.id}) }}" >
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ heure_travaille.id) }}">
+                    <input type="hidden" name="param" value="simple">
+                    <button class="btn btn-danger">Annuler</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

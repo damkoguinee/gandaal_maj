@@ -1,0 +1,21 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}nouvelle activité{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <h4>Ajouter une nouvelle activité</h4>
+
+            {{ include('gandaal/administration/comptabilite/admin/config_actvite_scolaire/_form.html.twig') }}
+
+            <a class="btn btn-light my-4" href="{{ path('app_gandaal_administration_comptabilite_admin_activite_tarif_new', {etablissement: etablissement.id}) }}">Retour</a>
+        </div>
+    </div>
+{% endblock %}

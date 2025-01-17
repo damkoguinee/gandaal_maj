@@ -1,0 +1,23 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}modification matière{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_admin_site.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-12">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            {{ include('gandaal/admin_site/matiere/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+            <div class="d-flex justify-content-between my-4">
+                <a class="btn btn-light" href="{{ path('app_gandaal_admin_site_matiere_index', {etablissement : etablissement.id}) }}">Retour</a>
+
+                {{ include('gandaal/admin_site/matiere/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste des matières{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_admin_site.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-12">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="6" class="text-center bg-info text-white">
+                            <div class="d-flex justify-content-between">
+                                <a class="btn btn-warning text-center" href="{{path("app_gandaal_admin_site_matiere_new", {etablissement : etablissement.id})}}">Ajouter</a>
+
+                                <form class="form w-50">
+                                    <select name="formation" id="" class="form-select" onChange="this.form.submit()">
+                                        <option value="{{search ? search.id : ""}}">{{search ? search.nom|ucfirst ~ " " ~ search.code|strtoupper : "Recherchez par formation"}}</option>
+                                        {% for formation in formations %}
+                                            <option value="{{formation.id}}">{{formation.nom|ucfirst ~ " " ~ formation.code|strtoupper}}</option>
+                                            
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>N°</th>
+                        <th>Niveau</th>
+                        <th>Nom de la matière</th>
+                        <th>Coef</th>
+                        <th>Heure</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, matiere in matieres %}
+                    <tr>
+                        <td class="text-center">{{ key + 1 }}</td>
+                        <td>{{ matiere.formation.nom|ucwords|exposantClasse|raw }}</td>
+                        <td>{{ matiere.nom|ucwords }}</td>
+                        <td class="text-center">{{ matiere.coef }}</td>
+                        <td class="text-center">{{ matiere.nombreHeure }}</td>
+                        <td class="text-center">
+                            <a class="btn btn-success" href="{{ path('app_gandaal_admin_site_matiere_show', {'id': matiere.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                            <a class="btn btn-warning" href="{{ path('app_gandaal_admin_site_matiere_edit', {'id': matiere.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colsPan="6">Aucune matiere enregistrée</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

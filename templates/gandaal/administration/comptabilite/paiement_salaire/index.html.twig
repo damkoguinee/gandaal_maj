@@ -1,0 +1,180 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Liste des salaires{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %}
+
+        <div class="col-sm-12 col-md-10 m-0 p-0 sticky-top" style="overflow:auto">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            {% set cumulBrutGeneral = 0 %}
+            {% set cumulHeuresGeneral = 0 %}
+            {% set cumulPrimeGeneral = 0 %}
+            {% set cumulAvanceGeneral = 0 %}
+            {% set cumulNetGeneral = 0 %}
+
+            <table class="table table-bordered table-striped table-hover align-middle m-0 p-0">
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="17">
+                            <form class="form">
+                                <div class="row bg-info text-white py-2">
+                                    <div class="col-3">
+                                        <div class="d-flex justify-content-between">
+                                            <select name="periode" id="periode" class="form-select mx-1" onChange="this.form.submit()">
+                                                <option value="">-- Sélectionnez un mois --</option>
+                                                <option value="01" {% if periode_select == "01" %}selected{% endif %}>Janvier</option>
+                                                <option value="02" {% if periode_select == "02" %}selected{% endif %}>Février</option>
+                                                <option value="03" {% if periode_select == "03" %}selected{% endif %}>Mars</option>
+                                                <option value="04" {% if periode_select == "04" %}selected{% endif %}>Avril</option>
+                                                <option value="05" {% if periode_select == "05" %}selected{% endif %}>Mai</option>
+                                                <option value="06" {% if periode_select == "06" %}selected{% endif %}>Juin</option>
+                                                <option value="07" {% if periode_select == "07" %}selected{% endif %}>Juillet</option>
+                                                <option value="08" {% if periode_select == "08" %}selected{% endif %}>Août</option>
+                                                <option value="09" {% if periode_select == "09" %}selected{% endif %}>Septembre</option>
+                                                <option value="10" {% if periode_select == "10" %}selected{% endif %}>Octobre</option>
+                                                <option value="11" {% if periode_select == "11" %}selected{% endif %}>Novembre</option>
+                                                <option value="12" {% if periode_select == "12" %}selected{% endif %}>Décembre</option>
+                                            </select>
+
+                                            <select name="type" id="type" class="form-select" onChange="this.form.submit()">
+                                                <option value="">Sélectionnez le type</option>
+                                                <option value="personnel" {% if type == "personnel" %}selected{% endif %}>Personnels</option>
+                                                <option value="enseignant" {% if type == "enseignant" %}selected{% endif %}>Enseignants/Ens-Pers</option>
+                                                <option value="général" {% if type == "général" %}selected{% endif %}>Général</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-9">
+                                        {% if periode is not empty %}
+                                            <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_paiement_salaire_index', {etablissement : etablissement.id, periode : periode_select, type : type, cursus : 'général'}) }}">Général</a>
+                                            <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_paiement_salaire_index', {etablissement : etablissement.id, periode : periode_select, type : type, cursus : 'maternelle'}) }}">Maternelle</a>
+                                            <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_paiement_salaire_index', {etablissement : etablissement.id, periode : periode_select, type : type, cursus : 'primaire'}) }}">Primaire</a>
+                                            <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_paiement_salaire_index', {etablissement : etablissement.id, periode : periode_select, type : type, cursus : 'secondaire'}) }}">Secondaire</a>
+
+                                            <a class="btn btn-success" target="_blank" href="{{ path('app_gandaal_administration_comptabilite_pdf_salaire_personnel', {etablissement : etablissement.id, periode : periode_select, type : type, cursus : cursus}) }}"><i class="fa fa-file-pdf"></i></a>
+
+                                            <a class="btn btn-success" target="_blank" href="{{ path('app_gandaal_administration_comptabilite_pdf_fiche_paie', {etablissement : etablissement.id, periode : periode_select, type : type, cursus : cursus}) }}"><i class="fa fa-file-pdf"></i> Fiches de paie</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </form>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="17" class="text-center bg-info text-white">
+                            Liste des salaires payés
+                            <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_paiement_salaire_new', {etablissement : etablissement.id}) }}">Enregistrer un salaire</a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="bg-info text-white" style="font-size:12px;">N°</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Actions</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Période</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Matricule</th>
+                        <th class="bg-info text-white text-nowrap" style="font-size:12px;">Prénom & Nom</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Téléphone</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Salaire Brut</th>
+                        <th class="bg-info text-white" style="font-size:12px;">T. horaire</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Heure(s)</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Prime</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Avance</th>
+                        <th class="bg-info text-nowrap text-success fw-bold" style="font-size:14px;">Salaire Net</th>
+                        <th class="bg-info text-white" style="font-size:12px;">ModeP.</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Caisse</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Commentaire</th>
+                        <th class="bg-info text-white" style="font-size:12px;">N° Compte</th>
+                        <th class="bg-info text-white" style="font-size:12px;">Banque</th>
+                    </tr>
+                </thead>
+
+                {% set cumulBrutGen = 0 %}
+                {% set cumulHeuresGen = 0 %}
+                {% set cumulPrimeGen = 0 %}
+                {% set cumulAvanceGen = 0 %}
+                {% set cumulNetGen = 0 %}
+
+                {% for mode, paiements in paiementsParMode %}
+
+                    
+                    <thead>
+                        <tr>
+                            <th colspan="17" class="bg-secondary text-white text-center">Liste des paiements par {{ mode|capitalize }} <a class="btn btn-warning" target="_blank" href="{{ path('app_gandaal_administration_comptabilite_pdf_salaire_personnel', {etablissement : etablissement.id, periode : periode_select, type : type, cursus : cursus, mode : mode}) }}"><i class="fa fa-file-pdf"></i></a></th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        {% set cumulBrut = 0 %}
+                        {% set cumulHeures = 0 %}
+                        {% set cumulPrime = 0 %}
+                        {% set cumulAvance = 0 %}
+                        {% set cumulNet = 0 %}
+                        {% for key, paiement in paiements %}
+                            {% set cumulBrutGen = cumulBrutGen + paiement.salaireBrut %}
+                            {% set cumulHeuresGen = cumulHeuresGen + paiement.heures %}
+                            {% set cumulPrimeGen = cumulPrimeGen + paiement.prime %}
+                            {% set cumulAvanceGen = cumulAvanceGen + paiement.avanceSalaire %}
+                            {% set cumulNetGen = cumulNetGen + paiement.montant %}
+
+                            {% set cumulBrut = cumulBrut + paiement.salaireBrut %}
+                            {% set cumulHeures = cumulHeures + paiement.heures %}
+                            {% set cumulPrime = cumulPrime + paiement.prime %}
+                            {% set cumulAvance = cumulAvance + paiement.avanceSalaire %}
+                            {% set cumulNet = cumulNet + paiement.montant %}
+                            <tr>
+                                <td class="text-nowrap">
+                                    {{(key +1 )}}
+                                    <a target="_blank" class="btn btn-warning" href="{{path('app_gandaal_administration_comptabilite_pdf_fiche_paie', { id : paiement.id, etablissement : etablissement.id } ) }}" class="btn btn-secondary btn-sm"><i class="fa fa-file-pdf"></i></a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-success" href="{{ path('app_gandaal_administration_comptabilite_paiement_salaire_show', {'id': paiement.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                </td>
+                                <td class="text-nowrap">{{ paiement.periode ? paiement.periode |date('m-Y') : '' }}</td>
+                                <td class="text-start">{{ paiement.personnelActif.personnel.matricule|strtoupper  }}</td>
+                                <td class="text-start">{{ paiement.personnelActif.personnel.prenom | ucwords ~ " " ~ paiement.personnelActif.personnel.nom | strtoupper  }}</td>
+                                <td class="text-start text-nowrap">{{ paiement.personnelActif.personnel.telephone|strtoupper  }}</td>
+                                <td class="text-nowrap text-end">{{paiement.salaireBrut|number_format(0,',',' ')}}</td>
+                                <td class="text-nowrap text-end">{{paiement.tauxHoraire|number_format(0,',',' ')}}</td>
+                                <td class='text-center'>{{paiement.heures}}</td>
+                                <td class="text-nowrap text-end">{{paiement.prime|number_format(0,',',' ')}}</td>
+                                <td class="text-nowrap text-end">{{paiement.avanceSalaire|abs|number_format(0,',',' ')}}</td>
+                                <td class="text-nowrap text-end text-success fw-bold">{{paiement.montant|abs|number_format(0,',',' ')}}</td>
+                                <td>{{paiement.modePaie.nom|ucfirst}}</td>
+                                <td>{{paiement.caisse.nom|ucfirst}}</td>
+                                <td>{{paiement.commentaires|ucfirst}}</td>
+                                <td class="text-start">{{ paiement.compteBancaire ?:paiement.personnelActif.personnel.numeroCompte|strtoupper }}</td>
+                                <td class="text-start">{{ paiement.banqueVirement ?:paiement.personnelActif.personnel.agenceBanque|capitalize }}</td>
+                                
+                                
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <th class="bg-warning text-white" colspan="6">Cumuls {{mode}}</th>
+                            <th colspan="2" class="bg-warning text-white text-nowrap text-center" class="">{{cumulBrut|number_format(0,',',' ')}}</th>
+                            <th class="bg-warning text-white text-nowrap text-center" class="">{{cumulHeures}}</th>
+                            <th class="bg-warning text-white text-nowrap text-center" class="">{{cumulPrime|number_format(0,',',' ')}}</th>
+                            <th class="bg-warning text-white text-nowrap text-center" class="">{{cumulAvance|abs|number_format(0,',',' ')}}</th>
+                            <th class="bg-warning text-success fw-bold text-nowrap text-center" class="">{{cumulNet|abs|number_format(0,',',' ')}}</th>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+
+                <tfoot>
+                    <tr>
+                        <th class="bg-info text-white" colspan="6">Cumuls</th>
+                        <th colspan="2" class="bg-info text-white text-nowrap text-center" class="">{{cumulBrutGen|number_format(0,',',' ')}}</th>
+                        <th class="bg-info text-white text-nowrap text-center" class="">{{cumulHeuresGen}}</th>
+                        <th class="bg-info text-white text-nowrap text-center" class="">{{cumulPrimeGen|number_format(0,',',' ')}}</th>
+                        <th class="bg-info text-white text-nowrap text-center" class="">{{cumulAvanceGen|abs|number_format(0,',',' ')}}</th>
+                        <th class="bg-info text-success fw-bold text-nowrap text-center" class="">{{cumulNetGen|abs|number_format(0,',',' ')}}</th>
+                    </tr>
+
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}

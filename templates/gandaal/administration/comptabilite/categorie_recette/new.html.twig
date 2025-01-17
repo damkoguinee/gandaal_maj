@@ -1,0 +1,16 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Ajout catégorie{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  col-sm-12 col-md-10 m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }} 
+        <h3>Ajouter une catégorie</h3>
+
+        {{ include('gandaal/administration/comptabilite/categorie_recette/_form.html.twig') }}
+
+        <a class="btn btn-light my-4" href="{{ path('app_gandaal_administration_comptabilite_recette_new', {etablissement : etablissement.id}) }}">Retour</a>
+    </div>
+{% endblock %}

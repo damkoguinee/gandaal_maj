@@ -1,0 +1,92 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste des élèves{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_scolarite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_externe.html.twig" %}
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                <thead class="sticky-top bg-light text-center">
+                    <form>
+                        <tr>
+                            <th colspan="6" class="text-center bg-info text-white">
+                                <div class="row align-items-center ">
+                                    <div class="col-6">Liste des élèves externe</div>
+                                    <div class="col-3">
+                                        <a class="btn btn-warning text-center" href="{{path("app_gandaal_administration_scolarite_eleve_externe_new", {etablissement : etablissement.id})}}">Ajouter un élève</a>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Récherchez un éleve">
+                                    </div>   
+                                </div>
+                            </th>
+                        </tr>
+                    </form>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Matricule</th>
+                        <th class="bg-info text-white">Prénom & Nom</th>
+                        <th class="bg-info text-white">Né(e) le</th>
+                        <th class="bg-info text-white">Téléphone</th>
+                        <th class="bg-info text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, eleve in eleves.data %}
+                        <tr>
+                            <td class="text-center">{{ key + 1 }}</td>
+                            <td class="text-center">{{ eleve.matricule|strtoupper }}</td>
+                            <td>{{ eleve.prenom|ucwords ~ " " ~ eleve.nom|strtoupper }}</td>
+                            <td class="text-center">{{ eleve.dateNaissance|date("d/m/Y") }}</td>
+                            <td class="text-center">{{ eleve.telephone }}</td>
+                            <td class="text-center">
+                                <a class="btn btn-success mx-1" href="{{ path('app_gandaal_administration_scolarite_eleve_externe_show', {'id': eleve.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                <a class="btn btn-warning mx-1" href="{{ path('app_gandaal_administration_scolarite_eleve_externe_edit', { 'id': eleve.id, 'etablissement': etablissement.id }) }}"><i class="fa fa-edit"></i></a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">Aucun élève enregistré</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                {% set path = 'app_gandaal_administration_scolarite_eleve_externe_index'  %}
+                {% set nbrePages = eleves.nbrePages %}
+                {% set pageEncours = eleves.pageEncours %}    
+                                
+                {% if nbrePages > 1 %}                    
+
+                    {% if nbrePages %}
+                        <nav aria-label="Page navigation example ">
+                            <ul class="pagination justify-content-start">
+                                {% if pageEncours > 1 %}
+                                    <li class="page-item ">
+                                        <a class="page-link" href="{{path(path, {etablissement : etablissement.id,  pageEncours : (pageEncours - 1)})}}">&lt;</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled" ><a class="page-link">&lt;</a></li>
+                                {% endif %}
+                                {% for page in 1..nbrePages %}                
+                                    <li class="page-item {{ ( page == pageEncours) ? 'active' : ''}} "><a class="page-link" href="{{path(path, {etablissement : etablissement.id,  pageEncours : page})}}">{{page}}</a></li>
+                                {% endfor %}
+                                {% if pageEncours < nbrePages %}
+                                    <li class="page-item "><a class="page-link" href="{{path(path, {etablissement : etablissement.id, pageEncours : pageEncours + 1} ) }}">&gt;</a></li>
+                                {% else %}
+                                    <li class="page-item disabled "><a href="" class="page-link" >&gt;</a></li>
+                                {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% endif %}
+            </table>
+        </div>
+
+    </div>
+{% endblock %}

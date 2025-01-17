@@ -1,0 +1,56 @@
+{{ form_errors(form) }}
+{{ form_start(form) }}
+    
+
+    <div class="row mb-1">         
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.dateNaissance) }}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.lieuNaissance) }}
+        </div>         
+
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.nationalite) }}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.telephone) }}
+        </div>
+        
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.email) }}
+        </div>  
+        
+        
+          
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.ville) }}
+        </div>
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.adresse) }}
+        </div>
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.pays) }}
+        </div> 
+    </div>
+
+    <div class="row mb-1"> 
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.username) }}
+        </div>               
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.password) }}
+        </div>
+    </div>
+
+    <div class="row mb-1"> 
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.photo) }}
+        </div>
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Ajouter') }}</button>
+{{ form_end(form) }}

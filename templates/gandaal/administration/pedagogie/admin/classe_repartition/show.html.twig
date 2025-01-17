@@ -1,0 +1,117 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail de la classe{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+
+        {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <tbody>
+                    <tr>
+                        <th>Formation</th>
+                        <td>{{ classe_repartition.formation.nom|ucfirst }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ classe_repartition.nom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Promo</th>
+                        <td>{{ (classe_repartition.promo - 1) ~ "-" ~ classe_repartition.promo }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Responsable</th>
+                        <td>{{ classe_repartition.responsable.username }}</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                                <thead class="sticky-top bg-light text-center">
+                                    <form>
+                                        <tr>
+                                            <th colspan="7" class="text-center bg-info text-white">
+                                                <div class="row align-items-center ">
+                                                    <div class="col-6">Elèves inscrits en {{classe_repartition.nom}} pour l'année scolaire {{(promo - 1) ~ "-" ~ promo}}</div>
+                                                    <div class="col-3">
+                                                        <a class="btn btn-warning text-center" href="{{path("app_gandaal_administration_scolarite_eleve_new", {etablissement : etablissement.id})}}">Ajouter un élève</a>
+                                                    </div>
+                    
+                                                    {# <div class="col-3">
+                                                        <input type="text" name="search" class="form-control" placeholder="Récherchez un éleve">
+                                                    </div>    #}
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </form>
+                                    <tr>
+                                        <th class="bg-info text-white">N°</th>
+                                        <th class="bg-info text-white">Matricule</th>
+                                        <th class="bg-info text-white">Prénom & Nom</th>
+                                        <th class="bg-info text-white">Né(e) le</th>
+                                        <th class="bg-info text-white">Téléphone</th>
+                                        <th class="bg-info text-white">Classe</th>
+                                        <th class="bg-info text-white">Etat Pédagogie</th>
+                                        {# <th class="bg-info text-white">actions</th> #}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for key, inscription in inscriptions %}
+                                    {# {{dump(inscription)}} #}
+                                        <form action="">
+                                            <tr>
+                                                <td class="text-center">{{ key + 1 }}</td>
+                                                <td class="text-center">{{ inscription.eleve.matricule|strtoupper }}</td>
+                                                <td>{{ inscription.eleve.prenom|ucwords ~ " " ~ inscription.eleve.nom|strtoupper }}</td>
+                                                <td class="text-center">{{ inscription.eleve.dateNaissance|date("d/m/Y") }}</td>
+                                                <td class="text-center">{{ inscription.eleve.telephone }}</td>
+                                                <td class="text-center">
+                                                    <select name="classe_id" id="classe" class="form-select text-center" onchange="this.form.submit()">
+                                                        <option value="{{inscription.classe.id}}">{{ inscription.classe.nom|strtoupper|exposantClasse|raw }}</option>
+                                                        {% for item in liste_classes %}
+                                                            <option value="{{item.id}}">{{ item.nom|strtoupper|exposantClasse|raw }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <input type="hidden" name="search" value="{{search}}">
+                                                    <input type="hidden" name="inscription" value="{{inscription.id}}">
+                                                </td>
+                                                <td>
+                                                    <select name="etatPedagogie" id="etat" class="form-select" onchange="this.form.submit()">
+                                                        <option value="actif" {% if inscription.etatPedagogie == "actif" %}selected{% endif %}>Actif</option>
+                                                        <option value="inactif" {% if inscription.etatPedagogie == "inactif" %}selected{% endif %}>Inactif</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </form>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="6">Aucun élève enregistré dans cette classe</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>  
+                                                
+                            
+                            </table>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-between my-4">
+                <a class="btn btn-light" href="{{ path('app_gandaal_administration_pedagogie_admin_classe_repartition_index', {etablissement : etablissement.id}) }}">Retour</a>
+
+                <a class="btn btn-warning" href="{{ path('app_gandaal_administration_pedagogie_admin_classe_repartition_edit', {'id': classe_repartition.id, etablissement : etablissement.id}) }}">Modifier</a>
+                {% if inscriptions is empty %}
+                    {{ include('gandaal/administration/pedagogie/admin/classe_repartition/_delete_form.html.twig') }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}accès{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_admin_site.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-12">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <form>
+                        <tr>
+                            <th colspan="9" class="text-center bg-info text-white">
+                                <div class="row align-items-center ">
+                                    <div class="col-6">liste des utilisateurs</div>
+    
+                                    <div class="col-6">
+                                        <div class="d-flex justify-content-between">
+    
+                                            <input type="text" name="search" class="form-control" placeholder="Récherchez un éleve">
+                                            <button class='btn btn-info' type="submit">search</button>
+                                        </div>
+                                    </div>   
+                                </div>
+                            </th>
+                        </tr>
+                    </form>
+                    <tr>
+                        <th class="bg-info text-white">id</th>
+                        <th class="bg-info text-white">Matricule</th>
+                        <th class="bg-info text-white">Prénom & Nom</th>
+                        <th class="bg-info text-white">Type</th>
+                        <th class="bg-info text-white">Téléphone</th>
+                        <th class="bg-info text-white">Email</th>
+                        <th class="bg-warning text-white">Username</th>
+                        <th class="bg-warning text-white">Statut</th>
+                        <th class="bg-warning text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td class="text-center">{{ user.id }}</td>
+                        <td class="text-center">{{ user.matricule|strtoupper }}</td>
+                        <td>{{ user.prenom|ucfirst ~ " " ~ user.nom|strtoupper }}</td>
+                        <td class="text-center">{{ user.typeUser|capitalize }}</td>
+                        <td class="text-center">{{ user.telephone }}</td>
+                        <td class="text-center">{{ user.email }}</td>
+                        <td class="text-center">{{ user.username }}</td>
+                        <td class="text-center">{{ user.statut }}</td>
+                        <td class="text-center"><a href="{{path("app_gandaal_admin_site_personnel_acces_edit", {'id': user.id, 'etablissement' : etablissement.id, 'search' : search})}}" class="btn btn-warning"><i class="fa fa-edit"></i></a> </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="9">Aucun utilisateur enregistré</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

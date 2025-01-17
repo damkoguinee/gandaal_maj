@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}niveau classe{% endblock %}
+
+{% block body %}
+    <div class="row my-2 mx-0 px-0">
+        {% include "gandaal/_common/_nav_admin_site.html.twig" %}
+        <div class="col-sm-12 col-md-10 mx-0 px-0">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <div class="container-fluid mx-0 px-0" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+
+                {{include("gandaal/_common/_entete_site.html.twig")}}
+                <table class="table table-bordered table-striped table-hover align-middle">
+
+                    <thead class="sticky-top bg-light text-center">
+                        <tr>
+                            <th colspan="6" class="text-center bg-info text-white">
+                                <a class="btn btn-light text-center" href="{{path("app_gandaal_admin_site_niveau_classe_new", {etablissement : etablissement.id})}}">Ajouter</a>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>N°</th>
+                            <th>Cursus</th>
+                            <th>Etablissement</th>
+                            <th>Nom</th>
+                            <th>Code</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, niveau_classe in niveau_classes %}
+                        <tr>
+                            <td class="text-center">{{ key + 1 }}</td>
+                            <td>{{ niveau_classe.cursus.nom|ucwords }}</td>
+                            <td>{{ niveau_classe.cursus.etablissement.lieu|ucwords }}</td>
+                            <td>{{ niveau_classe.nom|ucwords }}</td>
+                            <td>{{ niveau_classe.code|ucfirst }}</td>
+                            <td class="text-center">
+                                <a class="btn btn-success" href="{{ path('app_gandaal_admin_site_niveau_classe_show', {'id': niveau_classe.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                <a class="btn btn-warning" href="{{ path('app_gandaal_admin_site_niveau_classe_edit', {'id': niveau_classe.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td cols6an="4">Aucun niveau_classe enregistré</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            font-size: 12px;
+        }
+        .header, .footer {
+            width: 100%;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 5px;
+        }
+        .header {
+            margin-bottom: 10px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            font-size: 10px;
+            padding: 5px;
+        }
+        .table-container {
+            margin: 10px;
+        }
+        .entete table {
+            width: 100%;
+            margin-bottom: 10px;
+            border-collapse: collapse;
+        }
+        .entete img {
+            margin: 5px;
+        }
+        .entete td {
+            border: none;
+        }
+        .entete div {
+            text-align: center;
+            font-size: 12px;
+        }
+        .entete .header-title {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .entete .sub-title {
+            font-size: 12px;
+            margin-top: 3px;
+            text-align: center;
+        }
+        .no-break {
+            page-break-inside: avoid;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-end {
+            text-align: right;
+        }
+        .signature {
+            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
+        }
+        .signature div {
+            margin-bottom: 45px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <!-- Header content (if any) -->
+    </div>
+
+    <div class="entete">
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <img width="160" height="45" src="data:image/jpeg;base64,{{ ministerePath }}" alt="Ministere">
+                    </td>
+                    <td>
+                        <div>REPUBLIQUE DE {{ etablissement.entreprise.pays | upper }}</div>
+                        <div><img width="20" height="20" src="data:image/jpeg;base64,{{ symbolePath }}" alt="Symbole"></div>
+                        <div>Travail - Justice - Solidarité</div>
+                    </td>
+                    <td>
+                        <div><img width="40" height="40" src="data:image/jpeg;base64,{{ logoPath }}" alt="Logo"></div>
+                        <div>{{ etablissement.email }}</div>
+                        <div>{{ etablissement.telephone }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="header-title">{{ etablissement.nom | upper }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="sub-title">{{ etablissement.devise }}</td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <tbody>
+                <tr>
+                    <td rowspan="3" style="text-align:left;">
+                        Reçu de Versement<br><br>
+                        <span>{{ versement.collaborateur.prenom | ucwords }} {{ versement.collaborateur.nom | strtoupper }}</span><br>
+                        <span>Téléphone: {{ versement.collaborateur.telephone }}</span><br>
+                        <span>Adresse: {{ versement.collaborateur.adresse | ucfirst }}</span>
+                    </td>
+                    <td>Reçu N° <span>{{ versement.reference | strtoupper }}</span></td>
+                    <td>Mode de Paie <span>{{ versement.modePaie.nom | ucfirst }}</span></td>
+                    <td>Date <span>{{ versement.dateOperation | date("d/m/Y") }}</span></td>
+                </tr>
+                <tr>
+                    <td>Taux<br><span>{{ versement.taux | number_format(2, ',', ' ') }}</span></td>
+                    <td>Montant Versé <br><span style="font-weight:bold;">{{ versement.devise.nom == 'gnf' ? versement.montant | number_format(0, ',', ' ') : versement.montant | number_format(2, ',', ' ') ~ " " ~ versement.devise.nom | strtoupper }}</span></td>
+                    <td>Montant Total <br><span style="font-weight:bold;">{{ (versement.montant * versement.taux) | number_format(0, ',', ' ') }}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Motif <br><span>{{ versement.description | ucfirst }}</span></td>
+                    <td>Compte de dépôt <br><span>{{ versement.caisse.nom | ucfirst }}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="font-weight:bold;">Ancien Solde 
+                    {% for solde in ancien_solde %}
+                        <label style="padding-right: 20px;">{{ solde.devise | strtoupper }}: {{ solde.devise == 'gnf' ? (solde.montant > 0 ? solde.montant : -solde.montant) | number_format(0, ',', ' ') : (solde.montant > 0 ? solde.montant : -solde.montant) | number_format(2, ',', ' ') }}</label>
+                    {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="padding: 5px 0; font-weight:bold;">Solde de vos Comptes à la date du {{ "now" | date("d/m/Y H:i") }}
+                        {% for solde in solde_collaborateur %}
+                            <label style="padding-right: 20px;">{{ solde.devise | strtoupper }}: {{ solde.devise == 'gnf' ? (solde.montant > 0 ? solde.montant : -solde.montant) | number_format(0, ',', ' ') : (solde.montant > 0 ? solde.montant : -solde.montant) | number_format(2, ',', ' ') }}</label>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">Réçu saisi par : {{ versement.saisiePar.prenom | ucwords }} {{ versement.saisiePar.nom | strtoupper }} le {{ versement.dateSaisie | date("d/m/Y à H:i") }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        Madame/Monsieur, à la date du {{ "now" | date("d/m/Y") }},
+                        {% for key, solde in solde_collaborateur %}
+                            {% if key == 0 %}
+                                {% if solde.montant > 0 %}
+                                    nous vous devons <span style="font-weight:bold;">{{ solde.devise == 'gnf' ? solde.montant | number_format(0, ',', ' ') : solde.montant | number_format(2, ',', ' ') }} {{ solde.devise | strtoupper }}</span>
+                                {% else %}
+                                    vous nous devez <span style="font-weight:bold;">{{ solde.devise == 'gnf' ? -solde.montant | number_format(0, ',', ' ') : -solde.montant | number_format(2, ',', ' ') }} {{ solde.devise | strtoupper }}</span>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <p>************** {{ etablissement.entreprise.nom | strtoupper }} vous souhaite une excellente journée **************</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:0px;" colspan="2">Le Gestionnaire</td>
+                    <td style="border:0px;" colspan="2">Le Collaborateur</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-top: 40px; border:0px;">{{ versement.saisiePar.prenom | ucwords }} {{ versement.saisiePar.nom | strtoupper }}</td>
+                    <td colspan="2" style="padding-top: 40px; border:0px;">{{ versement.collaborateur.prenom | ucwords }} {{ versement.collaborateur.nom | strtoupper }}</td>
+                </tr>
+            </tbody> 
+            <footer style="position: fixed;bottom: 0; width: 100%;text-align: right; font-style: italic; background-color: #f2f2f2;padding: 5px;">
+                <p>Réçu imprimé par {{ app.user.prenom | ucwords }} {{ app.user.nom | strtoupper }} le {{ "now" | date("d/m/Y à H:i") }}</p>
+            </footer>
+        </table>
+    </div>
+</body>
+</html>

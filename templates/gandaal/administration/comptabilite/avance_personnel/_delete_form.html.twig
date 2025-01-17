@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_gandaal_administration_comptabilite_avance_personnel_delete', {'id': avance_personnel.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ avance_personnel.id) }}">
+    <button class="btn">Delete</button>
+</form>

@@ -1,0 +1,116 @@
+{{ form_errors(form) }}
+{{ form_start(form) }}
+    
+
+    <div class="row  mb-1">
+        <label class="form-label mx-1" for="">Fonction* <a href="{{path('app_gandaal_admin_config_fonction_new', {etablissement : etablissement.id}) }}" class="btn btn-sm btn-warning"><i class="fas fa-plus"></i></a></label>
+        <div class="mx-1">{{ form_widget(form.fonction) }}</div>
+    </div>
+    <div class="row mb-1">
+        
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.nom) }}
+        </div>
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.prenom) }}
+        </div> 
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.sexe) }}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.dateNaissance) }}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.lieuNaissance) }}
+        </div>              
+        
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.nationalite) }}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.telephone) }}
+        </div>
+        
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.email) }}
+        </div>  
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.adresse) }}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.ville) }}
+        </div>
+          
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.pays) }}
+        </div> 
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form_salaire.salaireBrut) }}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form_salaire.tauxHoraire) }}
+        </div>
+        
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.numeroCompte) }}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.agenceBanque) }}
+        </div>   
+    </div>
+
+    <div class="row mb-1"> 
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.matricule) }}
+        </div>
+        <div class="col-sm-12 col-md-2" style="overflow:auto ">
+            <div style="height:50px;">
+                {{ form_row(form.statut) }}
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.username) }}
+        </div>               
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.password) }}
+        </div>
+
+        <div class="col-sm-12 col-md-3" style="overflow:auto ">
+            <div style="height:50px;">
+                {{ form_row(form.roles) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-1"> 
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.dateDebut) }}
+        </div>
+        
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.dateFin) }}
+        </div>  
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.photo) }}
+        </div>
+    </div>
+    <div class="row mb-1"> 
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form_document.nom) }}
+        </div>
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form_document.type) }}
+        </div>
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.signature) }}
+        </div>
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Ajouter') }}</button>
+{{ form_end(form) }}

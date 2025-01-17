@@ -1,0 +1,102 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste des enseignants{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-12">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="7" class="text-center bg-info text-white">
+                            <div class="d-flex justify-content-between align-items-center ">
+                                <p>Liste des enseignants</p>
+                                <div>
+                                    <form class="form">
+                                        <select name="cursus" id="" class="form-select" onChange="this.form.submit()">
+                                            <option value="{{search_cursus ? (search_cursus == 'secondaire' ? 'secondaire' : search_cursus.id) : ""}}">{{search_cursus ? (search_cursus == 'secondaire' ?  "secondaire" : search_cursus.nom|ucfirst) : "Recherchez par cursus"}}</option>
+                                            {% for cursus in cursuses %}
+                                                <option value="{{cursus.id}}">{{cursus.nom|ucfirst}}</option>                                                
+                                            {% endfor %}
+                                            <option value="secondaire">Secondaire</option>
+                                        </select>
+                                    </form>
+                                </div>
+
+                                <div>
+                                    <div>
+                                        <input type="text" name="search" class="form-control" id="search_user" placeholder="Récherchez un enseignant">
+                                    </div>   
+                                    <div class="bg-light text-white" id="result-search"></div>
+                                </div>
+
+                                <a class="btn btn-success" target="_blank" href="{{ path('app_gandaal_administration_pedagogie_pdf_liste_enseignant', {etablissement : etablissement.id, cursus : search_cursus ? (search_cursus == 'secondaire' ? 'secondaire' : search_cursus.id ) : NULL }) }}"><i class="fa fa-file-pdf"></i></a>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Matricule</th>
+                        <th class="bg-info text-white">Prénom & Nom</th>
+                        <th class="bg-info text-white">Sexe</th>
+                        <th class="bg-info text-white">Téléphone</th>
+                        <th class="bg-info text-white">Classe(s)</th>
+                        <th class="bg-info text-white">Rattachement</th>
+                        {# <th class="bg-info text-white">Niveau</th>
+                        <th class="bg-info text-white">Date d'embauche</th> #}
+                        {# <th class="bg-info text-white">Statut</th> #}
+                        {# <th class="bg-info text-white">actions</th> #}
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, personnelActif in enseignants %}
+                    <tr>
+                        <td class="text-center">{{ key + 1 }}</td>
+                        <td class="text-center">{{ personnelActif.enseignant.personnel.matricule|strtoupper }}</td>
+                        <td>{{ personnelActif.enseignant.personnel.prenom|ucfirst ~ " " ~ personnelActif.enseignant.personnel.nom|strtoupper }}</td>
+                        <td class="text-center">{{ personnelActif.enseignant.personnel.sexe }}</td>
+                        <td class="text-center">{{ personnelActif.enseignant.personnel.telephone }}</td>
+                        <td class="text-center">
+                            {% for classe in personnelActif.classes %}
+                                {{ classe.nom is defined ? classe.nom|exposantClasse|raw :'' }}
+                                {% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="text-start">
+                            {% for rattachement in personnelActif.enseignant.RattachementPedagogie %}
+                                {{ rattachement.nom|capitalize }}{# ou rattachement.nom si c'est un objet #}
+                                {% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        {# <td>{{ (personnelActif.personnel.typeUser == 'enseignant') ? personnelActif.personnel.niveau|ucfirst : '' }}</td> #}
+                        {# <td class="text-center">{{ personnelActif.personnel.dateDebut ? personnelActif.personnel.dateDebut|date("d/m/Y") : "" }}</td> #}
+                        {# <td>{{ personnelActif.personnel.statut|ucfirst }}</td> #}
+                        {# {% if (personnelActif.personnel.typeUser == 'enseignant') %}
+                            <td class="text-center">
+                                <a class="btn btn-success" href="{{ path('app_gandaal_admin_site_enseignant_show', {'id': personnelActif.personnel.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                <a class="btn btn-warning" href="{{ path('app_gandaal_admin_site_enseignant_edit', {'id': personnelActif.personnel.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                            </td>
+                        {% else %}
+                            <td class="text-center">
+                                <a class="btn btn-success" href="{{ path('app_gandaal_admin_site_personnel_show', {'id': personnelActif.personnel.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                <a class="btn btn-warning" href="{{ path('app_gandaal_admin_site_personnel_edit', {'id': personnelActif.personnel.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                            </td>
+                            
+                        {% endif %} #}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">Aucun enseignant enregistré</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

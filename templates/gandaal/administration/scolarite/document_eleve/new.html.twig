@@ -1,0 +1,18 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}ajout document élève{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_scolarite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid w-75 m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        <h4>Ajouter un nouveau document de {{eleve.nomComplet}}</h4>
+        
+        {{ include('gandaal/administration/scolarite/document_eleve/_form.html.twig') }}
+
+        <a class="btn btn-light my-4" href="javascript:history.back()">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+        
+    </div>
+{% endblock %}

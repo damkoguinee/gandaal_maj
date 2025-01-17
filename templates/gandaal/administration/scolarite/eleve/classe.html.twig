@@ -1,0 +1,70 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste des classes{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_scolarite.html.twig" %}
+
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+
+        {# {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %} #}
+        <div class="col-sm-12 col-md-10 m-auto">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="5" class="text-center bg-info text-white">
+                            <div class="d-flex justify-content-between">
+                                Liste des classes
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>N°</th>
+                        <th>Cursus</th>
+                        <th>Nom</th>
+                        <th>Carte Scolaire</th>
+                        <th>Carte de Retraît</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for formation, classes in classe_repartitions %}
+                
+                    <tr>
+                        <th colspan="17" class="bg-secondary text-white text-center">Niveau {{ formation|capitalize }}</th>
+                    </tr>
+
+                    {% for key, classe_repartition in classes %}
+                
+                        <tr>
+                            <td class="text-center">
+                                {{ key + 1 }}
+                                <a target="_blank" class="btn btn-warning" href="{{path("app_gandaal_administration_scolarite_pdf_liste_eleve_classe", {etablissement : etablissement.id, classe : classe_repartition.id})}}"><i class="fa fa-file-pdf"></i></a>
+                            </td>
+                            <td>{{ classe_repartition.formation.cursus.nom|ucwords }}</td>
+                            {# <td>{{ classe_repartition.formation.cursus.etablissement.lieu|ucwords }}</td> #}
+                            {# <td>{{ classe_repartition.formation.nom|ucwords|exposantClasse|raw }}</td> #}
+                            <td>{{ classe_repartition.nom|strtoupper|exposantClasse|raw }}</td>
+                            <td class="text-center" >
+                                <a target="_blank" class="btn btn-success" href="{{path("app_gandaal_administration_scolarite_pdf_carte_scolaire", {etablissement : etablissement.id, classe : classe_repartition.id})}}"><i class="fa fa-file-pdf"></i></a>
+                            </td>
+                            <td class="text-center" >
+                                <a target="_blank" class="btn btn-primary" href="{{path("app_gandaal_administration_scolarite_pdf_carte_retrait", {etablissement : etablissement.id, classe : classe_repartition.id})}}"><i class="fa fa-file-pdf"></i></a>
+
+                                <a target="_blank" class="btn btn-primary" href="{{path("app_gandaal_administration_scolarite_pdf_carte_retrait_pdf_simple", {etablissement : etablissement.id, classe : classe_repartition.id})}}"><i class="fa fa-file-pdf"></i></a>
+                                
+                            </td>                            
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5">Aucune classe enregistrée</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

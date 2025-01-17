@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}inscription_activite{% endblock %}
+
+{% block body %}
+    <h1>inscription_activite</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ inscription_activite.id }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ inscription_activite.type }}</td>
+            </tr>
+            <tr>
+                <th>Remiseinscription_activite</th>
+                <td>{{ inscription_activite.remiseinscription_activite }}</td>
+            </tr>
+            <tr>
+                <th>RemiseScolarite</th>
+                <td>{{ inscription_activite.remiseScolarite }}</td>
+            </tr>
+            <tr>
+                <th>Promo</th>
+                <td>{{ inscription_activite.promo }}</td>
+            </tr>
+            <tr>
+                <th>Dateinscription_activite</th>
+                <td>{{ inscription_activite.dateinscription_activite ? inscription_activite.dateinscription_activite|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_inscription_activite_index') }}">back to list</a>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_inscription_activite_edit', {'id': inscription_activite.id}) }}">edit</a>
+
+    {{ include('gandaal/administration/scolarite/inscription_activite/_delete_form.html.twig') }}
+{% endblock %}

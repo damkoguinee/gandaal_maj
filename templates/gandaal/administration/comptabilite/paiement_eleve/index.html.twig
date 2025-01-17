@@ -1,0 +1,131 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste des paiments des frais de scolarité{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            {% set nbrePages = paiements.nbrePages %}
+            {% set pageEncours = paiements.pageEncours %} 
+            {% set id = etablissement.id %}
+        
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="11" class="text-center bg-info text-white">
+                            Liste des paiements des frais de scolarité 
+                            <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_paiement_eleve_new', {etablissement : etablissement.id}) }}">Enregistrer un paiement</a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="11" class="text-center bg-info text-white">
+                            <form class="form w-100">
+
+                                <div class="row align-items-center ">
+                                    <div class="col-4">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-5">
+                                                <input type="date" name="date1" value="{{ date1 }}" class="form-control" onChange="this.form.submit()" max="{{ date2 }}"> 
+                                                <input type="hidden" name="id_client_search" value="{{ search }}">
+                                            </div>
+                                            <div class="col-1">au</div>
+                                            <div class="col-sm-12 col-md-6">
+                                                <input type="date" name="date2" value="{{ date2 }}" class="form-control" onChange="this.form.submit()" min="{{ date1}}" max="{{ "now"|date("Y-m-d") }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {# <div class="col-4">
+                                        <select name="activite" id="" class="form-select" onChange="this.form.submit()">
+                                            <option value="{{activite ? activite.id : ""}}">{{activite ? activite.nom|ucfirst : "Recherchez par activité"}}</option>
+                                            {% for activite in activites %}
+                                                <option value="{{activite.id}}">{{activite.nom|ucfirst}}</option>
+                                                
+                                            {% endfor %}
+                                        </select>
+                                    </div>  #}
+                                    <div class="col-3">
+                                        <input type="text" name="search" class="form-control" id="search_user" placeholder="Récherchez un client">
+                                    </div>   
+                                    <div class="bg-light text-white" id="result-search"></div>
+                                </div>
+                            </form>
+                        </th>
+                    <tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Date</th>
+                        <th class="bg-info text-white">Matricule</th>
+                        <th class="bg-info text-white">Prénom & Nom</th>
+                        <th class="bg-info text-white">Classe</th>
+                        <th class="bg-info text-white">Montant</th>
+                        <th class="bg-info text-white">Taux</th>
+                        <th class="bg-info text-white">Devise</th>
+                        <th class="bg-info text-white">Mode de Paie</th>
+                        <th class="bg-info text-white">Caisse</th>
+                        <th class="bg-info text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, paiement in paiements.data %}
+                    <tr>
+                        <td class="text-center">
+                            {{ (key +1) }}
+                        </td>
+                        <td class="text-center">{{ paiement.dateOperation ? paiement.dateOperation|date('d/m/Y') : '' }}</td>
+                        <td class="text-center">{{ paiement.inscription.eleve.matricule }}</td>
+                        <td>{{ paiement.inscription.eleve.nomComplet }}</td>
+                        <td>{{ paiement.inscription.classe.nom|strtoupper|exposantClasse|raw }}</td>
+                        <td class="text-end text-nowrap">{{ paiement.devise.nom == 'gnf' ? paiement.montant|number_format(0,',',' ') : paiement.montant|number_format(2,',',' ') }}</td>
+                        <td class="text-end">{{paiement.taux|number_format(2,',',' ') }}</td>
+                        <td class="text-center">{{ paiement.devise.nom|strtoupper }}</td>
+                        <td class="text-center">{{ paiement.modePaie.nom|ucfirst }}</td>
+                        <td class="text-center">{{ paiement.caisse.nom|ucfirst }}</td>
+                       
+                        <td class="text-center">
+                            <a class="btn btn-success" href="{{path("app_gandaal_administration_comptabilite_paiement_eleve_new", {etablissement : etablissement.id, id_user_search : paiement.inscription.eleve.id})}}"><i class="fa fa-eye"></i></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="11">Aucun paiement éffectué</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% set path = 'app_gandaal_administration_comptabilite_paiement_eleve_index'  %}
+                                  
+            {% if nbrePages > 1 %}                    
+
+                {% if nbrePages %}
+                    <nav aria-label="Page navigation example ">
+                        <ul class="pagination justify-content-start">
+                            {% if pageEncours > 1 %}
+                                <li class="page-item ">
+                                    <a class="page-link" href="{{path(path, {etablissement : id, pageEncours : (pageEncours - 1), search : search})}}">&lt;</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled" ><a class="page-link">&lt;</a></li>
+                            {% endif %}
+                            {% for page in 1..nbrePages %}                
+                                <li class="page-item {{ ( page == pageEncours) ? 'active' : ''}} "><a class="page-link" href="{{path(path, {etablissement : id, pageEncours : page, search : search})}}">{{page}}</a></li>
+                            {% endfor %}
+                            {% if pageEncours < nbrePages %}
+                                <li class="page-item "><a class="page-link" href="{{path(path, {etablissement : id,pageEncours : pageEncours + 1, search : search} ) }}">&gt;</a></li>
+                            {% else %}
+                                <li class="page-item disabled "><a href="" class="page-link" >&gt;</a></li>
+                            {% endif %}
+                            </li>
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

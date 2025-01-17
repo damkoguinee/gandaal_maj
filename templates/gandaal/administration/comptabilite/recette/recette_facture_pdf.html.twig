@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Reçu de Paiement{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    <style>
+        @page {
+            margin: 10px 25px;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header, .footer {
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f8f9fa;
+        }
+        .header-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .sub-title {
+            font-size: 16px;
+            color: #6c757d;
+        }
+        .entete {
+            margin-bottom: 30px;
+        }
+        .entete table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .entete td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .entete img {
+            margin: 10px;
+        }
+        .table-container {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        td {
+            background-color: white;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .nowrap {
+            white-space: nowrap;
+        }
+        .signature {
+            margin-top: 40px;
+            text-align: center;
+            font-style: italic;
+        }
+        .signature div {
+            margin-bottom: 60px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            color: grey;
+            font-size: 10px;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">{{ etablissement.nom | upper }}</div>
+        <div class="sub-title">{{ etablissement.devise | capitalize }}</div>
+        <div>
+            <img width="60" height="60" src="data:image/jpeg;base64,{{ logoPath }}" alt="Logo">
+            <div>{{ etablissement.email }}</div>
+            <div>{{ etablissement.telephone }}</div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>Référence</th>
+                <td>{{ recette.reference }}</td>
+            </tr>
+            <tr>
+                <th>Date d'Opération</th>
+                <td>{{ recette.dateOperation|date("d/m/Y") }}</td>
+            </tr>
+            <tr>
+                <th>Montant</th>
+                <td class="nowrap">{{ recette.montant | number_format(0, '.', ' ') }} {{ recette.devise.nom | strtoupper }}</td>
+            </tr>
+            <tr>
+                <th>Catégorie</th>
+                <td>{{ recette.categorie.nom | ucwords }}</td>
+            </tr>
+            <tr>
+                <th>Mode de Paiement</th>
+                <td>{{ recette.modePaie.nom | ucwords }}</td>
+            </tr>
+            {% if recette.inscription %}
+            
+                <tr>
+                    <th>Elève</th>
+                    <td>{{ recette.inscription.eleve.nomComplet | ucfirst }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <th>Description</th>
+                <td>{{ recette.description | ucfirst }}</td>
+            </tr>
+        </table>
+    </div>
+
+    {% if app.user.fonction is defined %}
+        <div class="signature">
+            <div>{{ app.user.fonction.nom | ucwords }}</div>
+            <div>{{ app.user.nomComplet }}</div>
+        </div>
+    {% endif %}
+
+    <div class="footer">
+        <p>Reçu imprimé par {{ app.user.prenom | capitalize }} {{ app.user.nom | upper }} le {{ "now" | date("d/m/Y à H:i") }}</p>
+    </div>
+</body>
+</html>

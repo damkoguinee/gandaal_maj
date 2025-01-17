@@ -1,0 +1,57 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste des caisses{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_admin.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="6" class="text-center bg-info text-white">
+                            Liste des caisses 
+                            <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_admin_config_caisse_new', {etablissement : etablissement.id}) }}">Enregistrer une caisse</a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Designation</th>
+                        <th class="bg-info text-white">Type</th>
+                        <th class="bg-info text-white">N°Compte</th>
+                        <th class="bg-info text-white">Document</th>
+                        <th class="bg-info text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, config_caisse in config_caisses %}
+                    <tr>
+                        <td class="text-center">
+                            {{ (key +1) }}                            
+                        </td>
+                        <td>{{ config_caisse.nom|ucfirst }}</td>
+                        <td>{{ config_caisse.type|ucfirst }}</td>
+                        <td>{{ config_caisse.numero|strtoupper }}</td>
+                        <td class="text-center">{{ config_caisse.document|ucfirst }}</td>
+                       
+                       
+                        <td class="text-center">
+                            <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_admin_config_caisse_edit', {'id': config_caisse.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">Aucune config_caisse enregistrée</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

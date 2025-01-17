@@ -1,0 +1,159 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}mes informations{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/personnel/_common/_nav_espace_enseignant.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-8 m-auto mt-1">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+                
+            <!-- Informations de l'enseignant -->
+            <div class="card shadow-sm mb-4">
+            {% if personnel.personnel.photo %}
+                    <div class="card-header bg-info text-white text-center">
+                        <img src="{{ asset('dossier/personnels/' ~ personnel.personnel.photo) }}" alt="Photo de {{ personnel.personnel.prenom }} {{ personnel.personnel.nom }}" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title bg-info text-white text-center">Informations</h5>
+                    <table class="table table-bordered table-striped table-hover align-middle">
+                        <tbody>
+                            <tr>
+                                <th>Matricule</th>
+                                <td>{{ personnel.personnel.matricule|strtoupper }}</td>
+                            </tr>
+                            <tr>
+                                <th>Prénom & Nom</th>
+                                <td>{{ personnel.personnel.nomComplet }}</td>
+                            </tr>
+                            <tr>
+                                <th>Sexe</th>
+                                <td>{{ personnel.personnel.sexe }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date de Naissance</th>
+                                <td>{{ personnel.personnel.dateNaissance ? personnel.personnel.dateNaissance|date('d/m/Y') : '' }} - {{ personnel.personnel.age }} an(s)</td>
+                            </tr>
+                            <tr>
+                                <th>Lieu de Naissance</th>
+                                <td>{{ personnel.personnel.lieuNaissance|ucfirst }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nationalité</th>
+                                <td>{{ personnel.personnel.nationalite|ucfirst }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-phone-alt"></i> Téléphone</th>
+                                <td>{{ personnel.personnel.telephone }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-envelope"></i> Email</th>
+                                <td>{{ personnel.personnel.email }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-map-marker-alt"></i> Adresse</th>
+                                <td>{{ personnel.personnel.adresse|ucfirst }}</td>
+                            </tr>
+                            <tr>
+                                <th>Pays/Ville</th>
+                                <td>{{ personnel.personnel.ville|ucfirst }} {{ personnel.personnel.pays|ucfirst }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Informations de travail -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title bg-primary text-white text-center">Informations de travail</h5>
+                    <table class="table table-bordered table-striped table-hover align-middle">
+                        <tbody>
+                            <tr>
+                                <th>Statut</th>
+                                <td>{{ personnel.personnel.statut|ucwords }}</td>
+                            </tr>
+                            <tr>
+                                <th>Rattachement</th>
+                                <td>{{ personnel.personnel.etablissement.nom|ucwords }}</td>
+                            </tr>
+                            <tr>
+                                <th>Salaire Brut</th>
+                                <td>{{ salaire ? salaire.salaireBrut|number_format(0,',',' ') : '' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Taux horaire</th>
+                                <td>{{ salaire ? salaire.tauxHoraire|number_format(0,',',' ') : '' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date d'embauche</th>
+                                <td>{{ personnel.personnel.dateDebut ? personnel.personnel.dateDebut|date('d/m/Y') : '' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Fin de contrat</th>
+                                <td>{{ personnel.personnel.dateFin ? personnel.personnel.dateFin|date('d/m/Y') : '' }}</td>
+                            </tr>
+                            {# <tr>
+                                <th>Matières</th>
+                                <td>
+                                    {% for matiere in personnel.personnel.matiere %}
+                                        {{ loop.last ? matiere.nom|ucwords : matiere.nom|ucwords ~ "," }}
+                                    {% endfor %}
+                                </td>
+                            </tr> #}
+                            {% if personnel.personnel.niveau is defined %}
+                                <tr>
+                                    <th>Niveau</th>
+                                    <td>{{ personnel.personnel.niveau|ucwords}}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <th>Niveau d'accès</th>
+                                <td>{{ personnel.personnel.roles ?  personnel.personnel|autorisations : '' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Documents -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title bg-warning text-white text-center">
+                        Documents
+                    </h5>
+                    {% if documents is not empty %}
+                        <table class="table table-bordered table-striped table-hover align-middle">
+                            <tr>
+                                {% for document in documents %}
+                                    <td>
+                                        <div class="d-flex justify-content-center">
+                                            <a href="{{ asset('dossier/enseignants/' ~ document.nom) }}" target="_blank">
+                                                {{ document.type|ucfirst }} <i class="fa fa-file-pdf fs-3"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        </table>
+                    {% else %}
+                        <p class="text-center">Aucun document disponible.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between my-4">
+
+                <a class="btn btn-light" href="javascript:history.back()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+
+                <a class="btn btn-warning" href="{{ path('app_gandaal_personnel_edit', { 'id': personnel.id, 'etablissement': etablissement.id }) }}">Modifier</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

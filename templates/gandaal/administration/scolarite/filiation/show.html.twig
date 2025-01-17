@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Filiation{% endblock %}
+
+{% block body %}
+    <h1>Filiation</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ filiation.id }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ filiation.username }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>{{ filiation.roles ? filiation.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ filiation.password }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ filiation.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom</th>
+                <td>{{ filiation.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ filiation.email }}</td>
+            </tr>
+            <tr>
+                <th>Telephone</th>
+                <td>{{ filiation.telephone }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ filiation.adresse }}</td>
+            </tr>
+            <tr>
+                <th>Ville</th>
+                <td>{{ filiation.ville }}</td>
+            </tr>
+            <tr>
+                <th>Pays</th>
+                <td>{{ filiation.pays }}</td>
+            </tr>
+            <tr>
+                <th>Matricule</th>
+                <td>{{ filiation.matricule }}</td>
+            </tr>
+            <tr>
+                <th>Sexe</th>
+                <td>{{ filiation.sexe }}</td>
+            </tr>
+            <tr>
+                <th>DateNaissance</th>
+                <td>{{ filiation.dateNaissance ? filiation.dateNaissance|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>LieuNaissance</th>
+                <td>{{ filiation.lieuNaissance }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ filiation.statut }}</td>
+            </tr>
+            <tr>
+                <th>Photo</th>
+                <td>{{ filiation.photo }}</td>
+            </tr>
+            <tr>
+                <th>TypeUser</th>
+                <td>{{ filiation.typeUser }}</td>
+            </tr>
+            <tr>
+                <th>LienFamilial</th>
+                <td>{{ filiation.lienFamilial }}</td>
+            </tr>
+            <tr>
+                <th>Profession</th>
+                <td>{{ filiation.profession }}</td>
+            </tr>
+            <tr>
+                <th>LieuTravail</th>
+                <td>{{ filiation.lieuTravail }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_filiation_index') }}">back to list</a>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_filiation_edit', {'id': filiation.id}) }}">edit</a>
+
+    {{ include('gandaal/administration/scolarite/filiation/_delete_form.html.twig') }}
+{% endblock %}

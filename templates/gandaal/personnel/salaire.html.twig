@@ -1,0 +1,122 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %} mes salaires{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/personnel/_common/_nav_espace_enseignant.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg');">
+
+        <div class="col-sm-12 col-md-10 m-auto mt-1 sticky-top" style="overflow:auto">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            {% set cumulBrutGeneral = 0 %}
+            {% set cumulHeuresGeneral = 0 %}
+            {% set cumulPrimeGeneral = 0 %}
+            {% set cumulAvanceGeneral = 0 %}
+            {% set cumulNetGeneral = 0 %}
+
+            <table class="table table-bordered table-striped table-hover align-middle m-0 p-0">
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="13" class="text-center bg-info text-white">
+                            Liste de mes paiements {{(promo - 1 ) ~ '-' ~ promo}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Période</th>
+                        <th class="bg-info text-white">Salaire Brut</th>
+                        <th class="bg-info text-white">T. horaire</th>
+                        <th class="bg-info text-white">Heure(s)</th>
+                        <th class="bg-info text-white">Prime</th>
+                        <th class="bg-info text-white">Avance</th>
+                        <th class="bg-info text-nowrap text-success fw-bold" style="font-size:14px;">Salaire Net</th>
+                        <th class="bg-info text-white">ModeP.</th>
+                        <th class="bg-info text-white">Caisse</th>
+                        <th class="bg-info text-white">Commentaire</th>
+                        <th class="bg-info text-white">N° Compte</th>
+                        <th class="bg-info text-white">Banque</th>
+                    </tr>
+                </thead>
+
+                {% set cumulBrutGen = 0 %}
+                {% set cumulHeuresGen = 0 %}
+                {% set cumulPrimeGen = 0 %}
+                {% set cumulAvanceGen = 0 %}
+                {% set cumulNetGen = 0 %}
+
+                {% for mode, paiements in paiementsParMode %}
+
+                    
+                    <thead>
+                        <tr>
+                            <th colspan="13" class="bg-secondary text-white text-center">Liste des paiements par {{ mode|capitalize }}
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        {% set cumulBrut = 0 %}
+                        {% set cumulHeures = 0 %}
+                        {% set cumulPrime = 0 %}
+                        {% set cumulAvance = 0 %}
+                        {% set cumulNet = 0 %}
+                        {% for key, paiement in paiements %}
+                            {% set cumulBrutGen = cumulBrutGen + paiement.salaireBrut %}
+                            {% set cumulHeuresGen = cumulHeuresGen + paiement.heures %}
+                            {% set cumulPrimeGen = cumulPrimeGen + paiement.prime %}
+                            {% set cumulAvanceGen = cumulAvanceGen + paiement.avanceSalaire %}
+                            {% set cumulNetGen = cumulNetGen + paiement.montant %}
+
+                            {% set cumulBrut = cumulBrut + paiement.salaireBrut %}
+                            {% set cumulHeures = cumulHeures + paiement.heures %}
+                            {% set cumulPrime = cumulPrime + paiement.prime %}
+                            {% set cumulAvance = cumulAvance + paiement.avanceSalaire %}
+                            {% set cumulNet = cumulNet + paiement.montant %}
+                            <tr>
+                                <td class="text-nowrap">
+                                    {{(key +1 )}}
+                                    <a target="_blank" class="btn btn-warning" href="{{path('app_gandaal_administration_comptabilite_pdf_fiche_paie', { id : paiement.id, etablissement : etablissement.id } ) }}" class="btn btn-secondary btn-sm"><i class="fa fa-file-pdf"></i></a>
+                                </td>
+                                <td class="text-nowrap">{{ paiement.periode ? paiement.periode |date('m-Y') : '' }}</td>
+    
+                                <td class="text-nowrap text-end">{{paiement.salaireBrut|number_format(0,',',' ')}}</td>
+                                <td class="text-nowrap text-end">{{paiement.tauxHoraire|number_format(0,',',' ')}}</td>
+                                <td class='text-center'>{{paiement.heures}}</td>
+                                <td class="text-nowrap text-end">{{paiement.prime|number_format(0,',',' ')}}</td>
+                                <td class="text-nowrap text-end">{{paiement.avanceSalaire|abs|number_format(0,',',' ')}}</td>
+                                <td class="text-nowrap text-end text-success fw-bold">{{paiement.montant|abs|number_format(0,',',' ')}}</td>
+                                <td>{{paiement.modePaie.nom|ucfirst}}</td>
+                                <td>{{paiement.caisse.nom|ucfirst}}</td>
+                                <td>{{paiement.commentaires|ucfirst}}</td>
+                                <td class="text-start">{{ paiement.compteBancaire ?:paiement.personnelActif.personnel.numeroCompte|strtoupper }}</td>
+                                <td class="text-start">{{ paiement.banqueVirement ?:paiement.personnelActif.personnel.agenceBanque|capitalize }}</td>
+                                
+                                
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <th class="bg-warning text-white" colspan="2">Cumuls {{mode}}</th>
+                            <th colspan="2" class="bg-warning text-white text-nowrap text-center" class="">{{cumulBrut|number_format(0,',',' ')}}</th>
+                            <th class="bg-warning text-white text-nowrap text-center" class="">{{cumulHeures}}</th>
+                            <th class="bg-warning text-white text-nowrap text-end" class="">{{cumulPrime|number_format(0,',',' ')}}</th>
+                            <th class="bg-warning text-white text-nowrap text-end" class="">{{cumulAvance|abs|number_format(0,',',' ')}}</th>
+                            <th class="bg-warning text-success fw-bold text-nowrap text-end" class="">{{cumulNet|abs|number_format(0,',',' ')}}</th>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+
+                <tfoot>
+                    <tr>
+                        <th class="bg-info text-white" colspan="2">Cumuls</th>
+                        <th colspan="2" class="bg-info text-white text-nowrap text-center" class="">{{cumulBrutGen|number_format(0,',',' ')}}</th>
+                        <th class="bg-info text-white text-nowrap text-center" class="">{{cumulHeuresGen}}</th>
+                        <th class="bg-info text-white text-nowrap text-end" class="">{{cumulPrimeGen|number_format(0,',',' ')}}</th>
+                        <th class="bg-info text-white text-nowrap text-end" class="">{{cumulAvanceGen|abs|number_format(0,',',' ')}}</th>
+                        <th class="bg-info text-success fw-bold text-nowrap text-end" class="">{{cumulNetGen|abs|number_format(0,',',' ')}}</th>
+                    </tr>
+
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}

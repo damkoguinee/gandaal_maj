@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout{% endblock %}
+
+{% block body %}
+    <div class="row my-2 mx-0 px-0">
+        {% include "gandaal/_common/_nav_admin.html.twig" %}
+        <div class="col-sm-12 col-md-10 mx-0 px-0">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <div class="container-fluid py-2 mx-0 px-0" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+                
+                {{include("gandaal/_common/_entete.html.twig")}}
+                {{ include('gandaal/admin/entreprise/_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

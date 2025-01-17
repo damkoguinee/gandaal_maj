@@ -1,0 +1,16 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}nouvelle matière{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+
+        {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            {{ include('gandaal/administration/pedagogie/admin/matiere/_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

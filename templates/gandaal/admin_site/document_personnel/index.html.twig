@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DocumentPersonnel index{% endblock %}
+
+{% block body %}
+    <h1>DocumentPersonnel index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>Nom</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for document_personnel in document_personnels %}
+            <tr>
+                <td>{{ document_personnel.id }}</td>
+                <td>{{ document_personnel.type }}</td>
+                <td>{{ document_personnel.nom }}</td>
+                <td>
+                    <a href="{{ path('app_gandaal_admin_site_document_personnel_show', {'id': document_personnel.id}) }}">show</a>
+                    <a href="{{ path('app_gandaal_admin_site_document_personnel_edit', {'id': document_personnel.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_admin_site_document_personnel_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,298 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}ajout paiement{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        <div class="row">
+            <div class="col-sm-12 col-md-6 border border-danger border-4 rounded-2 p-2 ">
+                <h4>Ajouter un paiement</h4>            
+                {{ include('gandaal/administration/comptabilite/paiement_eleve/_form.html.twig') }}
+
+                {% if panier is not empty %}
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <form method="post" onsubmit="return confirm('Confirmez-vous cette opération?');">
+                                        <input type="hidden" name="finaliser" value="finaliser">
+                                        <button class="btn btn-success">Finaliser|{{cumulGeneral|number_format(0,',',' ')}}</button>
+                                    </form>
+                                </th>
+                            </tr>
+                        </thead>
+                        {% set cumul = 0 %}
+                        {% set cumulEleve = 0 %}
+                        {% for item in panier %}
+                            {% set cumul = cumul + item.inscription %}
+                            {% set cumulEleve = cumulEleve + item.inscription %}
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="text-center bg-info text-white">
+                                        {{ item.inscriptionEleve.eleve.nomComplet }}                                         
+                                        <a href="{{path("app_gandaal_administration_comptabilite_paiement_eleve_delete_paiement", {id : item.inscriptionEleve.id, etablissement : etablissement.id})}}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                    </th>
+                                </tr>
+                                {% if item.inscription != 0 %}
+                                    <tr>
+                                        <td>Inscription/Ré-ins</td>
+                                        <td class="text-end">{{ item.inscription|number_format(0,',',' ') }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if item.fraisScol is not empty %}
+                                    {% if item.fraisScol is iterable %}
+                                        {% for frais in item.fraisScol %}
+
+                                            {% set remise_scolarite = item.remiseScolarite ? item.remiseScolarite : 0 %}
+                                            {% set frais_scolarite = frais.montant  %}
+                                            {% set cumul = cumul + frais_scolarite %}
+                                            {% set cumulEleve = cumulEleve + frais_scolarite %}
+
+                                            <tr>
+                                                <td>{{frais.tranche.nom|ucfirst}}</td>
+                                                <td class="text-end">{{ (frais_scolarite)|number_format(0,',',' ') }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+
+                                        {% set remise_scolarite = item.remiseScolarite ? item.remiseScolarite : 0 %}
+                                        {% if item.fraisScol %}
+                                            {% set frais_scolarite = item.fraisScol.montant  %}
+                                            {% set cumul = cumul + frais_scolarite %}
+                                            {% set cumulEleve = cumulEleve + frais_scolarite %}
+
+                                            <tr>
+                                                <td>{{item.fraisScol.tranche.nom|ucfirst}}</td>
+                                                <td class="text-end">{{ (frais_scolarite)|number_format(0,',',' ') }}</td>
+                                            </tr>
+                                        {% endif %}
+                                        
+                                    {% endif %}
+                                {% endif %}
+
+                                <tr >
+                                    <th class="bg-warning text-white">Cumul Elève</th>
+                                    <th class="bg-warning text-white text-end">{{cumulEleve|number_format(0,',',' ')}}</th>
+                                </tr>
+                            </thead>
+                            {% set cumulEleve = 0 %}
+                        {% endfor %}
+                        <tfoot >
+                            <tr >
+                                <th class="bg-danger text-white">Cumul Général</th>
+                                <th class="bg-danger text-white text-end">{{cumul|number_format(0,',',' ')}}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                {% endif %}
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="card shadow-sm mb-4">
+                    {% if inscription is not empty %}
+                    
+                        {% if inscription.eleve.photo %}
+                            <div class="card-header bg-info text-white text-center">
+                                <img src="{{ asset('dossier/eleves/' ~ inscription.eleve.photo) }}" alt="Photo de {{ inscription.eleve.prenom }} {{ inscription.eleve.nom }}" class="img-thumbnail" style="max-width: 90px; max-height: 90px;">
+                            </div>
+                        {% endif %}
+                        <div class="card-body mb-0 pb-0">
+                            <table class="table table-bordered table-striped table-hover align-middle">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="2">
+                                            <table class="table table-bordered table-striped table-hover align-middle m-0 p-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Matricule</th>
+                                                        <td>{{ inscription.eleve.matricule|strtoupper }}</td>
+                                                        <th>Classe</th>
+                                                        <td>{{ inscription.classe.nom|strtoupper }}</td>
+                                                        <th>Statut</th>
+                                                        <td>{{ inscription.statut|ucfirst }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Prénom & Nom</th>
+                                        <td>{{ inscription.eleve.nomComplet }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date de Naissance</th>
+                                        <td>{{ inscription.eleve.dateNaissance ? inscription.eleve.dateNaissance|date('d/m/Y') : '' }} - {{ inscription.eleve.age }} an(s)</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <th><i class="fas fa-phone-alt"></i> Téléphone</th>
+                                        <td>{{ inscription.eleve.telephone }}</td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-body my-0 py-0">
+                            <h5 class="card-title bg-warning text-white text-center">Informations Paiements</h5>
+                            <table class="table table-bordered table-striped table-hover align-middle">
+                                <tbody>
+                                    {% if inscription.remiseInscription is not empty %}                                
+                                        <tr>
+                                            <th>Remise Inscription</th>
+                                            <td>{{ inscription.remiseInscription }}%</td>
+                                        </tr>
+                                    {% endif %}
+
+                                    {% if inscription.remiseScolarite is not empty %}                                
+                                        <tr>
+                                            <th>Remise Scolarité</th>
+                                            <td>{{ inscription.remiseScolarite }}%</td>
+                                        </tr>
+                                    {% endif %}
+                                    <tr>
+                                        <th>Reste à payer Inscription</th>
+                                        <td>{{ reste_inscription|number_format(0,',',' ')}}</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <th>Reste à payer frais de scolarité</th>
+                                        <td>
+                                            <table class="table table-bordered table-striped table-hover align-middle">
+                                                <tbody class="sticky">
+                                                    {% for key, reste in reste_scolarite  %}
+                                                        <tr>
+                                                            <td>{{key}}</td>
+                                                            <td class="text-end">{{reste|number_format(0,',',' ')}}</td>
+                                                        </tr>
+                                                        
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if search is not empty %}
+                    <div class="row">
+                        <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                            <thead class="sticky-top bg-light text-center">
+                                <form>
+                                    <tr>
+                                        <th colspan="6" class="text-center bg-info text-white">
+                                            Historique des paiements
+                                            <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_paiement_historique", {inscription : inscription.id})}}" ><i class="fa fa-file-pdf fs-5 text-success"></i></a>
+                                        </th>
+                                    </tr>
+                                </form>
+                                <tr>
+                                    <th class="bg-info text-white">N°</th>
+                                    <th class="bg-info text-white">Type</th>
+                                    <th class="bg-info text-white">Montant</th>
+                                    <th class="bg-info text-white">Date</th>
+                                    {# <th class="bg-info text-white">Saisie Par</th> #}
+                                    <th class="bg-info text-white">actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set cumulHistorique = 0 %}
+                                {% for key, historique in historiques %}
+                                    {% set cumulHistorique =  cumulHistorique + historique.montant %}
+                                    <tr>
+                                        <td class="text-center">
+                                            {{ key + 1 }}
+                                            <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_paiement_recu", {id : historique.id})}}" ><i class="fa fa-file-pdf fs-5 text-success"></i></a>
+                                        </td>
+                                        <td class="text-start">{{ historique.typePaie|ucfirst }}</td>
+                                        <td class="text-end">{{ historique.montant|number_format(0,',',' ') }}</td>
+                                        <td class="text-center">{{ historique.dateOperation|date("d/m/Y") }}</td>
+                                        {# <td class="text-center">{{ historique.saisiePar.nomComplet() }}</td> #}
+                                        
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center">
+                                                <a class="btn btn-success mx-1" href="{{ path('app_gandaal_administration_comptabilite_paiement_eleve_show', {'id': historique.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+
+                                                <form method="post" action="{{ path('app_gandaal_administration_comptabilite_paiement_eleve_confirm_delete', {'id': historique.id, 'etablissement': etablissement.id}) }}" >
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ historique.id) }}">
+                                                    <input type="hidden" name="param" value="simple">
+
+                                                    <button class="btn btn-danger">Annuler</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5">Aucun paiement enregistré</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2" class="bg-info text-white">Cumul</th>
+                                    <th Class="text-end bg-info text-white">{{cumulHistorique|number_format(0,',',' ')}}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                            <thead class="sticky-top bg-light text-center">
+                                <form>
+                                    <tr>
+                                        <th colspan="5" class="text-center bg-info text-white">
+                                            Cumul des paiements
+                                            <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_paiement_cumul", {inscription : inscription.id})}}" ><i class="fa fa-file-pdf fs-5 text-success"></i></a>
+                                        </th>
+                                    </tr>
+                                </form>
+                                <tr>
+                                    <th class="bg-info text-white">N°</th>
+                                    <th class="bg-info text-white">Type</th>
+                                    <th class="bg-info text-white">Montant</th>
+                                    <th class="bg-info text-white">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set cumulHistorique = 0 %}
+                                {% for key, cumulPaiement in cumulPaiements %}
+                                    {% set cumulHistorique =  cumulHistorique + cumulPaiement.solde %}
+                                    <tr>
+                                        <td class="text-center">{{ key + 1 }}</td>
+                                        <td class="text-start">{{ cumulPaiement.paiement.typePaie|ucfirst }}</td>
+                                        <td class="text-end">{{ cumulPaiement.solde|number_format(0,',',' ') }}</td>
+                                        <td class="text-center">{{ cumulPaiement.paiement.dateOperation|date("d/m/Y") }}</td>
+                                        
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5">Aucun paiement enregistré</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2" class="bg-info text-white">Cumul</th>
+                                    <th Class="text-end bg-info text-white">{{cumulHistorique|number_format(0,',',' ')}}</th>
+                                    <th Class="text-end bg-danger text-white">Reste: {{(scolarite_annuel - cumulHistorique)|number_format(0,',',' ')}}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <a class="btn btn-light my-4" href="{{ path('app_gandaal_administration_comptabilite_paiement_eleve_index', {etablissement : etablissement.id}) }}">Retour</a>
+    </div>
+{% endblock %}

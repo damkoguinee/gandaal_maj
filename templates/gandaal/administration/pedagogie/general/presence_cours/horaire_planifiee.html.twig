@@ -1,0 +1,84 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}heures planifiées{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+    {# <div class="row m-auto bg-light" style="min-height: 90vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg'); background-size: cover;"> #}
+    
+        {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}                       
+
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="10" class="text-center  fw-bold bg-info text-white bg-opacity-75">
+                            Heures planifiées à la date {{jour|date("d/m/Y")}}
+                            <form>
+                                <div class="row d-flex justify-content-between align-items-center ">
+                                    
+                                    <div class="col-sm-12 col-md-5">
+                                        <input type="date" name="jour" value="{{ jour }}" class="form-control" onChange="this.form.submit()" max="{{ "now"|date('Y-m-d') }}"> 
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-5">
+                                        <input type="text" name="search" class="form-control" placeholder="Récherchez un enseignant">
+                                    </div>
+                                </div>
+                            </form>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="bg-info text-white bg-opacity-75" style="font-size:12px;">N°</th>
+                        <th class="bg-info text-white bg-opacity-75" style="font-size:12px;">Matricule</th>
+                        <th class="bg-info text-white bg-opacity-75" style="font-size:12px;">Prénom & Nom</th>
+                        <th class="bg-info text-white bg-opacity-75" style="font-size:12px;">Téléphone</th>
+                        <th class="bg-info text-white bg-opacity-75" style="font-size:12px;">Classe</th>
+                        <th class="bg-info text-white bg-opacity-75" style="font-size:12px;">Matière</th>
+                        <th class="bg-info text-white bg-opacity-75" style="font-size:12px;">Créneau</th>
+                        <th class="bg-info text-white bg-opacity-75" style="font-size:12px;">Heure(s) Prev</th>
+                        <th class="bg-danger bg-opacity-75" style="font-size:12px;">Heure(s) réal</th>
+                        <th class="bg-info text-white bg-opacity-75" style="font-size:12px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set cumulHeure = 0 %}
+                    
+                    {% for key, event in events %}
+                        {% set cumulHeure = cumulHeure + event.duree %}
+                        <form method="post" Action="{{path('app_gandaal_administration_pedagogie_admin_heure_travaille_new', {event : event.id, etablissement : etablissement.id})}}" onsubmit="return confirm('Confirmez-vous cette opération?');">
+                            <tr>
+                                <td style="font-size:14px;" class="text-center">{{key + 1}}</td>
+                                <td style="font-size:14px;">{{event.enseignant.personnel.matricule}}</td>
+                                <td style="font-size:14px;">{{event.enseignant.personnel.nomComplet}}</td>
+                                <td style="font-size:14px;">{{event.enseignant.personnel.telephone}}</td>
+                                <td style="font-size:14px;">{{event.classe.nom}}</td>
+                                <td style="font-size:14px;">{{event.matiere.nom|capitalize}}</td>
+                                <td style="font-size:14px;">{{event.start|date('H:i') ~ '-' ~ event.end|date('H:i')}}</td>
+                                <td style="font-size:14px;" class="text-center">{{event.duree}}</td>
+                                <td style="font-size:14px;" class="text-center" style="width:10%;"><input required type="number" name='heureReal' value="{{event.duree}}" class="form-control text-center" ></td>
+                                <td style="font-size:14px;" class="text-center">
+                                    <input type="hidden" name="heurePrev" value="{{event.duree}}">
+                                    <input type="hidden" name="periode" value="{{jour}}">
+                                    <button class="btn btn-danger">Confirmez</button>
+                                </td>
+                            </tr>
+                        </form>
+                        
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="bg-info text-white">
+                        <th colspan="7">Cumuls</th>
+                        <th class='text-center'>{{cumulHeure}}</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}

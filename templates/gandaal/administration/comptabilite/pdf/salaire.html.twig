@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fiche de Paie</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        @page {
+            margin: 5px 20px;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+        }
+        .header, .footer {
+            width: 100%;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 1px;
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            font-size: 12px;
+        }
+        .table-container {
+            margin: 0px;
+        }
+        .entete table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+        .entete img {
+            margin: 10px;
+        }
+        .entete td {
+            border: none;
+        }
+        .entete div {
+            text-align: center;
+            font-size: 14px;
+        }
+        .entete .header-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .entete .sub-title {
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+        }
+        .no-break {
+            page-break-inside: avoid;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            text-align: left;
+            font-size: 13px;
+        }
+        td {
+            height:20px;
+            
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-end {
+            text-align: right;
+        }
+        .fw-bold {
+            font-weight: bold;
+        }
+        .nowrap {
+            white-space: nowrap;
+        }
+        .signature {
+            margin-top: 20px;
+            text-align: center;
+            font-style: italic;
+        }
+        .signature div {
+            margin-bottom: 85px;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    <div class="entete">
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <img width="220" height="60" src="data:image/jpeg;base64,{{ ministerePath }}" alt="Ministere">
+                    </td>
+                    <td>
+                        <div>REPUBLIQUE DE {{ etablissement.entreprise.pays | upper }}</div>
+                        <div><img width="30" height="30" src="data:image/jpeg;base64,{{ symbolePath }}" alt="Symbole"></div>
+                        <div>Travail - Justice - Solidarité</div>
+                    </td>
+                    <td>
+                        <div><img width="60" height="60" src="data:image/jpeg;base64,{{ logoPath }}" alt="Logo"></div>
+                        <div>{{ etablissement.email }}</div>
+                        <div>{{ etablissement.telephone }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="header-title">{{ etablissement.nom | upper }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="sub-title">{{ etablissement.devise|capitalize }}</td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div class="table-container">
+        {% set cumulBrutGeneral = 0 %}
+        {% set cumulHeuresGeneral = 0 %}
+        {% set cumulPrimeGeneral = 0 %}
+        {% set cumulAvanceGeneral = 0 %}
+        {% set cumulNetGeneral = 0 %}
+
+        <table class="table table-bordered table-striped table-hover align-middle m-0 p-0">
+            <thead class="sticky-top bg-light text-center">
+                {% if modePaie is not empty and (modePaie.nom == 'virement' or modePaie.nom == 'orange money') %}
+                    {% set colspan = 11 %}
+                {% else %}
+                    {% set colspan = 9 %}
+                    
+                {% endif %}
+            
+                <tr>
+                    <th colspan="{{colspan}}" class="text-center">Etat des Salaires des Enseignants. Période: {{periode|date('m-Y')}}  Type de paiement: {{modePaie ? modePaie.nom : ''}} </th>
+                </tr>
+                <tr>
+                    <th class="text-center" style='font-size:12px;'>N°</th>
+                    <th class="text-center" style='font-size:12px;'>N° Mat</th>
+                    <th class="text-center text-nowrap" style='font-size:12px;'>Prénom & Nom</th>
+                    <th class="text-center" style='font-size:12px;'>Téléphone</th>
+                    <th class="text-end" style='font-size:12px;'>S.Brut</th>
+                    {# <th class="text-end" style='font-size:12px;'>T.horaire</th> #}
+                    <th class="text-center" style='font-size:12px;'>Heure(s)</th>
+                    <th class="text-center" style='font-size:12px;'>Prime</th>
+                    <th class="text-center" style='font-size:12px;'>Avance</th>
+                    <th class="text-center" style='font-size:14px;'>S.Net</th>
+                    {% if modePaie is not empty and (modePaie.nom == 'virement' or modePaie.nom == 'orange money') %}
+                    
+                        <th class="text-center" style='font-size:12px;'>N°Compte</th> 
+                        <th class="text-center" style='font-size:12px;'>Banque</th> 
+                    {% endif %}
+                </tr>
+            </thead>
+
+            {% set cumulBrutGen = 0 %}
+            {% set cumulHeuresGen = 0 %}
+            {% set cumulPrimeGen = 0 %}
+            {% set cumulAvanceGen = 0 %}
+            {% set cumulNetGen = 0 %}
+
+            {% for mode, paiements in paiementsParMode %}
+
+                
+                <thead>
+                    <tr>
+                        <th colspan="{{colspan}}" class="bg-secondary text-white text-center">Etat des salaires par {{ mode|capitalize }}</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    {% set cumulBrut = 0 %}
+                    {% set cumulHeures = 0 %}
+                    {% set cumulPrime = 0 %}
+                    {% set cumulAvance = 0 %}
+                    {% set cumulNet = 0 %}
+                    {% for key, paiement in paiements %}
+                        {% set cumulBrutGen = cumulBrutGen + paiement.salaireBrut %}
+                        {% set cumulHeuresGen = cumulHeuresGen + paiement.heures %}
+                        {% set cumulPrimeGen = cumulPrimeGen + paiement.prime %}
+                        {% set cumulAvanceGen = cumulAvanceGen + paiement.avanceSalaire %}
+                        {% set cumulNetGen = cumulNetGen + paiement.montant %}
+
+                        {% set cumulBrut = cumulBrut + paiement.salaireBrut %}
+                        {% set cumulHeures = cumulHeures + paiement.heures %}
+                        {% set cumulPrime = cumulPrime + paiement.prime %}
+                        {% set cumulAvance = cumulAvance + paiement.avanceSalaire %}
+                        {% set cumulNet = cumulNet + paiement.montant %}
+                        <tr>
+                            <td class="text-center" style='font-size:12px;'>{{ key + 1 }}</td>
+                            <td class="text-center" style='font-size:12px;'>{{ paiement.personnelActif.personnel.matricule|strtoupper ?: 'N/A' }}</td>
+                            <td style='font-size:12px;'>{{ paiement.personnelActif.personnel.nomComplet }}</td>
+                            <td class="text-start text-nowrap" style='font-size:12px;'>{{ paiement.personnelActif.personnel.telephone|strtoupper  }}</td>
+                            <td class="text-nowrap text-end" style='font-size:12px;'>{{paiement.salaireBrut|number_format(0,',',' ')}}</td>
+                            {# <td class="text-nowrap text-end" style='font-size:12px;'>{{paiement.tauxHoraire|number_format(0,',',' ')}}</td> #}
+                            <td class='text-center'>{{paiement.heures}}</td>
+                            <td class="text-nowrap text-end" style='font-size:12px;'>{{paiement.prime|number_format(0,',',' ')}}</td>
+                            <td class="text-nowrap text-end" style='font-size:12px;'>{{paiement.avanceSalaire|abs|number_format(0,',',' ')}}</td>
+                            <td class="text-nowrap text-end text-success fw-bold" style='font-size:12px;'>{{paiement.montant|abs|number_format(0,',',' ')}}</td>
+                            {% if modePaie is not empty and (modePaie.nom == 'virement' or modePaie.nom == 'orange money') %}
+                                <td class="text-start" style='font-size:12px;'>{{ paiement.compteBancaire ?:paiement.personnelActif.personnel.numeroCompte|strtoupper }}</td>
+                                <td class="text-start" style='font-size:12px;'>{{ paiement.banqueVirement ?:paiement.personnelActif.personnel.agenceBanque|capitalize }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <th class="bg-warning text-white" colspan="4">Cumuls des paiements {{mode}}</th>
+                        <th class="bg-warning text-white text-nowrap text-end">{{cumulBrut|number_format(0,',',' ')}}</th>
+                        <th class="bg-warning text-white text-nowrap text-center">{{cumulHeures}}</th>
+                        <th class="bg-warning text-white text-nowrap text-end">{{cumulPrime|number_format(0,',',' ')}}</th>
+                        <th class="bg-warning text-white text-nowrap text-end">{{cumulAvance|abs|number_format(0,',',' ')}}</th>
+                        <th class="bg-warning text-success fw-bold text-nowrap text-end" >{{cumulNet|abs|number_format(0,',',' ')}}</th>
+                    </tr>
+                </tbody>
+            {% endfor %}
+            {% if modePaie is empty %}
+            
+                <tfoot>
+                    <tr>
+                        <th class="bg-info text-white" colspan="4">Cumuls</th>
+                        <th  class="bg-info text-white text-nowrap text-end">{{cumulBrutGen|number_format(0,',',' ')}}</th>
+                        <th class="bg-info text-white text-nowrap text-center">{{cumulHeuresGen}}</th>
+                        <th class="bg-info text-white text-nowrap text-end">{{cumulPrimeGen|number_format(0,',',' ')}}</th>
+                        <th class="bg-info text-white text-nowrap text-end">{{cumulAvanceGen|abs|number_format(0,',',' ')}}</th>
+                        <th class="bg-info text-success fw-bold text-nowrap text-end">{{cumulNetGen|abs|number_format(0,',',' ')}}</th>
+                    </tr>
+
+                </tfoot>
+            {% endif %}
+        </table>
+
+        
+    </div>
+    {% if app.user.fonction is defined %}
+        <div class="signature">
+            <div>{{app.user.fonction.nom|ucwords}}</div>
+            <div>{{app.user.nomComplet}}</div>
+        </div>
+    {% endif %}
+
+    <div class="footer">
+        <p>Document imprimé par {{ app.user.prenom | capitalize }} {{ app.user.nom | upper }} le {{ "now" | date("d/m/Y à H:i") }}</p>
+    </div>
+        {# {% if paiements|length > 1 %}
+            <div class="page-break"></div>
+        {% else %}
+            
+        {% endif %} #}
+</body>
+</html>

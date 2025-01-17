@@ -1,0 +1,131 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste des abandons{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_secretariat.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg'); background-size: cover;">
+        {% include "gandaal/_common/_nav_secretariat_menu.html.twig" %}
+
+        <div class="col-sm-12 col-md-10" id="printSection">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white text-center" style="font-size: 1.1rem;">
+                    Liste des élèves ayant abandonnés {{ promo - 1 }} - {{ promo }}
+                    <button target="_blank" class="btn btn-warning float-right" onclick="printDiv('printSection')">
+                        <i class="fa fa-file-pdf"></i> Imprimer
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-bordered table-striped table-hover align-middle mb-0">
+                        <thead class="sticky-top bg-dark text-white">
+                            <tr>
+                                <th class="text-center">N°</th>
+                                <th class="text-center">Matricule</th>
+                                <th class="text-center">Prénom & Nom</th>
+                                <th class="text-center">Téléphone</th>
+                                <th class="text-center">Filiation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for classe, data in groupedByClass %}
+                                <tr class="table-warning text-dark">
+                                    <th colspan="5" class="text-left">{{ classe }}</th>
+                                </tr>
+                                {% for inscription in data.inscriptions %}
+                                    <tr>
+                                        <td class="text-center">{{ loop.index }}</td>
+                                        <td>{{ inscription.eleve.matricule }}</td>
+                                        <td>{{ inscription.eleve.nomComplet }}</td>
+                                        <td class="text-center">{{ inscription.eleve.telephone }}</td>
+                                        <td>
+                                            {% for filiation in inscription.eleve.filiations %}
+                                                {% if filiation.lienFamilial == 'père' %}
+                                                    {{ filiation.prenom|ucwords }}
+                                                {% endif %}
+                                            {% endfor %}
+                                            &
+                                            {% for filiation in inscription.eleve.filiations %}
+                                                {% if filiation.lienFamilial == 'mère' %}
+                                                    {{ filiation.prenom|ucwords ~ " " ~ filiation.nom|strtoupper }}
+                                                    
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            
+
+            
+        </div>
+    </div>
+{% endblock %}
+
+{% block autres %}
+<script>
+    function printDiv(divId) {
+        var contentToPrint = document.getElementById(divId).innerHTML;
+        var originalContent = document.body.innerHTML;
+
+        document.body.innerHTML = contentToPrint;
+        window.print();
+        document.body.innerHTML = originalContent;
+    }
+</script>
+
+<style>
+    @media print {
+        .no-print {
+            display: none;
+        }
+        .print-black-text td, .print-black-text th {
+            color: black !important;
+            background-color: white !important;
+            font-size: 14px !important;
+            border: 2px solid grey !important;
+        }
+    }
+
+    /* Styles modernes pour la table */
+    .table {
+        font-size: 0.95rem;
+        background-color: white;
+        border-radius: 0.25rem;
+        overflow: hidden;
+    }
+    thead th {
+        background-color: #343a40 !important;
+        color: #ffffff !important;
+        font-weight: bold;
+        text-transform: uppercase;
+        padding: 12px;
+    }
+    tbody td {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+    tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #e9ecef;
+    }
+    .card-header {
+        background-color: #17a2b8;
+        color: white;
+        font-size: 1.1rem;
+        padding: 15px;
+    }
+    .card {
+        border-radius: 0.5rem;
+    }
+</style>
+{% endblock %}

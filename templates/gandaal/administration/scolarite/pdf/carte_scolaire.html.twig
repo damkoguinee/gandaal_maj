@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Carte Scolaire{% endblock %}</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    {% endblock %}
+    <style>
+        @page {
+            margin: 10px 10px;
+        }
+        body {
+            margin: 0;
+            padding: 0px;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .header-title {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            color: #003366;
+        }
+
+        .sub-title {
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+            color: #006699;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-end {
+            text-align: right;
+        }
+
+        .card-header,
+        .card-body {
+            margin-bottom: 10px;
+        }
+
+        .card-header {
+            background-color: #003366; /* Couleur d'accent pour l'en-tête */
+            color: #ffffff;
+            padding: 5px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .info-row {
+            margin-bottom: 10px;
+        }
+
+        .info-row div {
+            margin-bottom: 5px;
+        }
+
+        .signature {
+            text-align: center;
+            font-style: italic;
+        }
+
+        .signature-box {
+            border: 1px dashed #003366;
+            padding: 10px;
+            margin-top: 0px;
+            border-radius: 10px;
+        }
+
+        .signature-directeur-box {
+            padding: 5px;
+        }
+
+        .info-table .label {
+            text-align: left;
+            font-weight: bold;
+            font-size : 12px;
+        }
+
+        .info-table .value {
+            text-align: left;
+            padding-left: 10px;
+            font-size : 12px;
+
+        }
+
+        .details-table .label {
+            font-weight: bold;
+            text-align: left;
+            padding-right: 1px;
+            font-size : 12px;
+
+        }
+
+        .details-table .value {
+            text-align: left;
+        }
+
+        /* Styles pour les cellules de la carte */
+        .card {
+            border: 8px solid #003366;
+            border-style: double;
+            border-radius: 20px;
+            width: 320px;
+            height: 150px;
+            background-color: #ffffff; /* Couleur de fond pour la carte */
+            box-shadow: 5px 5px 15px #aaaaaa;
+        }
+    </style>
+</head>
+
+<body>
+    {% for data in inscriptionsTraites %}
+        <table style="width: 100%; max-width: 640px; margin: auto; ">
+            <tbody>
+                <tr>
+                    <td class="card">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <td><img width="60" height="60" src="data:image/jpeg;base64,{{ logoPath }}" alt="Logo" style="border-radius: 30px; box-shadow: 3px 0px 10px #aaaaaa;"></td>
+                                    <td colspan="2">
+                                        <table style="width: 100%;">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="header-title">{{ etablissement.nom | upper }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="sub-title">{{ etablissement.devise | ucfirst }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-center" style="box-shadow: 3px 0px 10px #aaaaaa; border-bottom: 4px solid #003366; width: 100%; font-size: 14px; font-family: Georgia; font-weight: bold; margin-top: 1px; background-color: #e6f2ff;">
+                                        <div style="color: red;">Carte Scolaire</div>
+                                        <div>Année Scolaire {{ data.inscription.promotion }}</div>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3">
+                                        <table style="width: 100%;">
+                                            <tbody>
+                                                <tr>
+                                                    <td style='width:50%;'>
+                                                        <table class="details-table" style="width: 100%;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="label">N° mat</td>
+                                                                    <td class="value">{{ data.inscription.eleve.matricule|strtoupper }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="label">Niveau</td>
+                                                                    <td class="value">{{ data.inscription.classe.formation.cursus.nom | ucwords }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="label">Classe</td>
+                                                                    <td class="value">{{ data.inscription.classe.nom | strtoupper }}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                    <td><img width="85" height="85" src="data:image/jpeg;base64,{{ data.photoBase64 }}" alt="Photo" style="margin-top: 1px; border-radius: 30px; box-shadow: 3px 0px 10px #aaaaaa;"></td>
+                                                    <td>
+                                                        <img src="{{ data.qrCodeData }}" alt="QR Code" style="width: 50px; height: 50px;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" class="signature">
+                                                        {{responsable ? responsable.fonction.nom|ucwords : ''}}
+                                                        <div class="signature-directeur-box">
+                                                            {% if signaturePath != 'nok' %}
+                                                                <img width="50" height="20" src="data:image/jpeg;base64,{{ signaturePath }}" alt="" style="border-radius: 30px; box-shadow: 3px 0px 10px #aaaaaa;">
+                                                            {% endif %}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td class="card">
+                        <table class="info-table" style="width: 100%; border-collapse: collapse;">
+                            <tbody>
+                                <tr>
+                                    <td class="label">Nom</td>
+                                    <td class="value">{{ data.inscription.eleve.nom|strtoupper }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Prénom</td>
+                                    <td class="value">{{ data.inscription.eleve.prenom|ucwords }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Né(e) le</td>
+                                    <td class="value">{{ data.inscription.eleve.dateNaissance ? data.inscription.eleve.dateNaissance | date('d/m/Y') : '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">A</td>
+                                    <td class="value">{{ data.inscription.eleve.lieuNaissance | ucfirst }}</td>
+                                </tr>
+                                {% for filiation in data.inscription.eleve.filiations %}
+                                <tr>
+                                    <td class="label">{{ filiation.lienFamilial | ucfirst }}</td>
+                                    <td class="value">{{ filiation.nomComplet }}</td>
+                                </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td class="label">Contact</td>
+                                    <td class="value">{{ data.inscription.eleve.telephone }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="signature">
+                                        Signature de l'élève
+                                        <div class="signature-box"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="separation" style="margin: 10px 0;">***************************************************************************************************************</div>
+    {% endfor %}
+</body>
+
+</html>

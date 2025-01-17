@@ -1,0 +1,63 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js install
+
+PATH: 
+  C:\Users\damad\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\damad\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Python311\Scripts;C:\Python311;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\nodejs;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\wamp64\bin\php\php8.2.7;C:\ProgramData\ComposerSetup\bin;C:\symfony;C:\Program Files (x86)\Yarn\bin;C:\Program Files\PuTTY;C:\wamp64\bin\mysql\mysql5.7.26\bin;C:\Program Files\Tesseract-OCR;C:\wamp64\bin\php\php8.2.18;C:\Users\damad\AppData\Local\Microsoft\WindowsApps;C:\Users\damad\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\damad\AppData\Roaming\npm;C:\Users\damad\AppData\Roaming\Composer\vendor\bin;C:\Users\damad\AppData\Local\Yarn\bin;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.16.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: connect ENETUNREACH 2606:4700::6810:123:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16)
+
+npm manifest: 
+  {
+      "devDependencies": {
+          "@babel/core": "^7.17.0",
+          "@babel/preset-env": "^7.16.0",
+          "@symfony/webpack-encore": "^5.0.0",
+          "copy-webpack-plugin": "^12.0.2",
+          "core-js": "^3.38.0",
+          "regenerator-runtime": "^0.13.9",
+          "webpack": "^5.74.0",
+          "webpack-cli": "^5.1.0",
+          "webpack-notifier": "^1.15.0",
+          "webpack-pwa-manifest": "^4.3.0"
+      },
+      "license": "UNLICENSED",
+      "private": true,
+      "scripts": {
+          "dev-server": "encore dev-server",
+          "dev": "encore dev",
+          "watch": "encore dev --watch",
+          "build": "encore production --progress"
+      },
+      "dependencies": {
+          "@fortawesome/fontawesome-free": "^6.6.0",
+          "@fullcalendar/core": "^6.1.15",
+          "@fullcalendar/daygrid": "^6.1.15",
+          "@fullcalendar/interaction": "^6.1.15",
+          "@fullcalendar/timegrid": "^6.1.15",
+          "@popperjs/core": "^2.11.8",
+          "bootstrap": "^5.3.3",
+          "file-loader": "^6.2.0",
+          "jquery": "^3.7.1",
+          "node-sass": "^9.0.0",
+          "phin": "^3.7.1",
+          "sass-loader": "^16.0.2",
+          "stimulus": "^3.2.2"
+      }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

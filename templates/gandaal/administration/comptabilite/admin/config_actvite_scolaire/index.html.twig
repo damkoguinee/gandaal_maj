@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ConfigActiviteScolaire index{% endblock %}
+
+{% block body %}
+    <h1>ConfigActiviteScolaire index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for config_activite_scolaire in config_activite_scolaires %}
+            <tr>
+                <td>{{ config_activite_scolaire.id }}</td>
+                <td>{{ config_activite_scolaire.nom }}</td>
+                <td>
+                    <a href="{{ path('app_gandaal_administration_comptabilite_admin_config_actvite_scolaire_show', {'id': config_activite_scolaire.id}) }}">show</a>
+                    <a href="{{ path('app_gandaal_administration_comptabilite_admin_config_actvite_scolaire_edit', {'id': config_activite_scolaire.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_comptabilite_admin_config_actvite_scolaire_new') }}">Create new</a>
+{% endblock %}

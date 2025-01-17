@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_gandaal_administration_comptabilite_admin_frais_inscription_delete', {'id': frais_inscription.id, etablissement : etablissement.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ frais_inscription.id) }}">
+    <button class="btn btn-danger">Supprimer</button>
+</form>

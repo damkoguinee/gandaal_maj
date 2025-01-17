@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit PrimePersonnel{% endblock %}
+
+{% block body %}
+    <h1>Edit PrimePersonnel</h1>
+
+    {{ include('gandaal/administration/comptabilite/prime_personnel/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_gandaal_administration_comptabilite_prime_personnel_index') }}">back to list</a>
+
+    {{ include('gandaal/administration/comptabilite/prime_personnel/_delete_form.html.twig') }}
+{% endblock %}

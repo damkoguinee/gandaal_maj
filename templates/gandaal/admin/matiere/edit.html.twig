@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit matiere{% endblock %}
+
+{% block body %}
+    <div class="row my-2 mx-0 px-0">
+        {% include "gandaal/_common/_nav_admin.html.twig" %}
+        <div class="col-sm-12 col-md-10 mx-0 px-0">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <div class="container-fluid py-2 mx-0 px-0" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+                {{include("gandaal/_common/_entete.html.twig")}}
+
+                {{ include('gandaal/admin/matiere/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+                <div class="d-flex justify-content-between my-4">
+                    <a class="btn btn-light" href="{{ path('app_gandaal_admin_matiere_index') }}">Retour</a>
+
+                    {{ include('gandaal/admin/matiere/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

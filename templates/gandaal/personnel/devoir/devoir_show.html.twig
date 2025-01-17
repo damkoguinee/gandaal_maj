@@ -1,0 +1,135 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Détail du devoir{% endblock %}
+
+{% block ul_menu %}
+    {% include "gandaal/personnel/_common/_nav_espace_enseignant.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg'); background-size: cover; background-position: center;">
+        
+        
+        <div class="col-sm-12 col-md-10 m-auto mt-1">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <a class="btn btn-light" href="{{ path('app_gandaal_personnel_devoir', {'etablissement' : etablissement.id, 'classe': devoir_eleve.classe.id, 'personnelActif': personnel.id, 'trimestre' : 'annuel'}) }}">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </a>
+
+                    <form method="post">
+                        <input type="hidden" name="devoir_id" value="{{ devoir_eleve.id }}">
+
+                        <!-- Table avec classes Bootstrap -->
+                        <table class="table table-bordered table-striped table-hover align-middle">
+                            <thead class="sticky-top bg-light text-center">
+                                <tr>
+                                    <th colspan="5" class="bg-info text-white py-1">Fiche de notes de la {{devoir_eleve.classe.nom|strtoupper}} / {{devoir_eleve.matiere.nom|ucwords}} / 
+                                        Période: 
+                                        {% if (devoir_eleve.classe.formation.cursus.fonctionnement == 'trimestre')  %}
+
+                                            {{ devoir_eleve.periode == 1 ? (devoir_eleve.periode ~ "er Trimestre" ) : (devoir_eleve.periode == 'annuel' ? ('Annuel' ): (devoir_eleve.periode ~"ème Trimestre"))}}
+                                        {% else %}
+                                            {{ devoir_eleve.periode == 1 ? (devoir_eleve.periode ~ "er Semestre" ) : (devoir_eleve.periode == 'annuel' ? ('Annuel' ): (devoir_eleve.periode ~"ème Semestre"))}}
+                                        {% endif %}
+                                    
+                                    / Année-Scolaire: {{(devoir_eleve.promo - 1 )  ~ "-" ~ devoir_eleve.promo}}
+                                    {# <a target="_blank" class="btn btn-warning" href="{{path('app_gandaal_administration_scolarite_pdf_fiche_note', {'etablissement' : etablissement.id, 'devoir' : devoir_eleve.id})}}"><i class="fa fa-file-pdf"></i></a> #}
+                                    </th>
+                                    
+                                </tr>
+                                <tr>
+                                    <th class="bg-info text-white py-1">N°</th>
+                                    <th class="bg-info text-white py-1">Matricule</th>
+                                    <th class="bg-info text-white py-1">Prénom & Nom</th>
+                                    <th class="bg-info text-white py-1">Téléphone</th>
+                                    <th class="bg-info text-white py-1">Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, inscription in inscriptions %}
+                                    <tr>
+                                        <td class="text-center py-1">{{ key + 1 }}</td>
+                                        <td class="text-center py-1">{{ inscription.eleve.matricule|strtoupper }}</td>
+                                        <td class="py-1">{{ inscription.eleve.prenom|ucwords }} {{ inscription.eleve.nom|strtoupper }}</td>
+                                        <td class="text-center py-1">{{ inscription.eleve.telephone }}</td>
+                                        <td class="py-1">
+                                            <div class="d-flex justify-content-between">
+                                                <input class="form-control note-input text-center py-1" type="number" name="notes[{{ inscription.id }}]" min="0" max="20" step="0.01" placeholder="{{ notesParInscription[inscription.id].valeur ?? '' }}">
+                                                <input type="hidden" name="inscription_ids[]" value="{{ inscription.id }}">
+                                                {% if notesParInscription[inscription.id] is defined %}
+                                                    <a class='btn btn-danger mx-1' href="{{path('app_gandaal_personnel_devoir_show', {'devoirEleve' : notesParInscription[inscription.id].devoir.id, 'personnelActif': personnel.id, 'etablissement' : etablissement.id,  'note' : notesParInscription[inscription.id].id})}}"><i class="fs-10 fa fa-trash"></i></a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center py-1">Aucun élève enregistré dans cette classe</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                        <div class="text-center my-3">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Enregistrer les notes
+                            </button>
+                        </div>
+                    </form>
+
+                    <table class="table table-bordered mt-4">
+                        <tr class="bg-warning text-dark">
+                            <th>Détails</th>
+                            <td>{{ devoir_eleve.nom|ucwords }} / {{ devoir_eleve.typeDevoir|ucwords }} / Coef: {{ devoir_eleve.coef }}</td>
+                        </tr>
+                        <tr class="bg-warning text-dark">
+                            <th>Trimestre/Semestre</th>
+                            <td>{{ devoir_eleve.periode }} / Date de Devoir: {{ devoir_eleve.dateDevoir ? devoir_eleve.dateDevoir|date('d/m/Y') : '' }}</td>
+                        </tr>
+                        <tr class="bg-warning text-dark">
+                            <th>Saisie Par</th>
+                            <td>{{ devoir_eleve.saisiePar.nomComplet }} le {{ devoir_eleve.dateSaisie ? devoir_eleve.dateSaisie|date('d/m/Y H:i:s') : '' }} / Année-Scolaire: {{ (devoir_eleve.promo - 1) ~ '-' ~ devoir_eleve.promo }}</td>
+                        </tr>
+                    </table>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a class="btn btn-light" href="{{ path('app_gandaal_personnel_devoir', {etablissement : etablissement.id, classe : devoir_eleve.classe.id, personnelActif : personnel.id, trimestre : 'annuel'}) }}">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <a class="btn btn-warning" href="{{ path('app_gandaal_personnel_devoir_edit', {'id': devoir_eleve.id, personnelActif : personnel.id, etablissement : etablissement.id }) }}">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        {{ include('gandaal/personnel/devoir/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const noteInputs = document.querySelectorAll('.note-input');
+
+            noteInputs.forEach((input, index) => {
+                input.addEventListener('keydown', function(event) {
+                    // Si "Entrée" est pressée
+                    if (event.key === "Enter") {
+                        event.preventDefault(); // Empêche la soumission du formulaire
+                        const nextInput = noteInputs[index + 1]; // Sélectionne le champ suivant
+                        if (nextInput) {
+                            nextInput.focus(); // Donne le focus au champ suivant
+                        }
+                    }
+                });
+            });
+
+            // Mettre le focus sur le premier champ dès le chargement de la page
+            if (noteInputs.length > 0) {
+                noteInputs[0].focus();
+            }
+        });
+    </script>
+{% endblock %}

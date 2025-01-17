@@ -1,0 +1,288 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail de l'élève{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/eleve/_common/_nav_espace_eleve.html.twig" %}
+
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  col-sm-12 col-md-10 m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }}
+                <!-- Informations de l'élève -->
+        <div class="card shadow-sm mb-4">
+            {% if inscription.eleve.photo %}
+                <div class="card-header bg-info text-white text-center">
+                    <img src="{{ asset('dossier/eleves/' ~ inscription.eleve.photo) }}" alt="Photo de {{ inscription.eleve.prenom }} {{ inscription.eleve.nom }}" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title bg-info text-white text-center">Mes informations 
+                    
+                </h5>
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <tbody>
+                        <tr>
+                            <th>Matricule</th>
+                            <td>{{ inscription.eleve.matricule|strtoupper }}</td>
+                        </tr>
+                        <tr>
+                            <th>Prénom & Nom</th>
+                            <td>{{ inscription.eleve.nomComplet }}</td>
+                        </tr>
+                        <tr>
+                            <th>Sexe</th>
+                            <td>{{ inscription.eleve.sexe }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date de Naissance</th>
+                            <td>{{ inscription.eleve.dateNaissance ? inscription.eleve.dateNaissance|date('d/m/Y') : '' }} - {{ inscription.eleve.age }} an(s)</td>
+                        </tr>
+                        <tr>
+                            <th>Lieu de Naissance</th>
+                            <td>{{ inscription.eleve.lieuNaissance|ucfirst }}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-phone-alt"></i> Téléphone</th>
+                            <td>{{ inscription.eleve.telephone }}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-envelope"></i> Email</th>
+                            <td>{{ inscription.eleve.email }}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-map-marker-alt"></i> Adresse</th>
+                            <td>{{ inscription.eleve.adresse|ucfirst }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pays/Ville</th>
+                            <td>{{ inscription.eleve.ville|ucfirst }} {{ inscription.eleve.pays|ucfirst }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row px-2">
+
+            <!-- Informations d'inscription -->
+            <div class="card shadow-sm mb-4 col-sm-12 col-md-6">
+                <div class="card-body">
+                    <h5 class="card-title bg-primary text-white text-center">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <span class="mx-2">Informations {{inscription.type}} </span>                  
+                            
+                        </div>
+                    </h5>
+                    <table class="table table-bordered table-striped table-hover align-middle">
+                        <tbody>
+                            <tr>
+                                <th>Statut</th>
+                                <td>{{ inscription.statut|ucwords }}</td>
+                            </tr>
+                            <tr>
+                                <th>Promotion</th>
+                                <td>{{ inscription.promotion }}</td>
+                            </tr>
+                            <tr>
+                                <th>Etat Scolarité</th>
+                                <td>{{ inscription.etatScol|ucwords }}</td>
+                            </tr>
+                            <tr>
+                                <th>Niveau</th>
+                                <td>{{ inscription.classe.formation.nom|ucwords|exposantClasse|raw }}</td>
+                            </tr>
+                            <tr>
+                                <th>Classe</th>
+                                <td>{{ inscription.classe.nom|strtoupper }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date d'inscription</th>
+                                <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Rattachement</th>
+                                <td>{{ inscription.eleve.etablissement.nom|ucwords }}</td>
+                            </tr>
+                            {% if cumulPaiements is not empty %}
+                            
+                                {% for  frais in cumulPaiements %}
+                                    <tr>
+                                        <th>{{frais.paiement.typePaie|ucfirst}}</th>
+                                        <td>{{ frais.solde|number_format(0,',',' ') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Informations activite -->
+            <div class="card shadow-sm mb-4 col-sm-12 col-md-6">
+                <div class="card-body">
+                    <h5 class="card-title bg-secondary text-white text-center py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="mx-2">Activités Extra-Scolaire</span>                  
+                            
+                        </div>
+                    </h5>
+                    
+                    {% if activites is not empty %}
+                        <ul class="list-group list-group-flush">
+                            {% for activite in activites %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-0">{{ activite.tarifActivite.activite.nom|ucwords }}</h6>
+                                            <small class="text-muted">{{ activite.tarifActivite.type|ucwords }}</small>
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">
+                                            {{ activite.tarifActivite.montant|number_format(0,',',' ') }}
+                                        </span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-center text-muted mt-3">Aucune activité enregistrée pour le moment.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Informations de filiation -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title bg-success text-white text-center">Informations de filiation</h5>
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <tbody>
+                        <tr>
+                            <th>Filiation</th>
+                            <td>
+                                <div class="d-flex justify-content-around">
+                                    {% for filiation in inscription.eleve.filiations %}
+                                        <div class="mb-3">
+                                            <p><strong>{{ filiation.nomComplet }}</strong></p>
+                                            <p><i class="fas fa-phone"></i> {{ filiation.telephone }}</p>
+                                            <p><i class="fas fa-envelope"></i> {{ filiation.email }}</p>
+                                            <p><i class="fas fa-briefcase"></i> {{ filiation.profession }}</p>
+                                            <p><i class="fas fa-home"></i> {{ filiation.adresse }}</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tuteur</th>
+                            <td>
+                                {% for tuteur in inscription.eleve.tuteurs %}
+                                    <div class="mb-3">
+                                        <p><strong>{{ tuteur.nomComplet }}</strong></p>
+                                        <p><i class="fas fa-phone"></i> {{ tuteur.telephone }}</p>
+                                        <p><i class="fas fa-envelope"></i> {{ tuteur.email }}</p>
+                                        <p><i class="fas fa-briefcase"></i> {{ tuteur.profession }}</p>
+                                        <p><i class="fas fa-home"></i> {{ tuteur.adresse }}</p>
+                                    </div>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Informations de filiation -->
+        {% if inscription.eleve.lienFamilials is not empty %}
+        
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title bg-info text-white text-center">Frères et Soeurs</h5>
+                    <table class="table table-bordered table-striped table-hover align-middle">
+                        <tbody>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="d-flex justify-content-around">
+                                        {% for liens in inscription.eleve.lienFamilials %}
+                                            {% for eleve in liens.eleve %} 
+                                                {% if eleve.id != inscription.eleve.id %}
+                                                    {% for lienInscription in eleve.inscriptions %}
+                                                        {% if lienInscription.promo == promo %}
+                                                            <div class="mb-3">
+                                                                <p><strong>{{ eleve.nomComplet }}</strong></p>
+                                                                <p><i class="fas fa-phone"></i> {{ eleve.telephone }}</p>
+                                                                <p>Classe : <i class="fas fa-envelope"></i> {{ lienInscription.classe.nom|strtoupper }}</p>
+                                                            </div>
+
+                                                            {# {% for lien2 in lienInscription.eleve.lienFamilials %}
+                                                                {% for eleve2 in lien2.eleve %}
+                                                                    {% if eleve2.id != inscription.eleve.id %}
+                                                                        {% for lienInscription2 in eleve.inscriptions %}
+                                                                            {% if lienInscription2.promo == promo %}
+                                                                                <div class="mb-3">
+                                                                                    <p><strong>{{ lienInscription2.eleve.nomComplet }}</strong></p>
+                                                                                    <p><i class="fas fa-phone"></i> {{ lienInscription2.eleve.telephone }}</p>
+                                                                                    <p>Classe : <i class="fas fa-envelope"></i> {{ lienInscription2.classe.nom|strtoupper }}</p>
+                                                                                </div>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            {% endfor %} #}
+                                                        {% endif %}
+                                                        
+                                                        
+                                                    {% endfor %}
+                                                
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Documents -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title bg-warning text-white text-center">
+                    Documents
+                    <a href="{{path("app_gandaal_administration_scolarite_document_eleve_new", {eleve : inscription.eleve.id, etablissement : etablissement.id})}}"><i class="fa fa-add fs-3"></i></a>
+                </h5>
+                {% if documents is not empty %}
+                    <table class="table table-bordered table-striped table-hover align-middle">
+                        <tr>
+                            {% for document in documents %}
+                                <td>
+                                    <div class="d-flex justify-content-center">
+                                        <a href="{{ asset('dossier/eleves/' ~ document.nom) }}" target="_blank">
+                                            {{ document.type|ucfirst }} <i class="fa fa-file-pdf fs-3"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('app_gandaal_administration_scolarite_document_eleve_delete', {'id': document.id, 'etablissement': etablissement.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ document.id) }}">
+                                            <button class="btn"><i class="fa fa-trash text-danger fs-5"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                {% else %}
+                    <p class="text-center">Aucun document disponible.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body m-auto">                
+                <a target="_blank" class="btn btn-primary" href="{{path("app_gandaal_administration_scolarite_pdf_fiche_inscription", {inscription : inscription.id})}}">Fiche {{inscription.type}} <i class="fa fa-file-pdf-o text-danger" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        
+    </div>
+{% endblock %}

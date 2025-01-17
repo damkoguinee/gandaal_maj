@@ -1,0 +1,20 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}ajout dépense{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}  
+            <h3>Ajouter une dépense</h3>
+
+            {{ include('gandaal/administration/comptabilite/depense/_form.html.twig') }}
+
+            <a class="btn btn-light my-4" href="{{ path('app_gandaal_administration_comptabilite_depense_index', {etablissement : etablissement.id}) }}">Retour</a>
+        </div>
+    </div>
+{% endblock %}

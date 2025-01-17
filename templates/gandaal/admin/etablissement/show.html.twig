@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}détail site{% endblock %}
+
+{% block body %}
+    <div class="row my-2 mx-0 px-0">
+        {% include "gandaal/_common/_nav_admin.html.twig" %}
+        <div class="col-sm-12 col-md-10 mx-0 px-0">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <div class="container-fluid py-2 mx-0 px-0" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+                {{include("gandaal/_common/_entete.html.twig")}}
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <tbody>
+                        <tr>
+                            <th>Nom</th>
+                            <td>{{ etablissement.nom }}</td>
+                        </tr>
+                        <tr>
+                            <th>Téléphone</th>
+                            <td>{{ etablissement.telephone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ etablissement.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Adresse</th>
+                            <td>{{ etablissement.adresse }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pays</th>
+                            <td>{{ etablissement.pays }}</td>
+                        </tr>
+                        <tr>
+                            <th>Région</th>
+                            <td>{{ etablissement.region }}</td>
+                        </tr>
+                        <tr>
+                            <th>Secteur</th>
+                            <td>{{ etablissement.secteur }}</td>
+                        </tr>
+                        <tr>
+                            <th>Ire</th>
+                            <td>{{ etablissement.ire }}</td>
+                        </tr>
+                        <tr>
+                            <th>Dpe</th>
+                            <td>{{ etablissement.dpe }}</td>
+                        </tr>
+                        <tr>
+                            <th>Initial</th>
+                            <td>{{ etablissement.initial }}</td>
+                        </tr>
+                        <tr>
+                            <th>Devise</th>
+                            <td>{{ etablissement.devise }}</td>
+                        </tr>
+                        <tr>
+                            <th>Agrement</th>
+                            <td>{{ etablissement.agrement }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-between my-4">
+                    <a class="btn btn-light" href="{{ path('app_gandaal_admin_etablissement_index') }}">Retour</a>
+
+                    <a class="btn btn-warning" href="{{ path('app_gandaal_admin_etablissement_edit', {'id': etablissement.id}) }}">Modifier</a>
+
+                    {{ include('gandaal/admin/etablissement/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

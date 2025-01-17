@@ -1,0 +1,77 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}nouveau devoir{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg');">
+        {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            {# {{ include('gandaal/administration/pedagogie/devoir_eleve/_form.html.twig') }} #}
+
+            <form>
+                <div class="mb-1">
+                    <label for="selectType" class="form-label">Type de devoir*</label>
+
+                    <select id="selectType" name="type"  required id="type" class="form-select" >   
+                        <option value=""></option>
+                        <option value="note de cours">Note de cours</option>
+                        <option value="composition">Note de composition</option> 
+                    </select>
+                </div>
+
+                <div class="mb-1">
+                    <label for="selectTrimestre" class="form-label">Trimestre*</label>
+
+                    <select id="selectTrimestre" name="trimestre"  required id="type" class="form-select" >
+                        <option value=""></option>
+                        {% if classe ? (classe.formation.cursus.fonctionnement == 'trimestre') : '' %}
+                    
+                            <option value="1">1er Trimestre</option>
+                            <option value="2">2ème Trimestre</option>
+                            <option value="3">3ème Trimestre</option>
+                        {% else %}
+                            <option value="1">1er Semestre</option>
+                            <option value="2">2ème Semestre</option>                                              
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="mb-1">
+                    <label for="selectClasse" class="form-label">Matières*</label>
+                    <select name="matieres[]" multiple class="form-select" required id="selectClasse" > 
+                        <option value=""></option>
+                        {% for matiere in matieres %}
+                            <option value="{{ matiere.id }}">{{ matiere.nom|ucwords }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-1">
+                    <label for="selectPeriode" class="form-label">Périodes*</label>
+
+                    <select id="selectPeriode" name="periodes[]" multiple id="periode" required class="form-select mx-1" >
+                        <option value=""></option>
+                        <option value="01" >Janvier</option>
+                        <option value="02">Février</option>
+                        <option value="03">Mars</option>
+                        <option value="04">Avril</option>
+                        <option value="05">Mai</option>
+                        <option value="06">Juin</option>
+                        <option value="07">Juillet</option>
+                        <option value="08">Août</option>
+                        <option value="09">Septembre</option>
+                        <option value="10">Octobre</option>
+                        <option value="11">Novembre</option>
+                        <option value="12">Décembre</option>
+                    </select>
+                </div>
+                
+                <button type="submit" name="ajout_devoir" value="ajout_devoir" class="btn btn-primary">Ajouter</button>
+
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

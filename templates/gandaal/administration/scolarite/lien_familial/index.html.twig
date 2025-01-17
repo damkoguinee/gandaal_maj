@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}LienFamilial index{% endblock %}
+
+{% block body %}
+    <h1>LienFamilial index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>LienParent</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for lien_familial in lien_familials %}
+            <tr>
+                <td>{{ lien_familial.id }}</td>
+                <td>{{ lien_familial.lienParent }}</td>
+                <td>
+                    <a href="{{ path('app_gandaal_administration_scolarite_lien_familial_show', {'id': lien_familial.id}) }}">show</a>
+                    <a href="{{ path('app_gandaal_administration_scolarite_lien_familial_edit', {'id': lien_familial.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_lien_familial_new') }}">Create new</a>
+{% endblock %}

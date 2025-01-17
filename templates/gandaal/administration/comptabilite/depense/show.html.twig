@@ -1,0 +1,101 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail dépense{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  col-sm-12 col-md-10 m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }} 
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <tbody>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ depense.description }}</td>
+                    </tr>
+                    <tr>
+                        <th>Catégorie</th>
+                        <td>{{ depense.categorieDepense.nom | ucwords }}</td>
+                    </tr>
+                    <tr>
+                        <th>Montant</th>
+                        <td>{{ depense.devise.nom == 'gnf' ? (- depense.montant)|number_format(0,',',' ') : ( - depense.montant)|number_format(2,',',' ') }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Montant</th>
+                        <td>{{ depense.devise.nom == 'gnf' ? depense.tva|number_format(0,',',' ') : depense.tva|number_format(2,',',' ') }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Devise</th>
+                        <td>{{ depense.devise.nom|strtoupper }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mode de Paiement</th>
+                        <td>{{ depense.modePaie.nom|ucfirst }}</td>
+                    </tr>
+                    <tr>
+                        <th>Compte de retraît</th>
+                        <td>{{depense.caisse.nom|ucfirst }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date dépense</th>
+                        <td>{{ depense.dateOperation ? depense.dateOperation|date('d/m/Y') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date de Saisie</th>
+                        <td>{{ depense.dateSaisie ? depense.dateSaisie|date('d/m/Y H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Traité par</th>
+                        <td>{{ depense.saisiePar.prenom|ucwords ~ " " ~ depense.saisiePar.nom |strtoupper }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" class="text-center bg-warning">Historique des modifications</th>
+                    </tr>
+                    <tr>
+                        <th colspan="2">
+                            <table class="table table-bordered table-striped table-hover align-middle">
+
+                                <thead class="sticky-top bg-light text-center">
+                                    <tr>
+                                        <th>Date init</th>
+                                        {# <th>Client init</th> #}
+                                        <th>Montant init</th>
+                                        <th>Devise init</th>
+                                        <th>Traite par</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for dep_modif in depense_modif %}
+                                        <tr>
+                                            <td class="text-center">{{ dep_modif.dateModification ? dep_modif.dateModification|date('d/m/Y') : '' }}</td>
+                                            {# <td>{{ dep_modif.client.prenom|ucwords ~ " " ~ dep_modif.client.nom |strtoupper }}</td> #}
+                                            <td class="text-end">{{ dep_modif.devise.nom == 'gnf' ? dep_modif.montant|number_format(0,',',' ') : dep_modif.montant|number_format(2,',',' ') }}</td>
+                                            <td class="text-center">{{ dep_modif.devise.nom|strtoupper }}</td>
+                                            <td>{{ dep_modif.saisiePar.prenom|ucwords ~ " " ~ dep_modif.saisiePar.nom |strtoupper }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </th>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between my-2">
+
+                <a class="btn btn-light" href="{{ path('app_gandaal_administration_comptabilite_depense_index', {etablissement : etablissement.id}) }}">Retour</a>
+                {% if is_granted("ROLE_MODIFICATION") %}
+                    <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_depense_edit', {id : depense.id, etablissement : etablissement.id}) }}">Modifier</a>
+                {% endif %}
+                {% if is_granted("ROLE_SUPPRESSION") %}
+                    {{ include('gandaal/administration/comptabilite/depense/_delete_form.html.twig') }}
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

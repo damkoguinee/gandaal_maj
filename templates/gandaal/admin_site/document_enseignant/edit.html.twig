@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit DocumentEnseignant{% endblock %}
+
+{% block body %}
+    <h1>Edit DocumentEnseignant</h1>
+
+    {{ include('gandaal/admin_site/document_enseignant/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_gandaal_admin_site_document_enseignant_index') }}">back to list</a>
+
+    {{ include('gandaal/admin_site/document_enseignant/_delete_form.html.twig') }}
+{% endblock %}

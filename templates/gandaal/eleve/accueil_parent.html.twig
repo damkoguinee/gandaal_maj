@@ -1,0 +1,63 @@
+{% extends 'base_gandaal.html.twig' %}
+
+{% block title %}Accueil des parents{% endblock %}
+
+{% block ul_menu %}
+    {# {% include "gandaal/eleve/_common/_nav_espace_eleve.html.twig" %} #}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config ~ 'fond.jpg') }}'); ">
+        <div class="col-sm-12 col-md-6 m-auto mt-1 text-white p-4">
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead class='bg-info text-white text-center'>
+                    <tr>
+                        <th colspan="3" class="text-center">Liste des enfants inscrits</th>
+                    </tr>
+                    <tr>
+                        <th>N°</th>
+                        <th>Prénom & Nom</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for eleve in app.user.eleve %}
+
+                        <tr>
+                            <td class='text-center'>{{ loop.index }}</td> 
+                            <td>{{ eleve.prenom|ucwords }} {{ eleve.nom|strtoupper }}</td>
+                            <td class='text-center'>                                
+                                <a href="{{path('app_gandaal_eleve_parent_inscription', {eleve : eleve.id})}}" class="btn btn-success"><i class="fa fa-eye mx-1"></i>Consulter</a>                                
+                            </td>
+                        </tr>
+
+                        {% set freresSoeurs = [] %}
+                        {% for lien in eleve.lienFamilials %}
+                            
+                                {% for frereSoeur in lien.eleve %}
+                                    {% if frereSoeur.id != eleve.id %}
+                                        {% set freresSoeurs = freresSoeurs|merge([frereSoeur]) %}
+                                    {% endif %}
+                                {% endfor %}
+                            
+                        {% endfor %}
+                        {% if freresSoeurs is not empty %}
+                            
+                            {% for frereSoeur in freresSoeurs %}
+                                <tr>
+                                    <td class='text-center'>{{ (loop.index + 1) }}</td> 
+                                    <td>{{ frereSoeur.prenom|ucwords }} {{ frereSoeur.nom|strtoupper }}</td>
+                                    <td class='text-center'>
+                                        
+                                        <a href="{{path('app_gandaal_eleve_parent_inscription', {eleve : frereSoeur.id})}}" class="btn btn-success"><i class="fa fa-eye mx-1"></i>Consulter</a> 
+                                        
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

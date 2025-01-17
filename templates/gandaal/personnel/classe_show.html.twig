@@ -1,0 +1,152 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}statistique classe{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/personnel/_common/_nav_espace_enseignant.html.twig" %}
+
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        
+
+        <div class="col-sm-12 col-md-10 m-auto mt-1" id="printSection">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <table class="table table-bordered table-striped table-hover align-middle m-0 p-0">
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="7" class="text-center bg-info text-white">
+                           Elèves inscrits en {{classe.nom}} pour l'année scolaire {{(promo - 1) ~ "-" ~ promo}}
+                            <button target="_blank" class="btn btn-warning no-print my-1" onclick="printDiv('printSection')"><i class="fa fa-file-pdf"></i>Imprimer</button></th>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Matricule</th>
+                        <th class="bg-info text-white">Prénom & Nom</th>
+                        <th class="bg-info text-white">Né(e) le</th>
+                        <th class="bg-info text-white">Téléphone</th>
+                        <th colspan="2" class="bg-info text-white">Filiation</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for type, inscriptions in inscriptionsGroupByType %}
+                        <tr>
+                            <td colspan="7" class="text-center bg-info text-white">{{ type == 'inscription' ? 'Nouveaux' : 'Anciens' }}</td>
+                        </tr>
+                        {% for inscription in inscriptions %}
+                            {% if inscription.statut == 'inactif' %}
+                                {% set color = 'red' %}
+                            {% else %}
+                                {% set color = '' %}
+                            {% endif %}
+                            <tr>
+                                <td style="color : {{color}}" class="text-center">{{ loop.index }}</td>
+                                <td style="color : {{color}}" class="text-center">{{ inscription.eleve.matricule|strtoupper }}</td>
+                                <td style="color : {{color}}">{{ inscription.eleve.prenom|ucwords ~ " " ~ inscription.eleve.nom|strtoupper }}</td>
+                                <td style="color : {{color}}" class="text-center">{{ inscription.eleve.dateNaissance|date("d/m/Y") }}</td>
+                                <td style="color : {{color}}" class="text-center">{{ inscription.eleve.telephone }}</td>
+                                <td style="color : {{color}}" >
+                                    {% for filiation in inscription.eleve.filiations %}
+                                        {% if filiation.lienFamilial == 'père' %}
+                                            {{ filiation.prenom|ucwords }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td style="color : {{color}}" >
+                                    {% for filiation in inscription.eleve.filiations %}
+                                        {% if filiation.lienFamilial == 'mère' %}
+                                            {{ filiation.prenom|ucwords ~ " " ~ filiation.nom|strtoupper }}
+                                            
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+                <tfoot class="bg-info text-white" style="font-size: 12px;">
+                    <tr class="bg-info text-white">
+                        <th colspan="2">Statistiques</th>
+                        <th colspan="5">
+                            <table class="table table-borderless m-0">
+                                <tbody>
+                                    <tr>
+                                        {% for niveau, stat in statistiques %}
+                                            <td class="text-start text-white p-2">
+                                                <strong>Eff. Filles:</strong> {{ stat.effectifFilles }}<br>
+                                                <span class="text-danger"><strong>% Filles:</strong> {{ stat.pourcentageFilles|number_format(2) }}%</span>
+                                            </td>
+                                            <td class="text-start text-white p-2">
+                                                <strong>Eff. Garçons:</strong> {{ stat.effectifGarcons }}<br>
+                                                <span class="text-danger"><strong>% Garçons:</strong> {{ stat.pourcentageGarcons|number_format(2) }}%</span>
+                                            </td>
+                                            <td class="text-start text-white p-2">
+                                                <strong>Eff. Anciens:</strong> {{ stat.anciens }}<br>
+                                                <strong>Eff. Nouveaux:</strong> {{ stat.nouveaux }}
+                                            </td>
+                                            <td class="text-start text-white p-2">
+                                                <strong>Total Élèves:</strong> {{ stat.totalEleves }}<br>
+                                                <strong>Rédoublants:</strong> {{ stat.redoublants }}
+                                            </td>
+                                            <td class="text-start text-white p-2">
+                                                <strong>Abandon(s):</strong> {{ stat.abandons }}<br>
+                                                <span class="text-info"><strong>% Nouveaux:</strong> {{ stat.pourcentageNouveaux|number_format(2) }}%</span>
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </th>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    function printDiv(divId) {
+        var contentToPrint = document.getElementById(divId).innerHTML;
+        var originalContent = document.body.innerHTML;
+
+        document.body.innerHTML = contentToPrint;
+        window.print();
+        document.body.innerHTML = originalContent;
+    }
+</script>
+
+<style>
+    @media print {
+        .no-print {
+            display: none;
+        }
+        .print-black-text td, .print-black-text th {
+            color: black !important;
+            background-color: white !important;
+            font-size: 14px !important;
+            border: 2px solid grey !important;
+        }
+    }
+
+    /* Ajout de styles personnalisés pour un aspect plus moderne */
+    .table {
+        font-size: 1rem;
+    }
+    thead th, tfoot th {
+        background-color: #495057 !important;
+        color: #f8f9fa !important;
+    }
+    td {
+        font-size: 0.95rem;
+        padding: 10px;
+    }
+    th {
+        padding: 15px;
+        font-size: 1.1rem;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,207 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}mes paiements{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/eleve/_common/_nav_espace_eleve.html.twig" %}
+    
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        <div class="row">
+
+            <div class="col-sm-12 col-md-8 m-auto mt-1">
+                <div class="card shadow-sm mb-4">
+                    {% if inscription is not empty %}
+                    
+                        {% if inscription.eleve.photo %}
+                            <div class="card-header bg-info text-white text-center">
+                                <img src="{{ asset('dossier/eleves/' ~ inscription.eleve.photo) }}" alt="Photo de {{ inscription.eleve.prenom }} {{ inscription.eleve.nom }}" class="img-thumbnail" style="max-width: 90px; max-height: 90px;">
+                            </div>
+                        {% endif %}
+                        <div class="card-body mb-0 pb-0">
+                            <table class="table table-bordered table-striped table-hover align-middle">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="2">
+                                            <table class="table table-bordered table-striped table-hover align-middle m-0 p-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Matricule</th>
+                                                        <td>{{ inscription.eleve.matricule|strtoupper }}</td>
+                                                        <th>Classe</th>
+                                                        <td>{{ inscription.classe.nom|strtoupper }}</td>
+                                                        <th>Statut</th>
+                                                        <td>{{ inscription.statut|ucfirst }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Prénom & Nom</th>
+                                        <td>{{ inscription.eleve.nomComplet }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date de Naissance</th>
+                                        <td>{{ inscription.eleve.dateNaissance ? inscription.eleve.dateNaissance|date('d/m/Y') : '' }} - {{ inscription.eleve.age }} an(s)</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <th><i class="fas fa-phone-alt"></i> Téléphone</th>
+                                        <td>{{ inscription.eleve.telephone }}</td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-body my-0 py-0">
+                            <h5 class="card-title bg-warning text-white text-center">Informations Paiements</h5>
+                            <table class="table table-bordered table-striped table-hover align-middle">
+                                <tbody>
+                                    {% if inscription.remiseInscription is not empty %}                                
+                                        <tr>
+                                            <th>Remise Inscription</th>
+                                            <td>{{ inscription.remiseInscription }}%</td>
+                                        </tr>
+                                    {% endif %}
+
+                                    {% if inscription.remiseScolarite is not empty %}                                
+                                        <tr>
+                                            <th>Remise Scolarité</th>
+                                            <td>{{ inscription.remiseScolarite }}%</td>
+                                        </tr>
+                                    {% endif %}
+                                    <tr>
+                                        <th>Reste à payer Inscription</th>
+                                        <td>{{ reste_inscription|number_format(0,',',' ')}}</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <th>Reste à payer frais de scolarité</th>
+                                        <td>
+                                            <table class="table table-bordered table-striped table-hover align-middle">
+                                                <tbody class="sticky">
+                                                    {% for key, reste in reste_scolarite  %}
+                                                        <tr>
+                                                            <td>{{key}}</td>
+                                                            <td class="text-end">{{reste|number_format(0,',',' ')}}</td>
+                                                        </tr>
+                                                        
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                        <thead class="sticky-top bg-light text-center">
+                            <form>
+                                <tr>
+                                    <th colspan="4" class="text-center bg-info text-white">
+                                        Historique des paiements
+                                        {% if app.session.get('configLogiciel') is defined and app.session.get('configLogiciel').documentEleve != 'inactif' %}
+                                            <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_paiement_historique", {inscription : inscription.id})}}" ><i class="fa fa-file-pdf fs-5 text-success"></i></a>
+                                        {% endif %}
+                                    </th>
+                                </tr>
+                            </form>
+                            <tr>
+                                <th class="bg-info text-white">N°</th>
+                                <th class="bg-info text-white">Type</th>
+                                <th class="bg-info text-white">Montant</th>
+                                <th class="bg-info text-white">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set cumulHistorique = 0 %}
+                            {% for key, historique in historiques %}
+                                {% set cumulHistorique =  cumulHistorique + historique.montant %}
+                                <tr>
+                                    <td class="text-center">
+                                        {{ key + 1 }}
+                                        {% if app.session.get('configLogiciel') is defined and app.session.get('configLogiciel').documentEleve != 'inactif' %}
+                                            <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_paiement_recu", {id : historique.id})}}" ><i class="fa fa-file-pdf fs-5 text-success"></i></a>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-start">{{ historique.typePaie|ucfirst }}</td>
+                                    <td class="text-end">{{ historique.montant|number_format(0,',',' ') }}</td>
+                                    <td class="text-center">{{ historique.dateOperation|date("d/m/Y") }}</td>
+                                 
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">Aucun paiement enregistré</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" class="bg-info text-white">Cumul</th>
+                                <th Class="text-end bg-info text-white">{{cumulHistorique|number_format(0,',',' ')}}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                        <thead class="sticky-top bg-light text-center">
+                            <form>
+                                <tr>
+                                    <th colspan="5" class="text-center bg-info text-white">
+                                        Cumul des paiements
+                                        {% if app.session.get('configLogiciel') is defined and app.session.get('configLogiciel').documentEleve != 'inactif' %}
+                                            <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_paiement_cumul", {inscription : inscription.id})}}" ><i class="fa fa-file-pdf fs-5 text-success"></i></a>
+                                        {% endif %}
+                                    </th>
+                                </tr>
+                            </form>
+                            <tr>
+                                <th class="bg-info text-white">N°</th>
+                                <th class="bg-info text-white">Type</th>
+                                <th class="bg-info text-white">Montant</th>
+                                <th class="bg-info text-white">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set cumulHistorique = 0 %}
+                            {% for key, cumulPaiement in cumulPaiements %}
+                                {% set cumulHistorique =  cumulHistorique + cumulPaiement.solde %}
+                                <tr>
+                                    <td class="text-center">{{ key + 1 }}</td>
+                                    <td class="text-start">{{ cumulPaiement.paiement.typePaie|ucfirst }}</td>
+                                    <td class="text-end">{{ cumulPaiement.solde|number_format(0,',',' ') }}</td>
+                                    <td class="text-center">{{ cumulPaiement.paiement.dateOperation|date("d/m/Y") }}</td>
+                                    
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">Aucun paiement enregistré</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" class="bg-info text-white">Cumul</th>
+                                <th Class="text-end bg-info text-white">{{cumulHistorique|number_format(0,',',' ')}}</th>
+                                <th Class="text-end bg-danger text-white">Reste: {{(scolarite_annuel - cumulHistorique)|number_format(0,',',' ')}}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+                
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

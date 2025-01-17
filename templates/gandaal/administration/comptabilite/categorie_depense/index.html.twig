@@ -1,0 +1,43 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste des catégories depenses{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_admin.html.twig" %}
+
+        <div class="col-sm-12 col-md-10 m-auto mt-0">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th>N°</th>
+                        <th>Nom</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for categorie_depense in categorie_depenses %}
+                        <tr>
+                            <td class='text-center'>{{ loop.index }}</td>
+                            <td>{{ categorie_depense.nom|capitalize }}</td>
+                            <td>
+                                <a class='btn btn-warning' href="{{ path('app_gandaal_administration_comptabilite_categorie_depense_edit', {'id': categorie_depense.id, 'etablissement' : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">no records found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a class="btn btn-primary"  href="{{ path('app_gandaal_administration_comptabilite_categorie_depense_new', {etablissement : etablissement.id }) }}">Ajouter une categorie</a>
+        </div>
+    </div>
+
+{% endblock %}

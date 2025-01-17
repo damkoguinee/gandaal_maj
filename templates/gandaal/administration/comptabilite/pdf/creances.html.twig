@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}PDF Document{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    {% endblock %}
+    <style>
+        @page {
+            margin: 5px 20px;
+        }
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Helvetica', 'Arial', sans-serif;
+        color: #333;
+    }
+    .header, .footer {
+        width: 100%;
+        text-align: center;
+        background-color: #f4f4f4;
+        padding: 1px;
+    }
+    .header {
+        margin-bottom: 20px;
+    }
+    .footer {
+        position: fixed;
+        bottom: 0;
+        font-size: 12px;
+    }
+    .table-container {
+        margin:0px;
+    }
+    .entete table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+    }
+    .entete img {
+        margin: 10px;
+    }
+    .entete td {
+        border: none;
+    }
+    .entete div {
+        text-align: center;
+        font-size: 14px;
+    }
+    .entete .header-title {
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .entete .sub-title {
+        font-size: 14px;
+        margin-top: 5px;
+        text-align: center;
+    }
+    .no-break {
+        page-break-inside: avoid;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 4px;
+        text-align: left;
+        font-size:13px;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        font-size:12px;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .text-end {
+        text-align: right;
+    }
+    /* Custom nowrap for amounts */
+    .nowrap {
+        white-space: nowrap;
+    }
+
+    .signature {
+        margin-top: 20px;
+        text-align: center;
+        font-style:italic;
+    }
+    .signature div {
+        margin-bottom: 85px;
+    }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <!-- Header content (if any) -->
+    </div>
+
+    <div class="entete">
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <img width="220" height="60" src="data:image/jpeg;base64,{{ ministerePath }}" alt="Ministere">
+                    </td>
+                    <td>
+                        <div>REPUBLIQUE DE {{ etablissement.entreprise.pays | upper }}</div>
+                        <div><img width="30" height="30" src="data:image/jpeg;base64,{{ symbolePath }}" alt="Symbole"></div>
+                        <div>Travail - Justice - Solidarité</div>
+                    </td>
+                    <td>
+                        <div><img width="60" height="60" src="data:image/jpeg;base64,{{ logoPath }}" alt="Logo"></div>
+                        <div>{{ etablissement.email }}</div>
+                        <div>{{ etablissement.telephone }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="header-title">{{ etablissement.nom | upper }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="sub-title">{{ etablissement.devise|capitalize }}</td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <table>
+
+            <thead class="sticky-top bg-light text-center">
+                <tr>
+                    <th colspan="8" class="text-center bg-info text-white">
+                        Liste des créances Année-Scolaire {{(promo - 1) ~ "-" ~ promo}}
+                        /
+                        {% if classe is not empty %}
+                            {{classe.nom|strtoupper|exposantClasse|raw}} /
+                        {% endif %}
+                        {% if tranche is not empty %}
+                            {{tranche.nom|ucfirst|exposantClasse|raw}}
+                        {% endif %}
+                        
+                    </th>
+                </tr>
+                <tr>
+                    <th class="bg-info text-white text-center">N°</th>
+                    <th class="bg-info text-white text-center">Mat</th>
+                    <th class="bg-info text-white text-center">Prénom & Nom</th>
+                    <th class="bg-info text-white text-center">Téléphone</th>
+                    <th class="bg-info text-white text-center">Classe</th>
+                    <th class="bg-info text-white text-center">Rem</th>
+                    <th class="bg-info text-white text-end nowrap">Montant Payé</th>
+                    <th class="bg-info text-white text-center">Reste à payer</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set cumulReste = 0 %}
+                {% for key, donnee in donnees %}
+                    <tr>
+                        <td class="text-center">
+                            {{ (key +1) }}
+                        </td>
+                        <td class="text-center">{{ donnee.inscription.eleve.matricule }}</td>
+                        <td>{{ donnee.inscription.eleve.nomComplet }}</td>
+                        <td class="text-center">{{ donnee.inscription.eleve.telephone|strtoupper}}</td>
+                        <td class="text-center">{{ donnee.inscription.classe.nom|strtoupper|exposantClasse|raw }}</td>
+                        <td class="text-center">{{ donnee.inscription.remiseScolarite }}%</td>
+                        <td class="text-end nowrap">{{ donnee.paiement|number_format(0,',',' ')}}</td>
+                        <td>
+                            <table class="table table-bordered table-striped table-hover align-middle">
+                                <tbody>
+                                    {% set totalReste = 0 %}
+                                    {% for tranche_reste, reste in donnee.restes %}  
+                                        {% set totalReste = totalReste + reste %} 
+                                        {% set cumulReste = cumulReste + reste %}                          
+
+                                        <tr>
+                                            <td>{{ tranche_reste }}</td>
+                                            <td class="text-end nowrap">{{ reste|number_format(0,',',' ')}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% if donnee.restes|length > 1 %}
+                                        
+                                        {% if tranche is empty  %}
+                                            <tr>
+                                                <th class="text-danger">Total Restant</th>
+                                                <th class="text-end text-nowrap text-danger">{{ totalReste|number_format(0,',',' ')}}</th>
+                                            </tr>
+                                        {% endif %}
+                                    {% endif %}
+                                    
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8">Aucun élève en retard de paiement</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="7" class="text-danger">Cumul Restant</th>
+                    <th class="text-end nowrap text-danger">{{ cumulReste|number_format(0,',',' ')}}</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    {# {% if app.user.fonction is defined %}
+        <div class="signature">
+            <div>{{app.user.fonction.nom|ucwords}}</div>
+            <div>{{app.user.nomComplet}}</div>
+        </div>
+    {% endif %} #}
+    
+    <div class="footer">
+        <p>Document imprimé par {{ app.user.prenom | capitalize }} {{ app.user.nom | upper }} le {{ "now" | date("d/m/Y à H:i") }}</p>
+    </div>
+</body>
+</html>

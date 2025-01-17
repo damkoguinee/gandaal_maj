@@ -1,0 +1,60 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste frais scolarité{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_admin.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="4" class="text-center bg-info text-white">
+                            <a class="btn btn-warning text-white text-center" href="{{path("app_gandaal_administration_comptabilite_admin_frais_scolarite_new", {etablissement : etablissement.id})}}">Ajouter</a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>N°</th>
+                        <th>Tranche</th>
+                        <th>Montant</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for formationNom, fraisList in fraisParFormation %}
+                        <tr>
+                            <td colspan="4" class="bg-info text-white text-center font-weight-bold">{{ formationNom|ucwords|exposantClasse|raw }}</td>
+                        </tr>
+                        {% set totalMontant = 0 %}
+                        {% for key, frais_scolarite in fraisList %}
+                            <tr>
+                                <td class="text-center">{{ key + 1 }}</td>
+                                <td class="text-center">{{ frais_scolarite.tranche.nom|ucwords|exposantClasse|raw }}</td>
+                                <td class="text-center">{{ frais_scolarite.montant|number_format(0, ',', ' ') }}</td>
+                                <td class="text-center">
+                                    <a class="btn btn-success" href="{{ path('app_gandaal_administration_comptabilite_admin_frais_scolarite_show', {'id': frais_scolarite.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                    <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_admin_frais_scolarite_edit', {'id': frais_scolarite.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                                </td>
+                            </tr>
+                            {% set totalMontant = totalMontant + frais_scolarite.montant %}
+                        {% endfor %}
+                        <tr>
+                            <td colspan="2" class="text-end bg-warning text-white font-weight-bold">Total {{ formationNom|ucwords|exposantClasse|raw }} :</td>
+                            <td class="text-center bg-warning text-white font-weight-bold">{{ totalMontant|number_format(0, ',', ' ') }}</td>
+                            <td></td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5">Aucun frais enregistré</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

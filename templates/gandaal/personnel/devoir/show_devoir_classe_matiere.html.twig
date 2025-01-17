@@ -1,0 +1,198 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Détail du devoir{% endblock %}
+
+{% block ul_menu %}
+    {% include "gandaal/personnel/_common/_nav_espace_enseignant.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg'); background-size: cover; background-position: center;">
+        
+        <div class="col-sm-12 col-md-12 m-auto mt-1" >
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <div class="card shadow-sm" style="overflow:auto;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <a class="btn btn-light" href="javascript:history.back()">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+
+                        <button target="_blank" class="btn btn-warning my-1" onclick="printDiv('printSection')"><i class="fa fa-file-pdf"></i>Imprimer</button>
+                    </div>
+
+                    <div id="printSection">
+
+                        <table class="table table-bordered table-striped table-hover align-middle print-black-text">
+                            <thead class="sticky-top bg-light text-center" style="font-size : 12px;">
+                                <tr>
+                                    <th colspan="{{ 5 + devoirs|length }}" class="bg-info text-white py-1">
+                                        Fiche de notes de la {{ classe.nom|strtoupper }} / {{ matiere.nom|ucwords }} / Année-Scolaire: {{ (classe.promo - 1 ) ~ "-" ~ classe.promo }}
+                                        {# <a target="_blank" href="{{path('app_gandaal_administration_scolarite_pdf_fiche_note', { etablissement : etablissement.id, 'classe': search_classe ? search_classe.id : '0', matiere : matiere.id,  periode : periode_select, trimestre : trimestre })}}" class="btn btn-warning"><i class="fa fa-file-pdf"></i></a> #}
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="bg-info text-white">N°</th>
+                                    <th class="bg-info text-white">Matricule</th>
+                                    <th class="bg-info text-white">Prénom & Nom</th>
+                                    <th class="bg-info text-white">Moyenne</th>
+
+                                    <!-- Dynamically create headers for each devoir -->
+                                    {% for devoir in devoirs %}
+                                        <th class="bg-info text-white">
+                                            <table class="table table-bordered table-striped table-hover align-middle">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="bg-info text-white">{{ devoir.nom|ucwords}}</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="bg-info text-white">{{devoir.typeDevoir|capitalize }}</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            
+                                        </th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, inscription in inscriptions %}
+                                    <tr>
+                                        <td class="text-center py-1">{{ key + 1 }}</td>
+                                        <td class="text-center py-1">{{ inscription.eleve.matricule|strtoupper }}</td>
+                                        <td class="py-1">{{ inscription.eleve.prenom|ucwords }} {{ inscription.eleve.nom|strtoupper }}</td>
+                                        
+                                        <!-- Affichage de la moyenne calculée dans le contrôleur -->
+                                        <td class="text-center py-1">
+                                            {% if moyennesParInscription[inscription.id] is not null %}
+                                                {{ moyennesParInscription[inscription.id]|number_format(2) }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                            
+                                        <!-- Affichage des notes pour chaque devoir -->
+                                        {% for devoir in devoirs %}
+                                            <td class="text-center py-1">
+                                                {{ notesParInscription[inscription.id][devoir.id] ?? '' }}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="{{ 5 + devoirs|length }}" class="text-center py-1">Aucun élève enregistré dans cette classe</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th class="bg-info text-white" colspan="3">Moyenne Générale</th>
+                                    <th class="text-center bg-info text-white">
+                                        {% if moyenneGeneraleClasse is not null %}
+                                            {{ moyenneGeneraleClasse|number_format(2) }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </th>
+                            
+                                    {# Boucle pour afficher les moyennes par devoir #}
+                                    {% for nomDevoir, moyenne in moyennesParDevoir %}
+                                        <th class="text-center bg-info text-white">
+                                            {% if moyenne is not null %}
+                                                {{ moyenne|number_format(2) }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </th>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td colspan="{{4 + moyennesParDevoir|length}}" style="border :0px solid white">
+            
+                                        <div class="print d-flex justify-content-between align-items-center mx-4">
+                                            {% if classe.formation.cursus.nom == 'collège' or classe.formation.cursus.nom == 'lycée' or classe.formation.cursus.nom == 'université' %}
+                                                {% if classe.formation.cursus.nom == 'collège' %}
+                                                    <div>
+                                                        <div style="margin-bottom : 85px;" class="text-center">{{responsable_college ? responsable_college.fonction.nom|strtoupper : 'Censeur'}}</div>
+                                                        <div class="text-center">{{responsable_college ? (responsable_college.nom|strtoupper ~ " " ~ responsable_college.prenom|ucwords) : ''}}</div>
+                                                    </div>
+                                                    {# <div>
+                                                        <div style="margin-bottom : 85px;" class="text-center">{{responsable ? responsable.fonction.nom|strtoupper : 'Administrateur Général'}}</div>
+                                                        <div class="text-center">{{responsable ? (responsable.nom|strtoupper ~ " " ~ responsable.prenom|ucwords) : ''}}</div>
+                                                    </div> #}
+                                                {% else %}
+                                                    <div>
+                                                        <div style="margin-bottom : 85px;" class="text-center">{{responsable_lycee ? responsable_lycee.fonction.nom|strtoupper : 'Proviseur'}}</div>
+                                                        <div class="text-center">{{responsable_lycee ? (responsable_lycee.nom|strtoupper ~ " " ~ responsable_lycee.prenom|ucwords) : ''}}</div>
+                                                    </div>
+                                                    {# <div>
+                                                        <div style="margin-bottom : 85px;" class="text-center">{{responsable ? responsable.fonction.nom|strtoupper : 'Administrateur Général'}}</div>
+                                                        <div class="text-center">{{responsable ? (responsable.nom|strtoupper ~ " " ~ responsable.prenom|ucwords) : ''}}</div>
+                                                    </div> #}
+                                                {% endif %}
+                                            {% else %}
+            
+                                                <div>
+                                                    <div style="margin-bottom : 85px;" class="text-center">{{classe.responsable.sexe == 'm' ? 'Le Maitre' : 'La Maitresse'}}</div>
+                                                    <div class="text-center">{{classe.responsable.nom|strtoupper ~ " " ~ classe.responsable.prenom|ucwords}}</div>
+                                                </div>
+                                                {# <div>
+                                                    <div style="margin-bottom : 85px;" class="text-center">{{responsable_primaire.sexe == 'm' ? 'Le Directeur' : 'La Directrice'}}</div>
+                                                    <div class="text-center">{{responsable_primaire.nom|strtoupper ~ " " ~ responsable_primaire.prenom|ucwords}}</div>
+                                                </div> #}
+                                                
+                                            {% endif %}
+                                        </div>
+            
+                                    </td>
+                                </tr>
+                            </tfoot>
+                            
+                            
+                            
+                        </table>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block autres %}
+    <script>
+    function printDiv(divId) {
+        var contentToPrint = document.getElementById(divId).innerHTML;
+        var originalContent = document.body.innerHTML;
+
+        document.body.innerHTML = contentToPrint;
+        window.print();
+        document.body.innerHTML = originalContent;
+    }
+    </script>
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+            
+
+            .print-black-text td {
+                color: black !important; /* Remplacer le texte blanc par du noir */
+                background-color: white !important; /* Fond en gris */
+                font-size : 14px !important;
+                border : 2px solid grey !important;
+
+            }
+            .print-black-text th {
+                color: black !important; /* Remplacer le texte blanc par du noir */
+                background-color: white !important; /* Fond en gris */
+                font-size : 14px !important;
+                border : 2px solid grey !important;
+
+            }
+        }
+    </style>
+
+{% endblock %}

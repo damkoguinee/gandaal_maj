@@ -1,0 +1,161 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}gestion personnel{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_secretariat.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-12">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <table class="table table-bordered table-striped table-hover align-middle" style="overflow:auto;">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="11" class="text-center bg-info text-white">
+                            <div class="row align-items-center ">
+                                <div class="col-3">
+                                    <a class="btn btn-warning text-center" href="{{path("app_gandaal_administration_secretariat_admin_personnel_new", {etablissement : etablissement.id})}}">Ajouter un personnel</a>
+                                </div>
+
+                                <div class="col-5">
+                                    <input type="text" name="search" class="form-control" id="search_user" placeholder="Récherchez un personnel">
+                                </div>  
+                                
+                                <div class="col-3">
+                                    <a class="btn btn-success text-center" href="{{path("app_gandaal_administration_secretariat_admin_enseignant_index", {etablissement : etablissement.id})}}">Enseignants</a>
+                                    <a class="btn btn-success text-center" href="{{path("app_gandaal_administration_secretariat_admin_personnel_index", {etablissement : etablissement.id})}}">Personnels</a>
+
+                                </div>
+                                <div class="bg-light text-white" id="result-search"></div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Mat</th>
+                        <th class="bg-info text-white">Prénom & Nom</th>
+                        <th class="bg-info text-white">Téléphone</th>
+                        {# <th class="bg-info text-white">Fonction</th> #}
+                        <th class="bg-info text-white">Autre fonct</th>
+                        <th class="bg-info text-white">Rat Compt</th>
+                        <th class="bg-info text-white">Rat Pédagogie</th>
+                        <th class="bg-info text-white">T.Horaire</th>
+                        <th class="bg-info text-white">Salaire Brut</th>
+                        <th class="bg-info text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, personnel in personnels %}
+                    <form method="POST" action="" onsubmit="return confirm('Confirmez-vous cette opération?');">
+                        <tr>
+                            <input type="hidden" name="id_personnel" value="{{personnel.user.id}}">
+                            <td class="text-center">{{ key + 1 }}</td>
+                            <td class="text-center">{{ personnel.user.matricule|strtoupper }}</td>
+                            <td>{{ personnel.user.prenom|ucwords ~ " " ~ personnel.user.nom|strtoupper }}</td>
+                            <td class="text-center">{{ personnel.user.telephone }}</td>
+                
+                            <td>
+                                <select name="autre_fonction" id="" class="form-select text-end">
+                                    <option value="{{personnel.personnelActif ? personnel.personnelActif.type : ''}}">{{personnel.personnelActif ? personnel.personnelActif.type : ''}}</option>
+                                    <option value="personnel-enseignant">Personnel-Enseignant</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="rattachement" required id="" class="form-select">
+                                    {% if personnel.personnelActif is not empty %}
+                                        <option value="{{personnel.personnelActif.rattachement}}">{{personnel.personnelActif.rattachement}}</option>
+                                    {% else %}
+                                        <option value="">Sélectionnez</option>
+                                    {% endif %}
+                                    <option value="maternelle">Maternelle</option>
+                                    <option value="primaire">Primaire</option>
+                                    <option value="secondaire">Secondaire</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="rattachementPedagogie[]" multiple required id="" class="form-select">
+                                    {% set rattachementActif = personnel.personnelActif is not empty and personnel.personnelActif.rattachementPedagogie|length > 0 
+                                        ? personnel.personnelActif.rattachementPedagogie|map(c => c.id) 
+                                        : [] %}
+                                    {% for item in cursus %}
+                                        <option value="{{ item.id }}"
+                                            {% if item.id in rattachementActif %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ item.nom|capitalize }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            
+                            
+                            <td Class="text-end"><input type="text" name="taux_horaire" value="{{personnel.salaire ? personnel.salaire.tauxHoraire|number_format(0,',',' ') : ''}}" onkeyup="formatMontant(this)" class="form-control text-end"></td>
+                            <td Class="text-end"><input type="text" name="salaire_brut"  value="{{personnel.salaire ? personnel.salaire.salaireBrut|number_format(0,',',' ') : ''}}" onkeyup="formatMontant(this)" class="form-control text-end"></td>
+                            
+                            <td class="text-center">
+                                <div class="d-flex justify-content-between">
+                                    {% if personnel.etat == 'inactif' %}
+                                        <button class="btn btn-success">Confirmer</button>
+                                    {% else %}
+                                        <button class="btn btn-warning">Modifier</button>                                            
+                                    {% endif %}
+                                    
+                                    {% if personnel.user.typeUser == 'personnel' %}
+                                        <a class="btn btn-success mx-1" href="{{ path('app_gandaal_administration_secretariat_admin_personnel_show', {'id': personnel.user.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                    {% else %}
+                                        <a class="btn btn-success mx-1" href="{{ path('app_gandaal_administration_secretariat_admin_enseignant_show', {'id': personnel.user.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+
+                                    {% endif %}
+
+                                    {% if personnel.personnelActif is not empty %}
+                                        <a class="btn btn-danger mx-1" href="{{ path('app_gandaal_administration_secretariat_admin_personnel_new_gestion_personnel_confirm_delete', {'id': personnel.personnelActif.id, etablissement : etablissement.id, annuler : 'annuler'}) }}"><i class="fa fa-trash"></i></a>
+                                    {% endif %}
+
+                                    
+                                </div>
+                            </td>
+                        </tr>
+                    </form>
+                {% else %}
+                    <tr>
+                        <td cols10an="9">Aucun personnel enregistré</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                {% set path = 'app_gandaal_administration_secretariat_admin_personnel_new_gestion_personnel'  %}
+                                    
+                {% if nbrePages > 1 %}                    
+
+                    {% if nbrePages %}
+                        <nav aria-label="Page navigation example ">
+                            <ul class="pagination justify-content-start">
+                                {% if pageEncours > 1 %}
+                                    <li class="page-item ">
+                                        <a class="page-link" href="{{path(path, {etablissement : etablissement.id,  pageEncours : (pageEncours - 1)})}}">&lt;</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled" ><a class="page-link">&lt;</a></li>
+                                {% endif %}
+                                {% for page in 1..nbrePages %}                
+                                    <li class="page-item {{ ( page == pageEncours) ? 'active' : ''}} "><a class="page-link" href="{{path(path, {etablissement : etablissement.id,  pageEncours : page})}}">{{page}}</a></li>
+                                {% endfor %}
+                                {% if pageEncours < nbrePages %}
+                                    <li class="page-item "><a class="page-link" href="{{path(path, {etablissement : etablissement.id, pageEncours : pageEncours + 1} ) }}">&gt;</a></li>
+                                {% else %}
+                                    <li class="page-item disabled "><a href="" class="page-link" >&gt;</a></li>
+                                {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% endif %}
+            </table>
+
+        </div>
+    </div>
+{% endblock %}

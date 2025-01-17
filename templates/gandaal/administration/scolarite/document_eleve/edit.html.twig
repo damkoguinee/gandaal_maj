@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit DocumentEleve{% endblock %}
+
+{% block body %}
+    <h1>Edit DocumentEleve</h1>
+
+    {{ include('gandaal/administration/scolarite/document_eleve/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+    <a href="{{ path('app_gandaal_administration_scolarite_document_eleve_index') }}">back to list</a>
+
+    {{ include('gandaal/administration/scolarite/document_eleve/_delete_form.html.twig') }}
+{% endblock %}

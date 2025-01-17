@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tuteur{% endblock %}
+
+{% block body %}
+    <h1>Tuteur</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ tuteur.id }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ tuteur.username }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>{{ tuteur.roles ? tuteur.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ tuteur.password }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ tuteur.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom</th>
+                <td>{{ tuteur.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ tuteur.email }}</td>
+            </tr>
+            <tr>
+                <th>Telephone</th>
+                <td>{{ tuteur.telephone }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ tuteur.adresse }}</td>
+            </tr>
+            <tr>
+                <th>Ville</th>
+                <td>{{ tuteur.ville }}</td>
+            </tr>
+            <tr>
+                <th>Pays</th>
+                <td>{{ tuteur.pays }}</td>
+            </tr>
+            <tr>
+                <th>Matricule</th>
+                <td>{{ tuteur.matricule }}</td>
+            </tr>
+            <tr>
+                <th>Sexe</th>
+                <td>{{ tuteur.sexe }}</td>
+            </tr>
+            <tr>
+                <th>DateNaissance</th>
+                <td>{{ tuteur.dateNaissance ? tuteur.dateNaissance|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>LieuNaissance</th>
+                <td>{{ tuteur.lieuNaissance }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ tuteur.statut }}</td>
+            </tr>
+            <tr>
+                <th>Photo</th>
+                <td>{{ tuteur.photo }}</td>
+            </tr>
+            <tr>
+                <th>TypeUser</th>
+                <td>{{ tuteur.typeUser }}</td>
+            </tr>
+            <tr>
+                <th>LienFamilial</th>
+                <td>{{ tuteur.lienFamilial }}</td>
+            </tr>
+            <tr>
+                <th>Profession</th>
+                <td>{{ tuteur.profession }}</td>
+            </tr>
+            <tr>
+                <th>LieuTravail</th>
+                <td>{{ tuteur.lieuTravail }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_tuteur_index') }}">back to list</a>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_tuteur_edit', {'id': tuteur.id}) }}">edit</a>
+
+    {{ include('gandaal/administration/scolarite/tuteur/_delete_form.html.twig') }}
+{% endblock %}

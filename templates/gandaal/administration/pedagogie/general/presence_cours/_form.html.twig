@@ -1,0 +1,93 @@
+<form>
+    
+    <div class="row mb-1">
+        <input type="hidden" name='event_id' value='{{event ? event.id : ''}}' class="form-control">            
+        
+        <div class="col-sm-12 col-md-12">
+            <label for="search" class="form-label">Recherchez un enseignant*</label>
+            <input type="text" name="search" placeholder="{{personnelActif ? personnelActif.personnel.nomComplet : 'recherchez un enseignant'}}" class="form-control" id="search_user" placeholder="Récherchez un enseignant">
+            <input type="hidden" name="id_user_search" value="{{personnelActif ? personnelActif.personnel.id : ''}}">
+        </div>
+        <div class="bg-light text-white" id="result-search"></div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-sm-12 col-md-12">
+            <label for="classe" class="form-label">Recherchez une classe*</label>
+            <select name="classe" id="classe" required class="form-select" onchange = "this.form.submit()">
+                <option value="{{classe ? classe.id : ''}}">{{classe ? classe.nom : 'Recherchez une classe'}}</option>
+                {% for classe in classes %}
+                    <option value="{{classe.id}}">{{classe.nom}}</option>                    
+                {% endfor %}
+            </select>
+            
+        </div>
+    </div>
+
+    <div class="row mb-2">
+        <div class="col-sm-12 col-md-12">
+            <label for="matiere" class="form-label">Recherchez une Matière*</label>
+            <select name="matiere" id="matiere" required class="form-select">
+                <option value="{{matiere ? matiere.id : ''}}">{{matiere ? matiere.nom : 'Recherchez une matiere'}}</option>
+                {% for matiere in matieres %}
+                    <option value="{{matiere.id}}">{{matiere.nom|ucwords}}</option>                    
+                {% endfor %}
+            </select>
+            
+        </div>
+    </div>
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-4">
+            <label for="date" class="form-label">Date*</label>
+            <input type="date" name='date' value='{{event ? event.start|date("Y-m-d") : ''}}' required id='date' class="form-control">            
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label for="heure_debut" class="form-label">Heure de début*</label>
+            <input type="time" name='heure_debut' value='{{event ? event.start|date("H:i") : ''}}' required id='heure_debut' class="form-control">            
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label for="heure_fin" class="form-label">Heure de fin*</label>
+            <input type="time" name='heure_fin' value='{{event ? event.end|date("H:i") : ''}}' required id='heure_fin' class="form-control">            
+        </div>
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-3">
+            <label for="titre" class="form-label">Type*</label>
+            <select class="form-select" name="titre" required id="titre">
+                <option value="{{event ? event.title : ''}}">{{event ? event.title : 'Selectionnez'}}</option>
+                <option value="cours">cours</option>
+                <option value="td">Traveaux dirigés</option>
+                <option value="evaluation">Evaluation</option>
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label for="frequence" class="form-label">Fréquence*</label>
+            <select class="form-select" name="frequence" required id="frequence">
+                {# <option value="{{event ? event.frequence : ''}}">{{event ? event.frequence : 'Selectionnez'}}</option> #}
+                <option value=""></option>
+                <option value="periodique">periodique</option>
+                <option value="defini">heure définie</option>
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <label for="commentaire" class="form-label">Commentaire</label>
+            <input type="text" name='commentaire' value='{{event ? event.description : ''}}' id='commentaire' class="form-control">
+        </div>
+    </div>
+
+    <button name='ajout_cours' value='confirme' class="btn btn-primary mb-2">{{ button_label|default('Ajouter') }}</button>
+</form>
+
+    {% if event is not empty %}
+        <div class="d-flex justify-content-between align-items-center">
+            <form method="post" action="{{ path('app_gandaal_administration_pedagogie_admin_calendar_confirm_delete', {'id': event.id, etablissement : etablissement.id}) }}">
+                <button name="param" value="simple" class="btn btn-warning">Annuler le jour défini</button>
+            </form>
+            <form method="post" action="{{ path('app_gandaal_administration_pedagogie_admin_calendar_confirm_delete', {'id': event.id, etablissement : etablissement.id}) }}">
+                <button name="param" value="general" class="btn btn-danger">Tout Annuler</button>
+            </form>
+        </div>
+    {% endif %}
+    
+</form>

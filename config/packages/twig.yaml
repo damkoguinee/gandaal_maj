@@ -1,0 +1,22 @@
+twig:
+    file_name_pattern: '*.twig'
+    default_path: '%kernel.project_dir%/templates'
+    form_themes: ["bootstrap_5_layout.html.twig"]
+    date:
+        format: d/m/Y
+    
+    globals:
+        chemin_images_eleves: "images/eleves/"
+        chemin_images_personnels: "images/personnels/"
+        chemin_images_enseignants: "images/enseignants/"
+        chemin_images_config: "images/config/"
+
+    paths:
+        '%kernel.project_dir%/templates/errors': errors
+
+# framework:
+#     error_controller: 'App\Controller\ExceptionController::showException'
+
+when@test:
+    twig:
+        strict_variables: true

@@ -1,0 +1,27 @@
+<ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-start">
+    <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_administration_home", {etablissement : etablissement.id})}}">Accueil</a>
+    </li>
+    
+    <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_administration_scolarite_eleve_index", {etablissement : etablissement.id})}}">Liste des élèves</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_administration_scolarite_eleve_classe", {etablissement : etablissement.id})}}">Classes</a>
+    </li>
+    {# <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page"  href="{{path("app_gandaal_administration_scolarite_preinscription_index", {etablissement : etablissement.id})}}">Pré-inscription</a>
+    </li> #}
+    <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_administration_scolarite_eleve_new", {etablissement : etablissement.id})}}">Inscription</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_administration_scolarite_inscription_new", {etablissement : etablissement.id})}}">Ré-inscription</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_administration_scolarite_eleve_externe_new", {etablissement : etablissement.id})}}">Externes</a>
+    </li>
+
+
+</ul>

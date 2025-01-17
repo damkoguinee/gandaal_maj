@@ -1,0 +1,88 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}compte{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="6" class="text-center bg-info text-white">
+                            Compte {{type1 == type2 ? type1|ucwords : type1 ~ " et " ~ type2|ucwords}} 
+                            {# <a class="btn btn-light text-center" target="_blank" href="{{path("app_logescom_pdf_pdf_compte", {type1 : type1, type2 : type2, etablissement : etablissement.id})}}"><i class="fa fa-file-pdf fs-6 text-danger"></i></a> #}
+                            {# <a class="btn btn-light text-center" target="_blank" href="{{path("app_logescom_excel_excel_compte", {etablissement : etablissement.id})}}"><i class="fa fa-file-excel fs-6 text-success"></i></a> #}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="6" class="text-center bg-info text-white">
+                            <div class="row align-items-center ">
+                                <div class="col-7">
+                                    <input type="text" name="search" class="form-control" id="search_user" placeholder="Récherchez..">                                    
+                                </div>  
+                                
+                            </div>
+                            <div class="bg-light text-white text-start" id="result-search"></div>
+                        </th>
+                    <tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Nom</th>
+                        {% for devise in devises %}
+                            <th class="bg-info text-white">Solde {{devise.nom|strtoupper}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, compte in comptes %}
+                    <tr>
+                        <td class="text-center">{{ (key +1) }}</td>
+                        <td class="fs-5">{{ compte.collaborateur.prenom|ucwords ~ " " ~ compte.collaborateur.nom |strtoupper }}</td>
+                        {% for solde in compte.soldes %}
+                            {% if solde.montant <= 0 %}
+                                {% set color = 'success' %}
+                                {% set montant = - solde.montant %}
+                            {% else %}
+                                {% set color = 'danger' %}
+                                {% set montant = solde.montant %}
+                            {% endif %}
+                            <td class="text-end">
+                                <a href="{{path("app_gandaal_administration_comptabilite_compte_collaborateur_detail", {user : compte.collaborateur.id, devise: solde.devise, etablissement: etablissement.id})}}" class="btn btn-{{color}} text-end w-100">
+                                    {{ solde.devise == 'gnf' ? montant|number_format(0,',',' ') : montant|number_format(2,',',' ') }}
+                                </a>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">Aucun client disponible</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="bg-info  bg-opacity-75">
+                        <th colspan="2" class="bg-info text-white bg-opacity-75 fw-bold text-center ">Cumul Général</th>
+                        {% for solde_general in solde_general_type %}
+                            {% if solde_general.montant <= 0 %}
+                                {% set color = 'success' %}
+                                {% set solde_gen = - solde_general.montant %}
+                            {% else %}
+                                {% set color = 'danger' %}
+                                {% set solde_gen = solde_general.montant %}
+                            {% endif %}                            
+                            <th class="bg-{{color}} text-white bg-opacity-75 text-end  fw-bold px-3">{{ solde_general.devise == 'gnf' ? solde_gen|number_format(0,',',' ') : solde_gen|number_format(2,',',' ') }}</th>                        
+                        {% endfor %}
+                    </tr>
+                </tfoot>
+            </table>
+            
+        </div>
+    </div>
+{% endblock %}

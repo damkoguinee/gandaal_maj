@@ -1,0 +1,133 @@
+{% extends 'base_calendar.html.twig' %}
+{% block title %}Emploi du Temps{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/eleve/_common/_nav_espace_eleve.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+        <div class="col-sm-12 col-md-12 bg-light p-4 rounded">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <form id="filterForm" action="{{ path('app_gandaal_eleve_calendar', {'etablissement': etablissement.id, "inscription": inscription.id}) }}" method="GET" class="me-2">
+                    <select name="enseignant" class="form-select" id="selectEnseignant" onChange="this.form.submit()">
+                        <option value="">{{ inscription.eleve.nomComplet }}</option>
+                        
+                    </select>
+                </form>
+                
+                <div>
+                    <button class="btn btn-primary" id="printBtn">
+                        <i class="fas fa-file-pdf"></i> Imprimer
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="calendar"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'fr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                minTime: '07:00:00',
+                maxTime: '20:00:00',
+                slotMinTime: '07:00:00', // Premier créneau horaire à 7h
+                slotMaxTime: '20:00:00', // Dernier créneau horaire à 20h
+                allDaySlot: false,
+                locale: 'fr',
+                timeZone: "UTC",
+                buttonText: {
+                    today: "Aujourd'hui",
+                    month: "Mois",
+                    week: "Semaine",
+                    day: "Jour",
+                    list: "Liste"
+                },
+                hiddenDays: [0],
+                events: {
+                    // url: '/gandaal/administration/pedagogie/admin/calendar/api/{{ etablissement.id }}',
+                    url: '{{ path("app_gandaal_eleve_calendar_api", {"etablissement": etablissement.id, "inscription": inscription.id}) }}',
+
+                    // url: '{{ app.request.getBasePath() }}/gandaal/administration/pedagogie/admin/calendar/api/{{ etablissement.id }}',
+                    method: 'GET',
+                    // extraParams: function() {
+                    //     return {
+                    //         classe: document.getElementById('selectClasse').value,
+                    //         enseignant: document.getElementById('selectEnseignant').value
+                    //     };
+                    // },
+                    failure: function() {
+                        alert('Erreur lors du chargement des événements.');
+                    }
+                },
+                eventDataTransform: function(eventData) {
+                    // Supprimer la propriété 'url' si elle existe pour desactiver l'option cliquable
+                    // delete eventData.url;
+                    return eventData;
+                },
+                eventContent: function(info) {
+                    var title = info.event.title || 'Sans titre';
+                    var classe = info.event.extendedProps.classe || 'N/A';
+                    var enseignant = info.event.extendedProps.enseignant || 'N/A';
+                    var matiere = info.event.extendedProps.matiere || 'N/A';
+
+                    return {
+                        html: `
+                            <div class="fc-event-content">
+                                <strong>${title}</strong><br>
+                                <em>${matiere}</em><br>
+                                ${classe}<br>
+                                ${enseignant}
+                            </div>
+                        `
+                    };
+                },
+                eventClick: function(info) {
+                    if (info.event.url) {
+                        window.open(info.event.url);
+                        info.jsEvent.preventDefault();
+                    }
+                }
+            });
+
+            calendar.render();
+
+            document.getElementById('printBtn').addEventListener('click', function() {
+                calendarEl.classList.add('printable');
+                window.print();
+            });
+        });
+    </script>
+
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .printable, .printable * {
+                visibility: visible;
+            }
+            .printable {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            /* Désactiver les clics sur les événements */
+            .fc-event {
+                pointer-events: none;
+            }
+        }
+    </style>
+{% endblock %}

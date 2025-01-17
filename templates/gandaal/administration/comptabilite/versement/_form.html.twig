@@ -1,0 +1,49 @@
+{{ form_errors(form) }}
+{{ form_start(form) }}
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-12">
+            <input type="text" name="search" placeholder="{{client_find ? client_find.nomComplet : 'recherchez un collaborateur'}}" class="form-control" id="search_user" placeholder="Récherchez un collaborateur">
+            <input type="hidden" name="id_collaborateur" value="{{client_find ? client_find.id : ''}}">
+        </div>
+        <div class="bg-light text-white" id="result-search"></div>
+    </div>
+
+    <div class="row mb-1">
+        {{ form_row(form.montant) }}
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.taux) }}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.devise) }}
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.modePaie) }}
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.numeroPaie) }}
+        </div>
+        
+        <div class="col-sm-12 col-md-2">
+            {{ form_row(form.banquePaie) }}
+        </div>
+    </div>
+    <div class="row mb-1">
+
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.caisse) }}
+        </div>
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.description) }}
+        </div>
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.dateOperation) }}
+        </div>
+    </div>
+    <button class="btn btn-primary">{{ button_label|default('Valider') }}</button>
+{{ form_end(form) }}

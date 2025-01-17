@@ -1,0 +1,198 @@
+{% extends 'base_gandaal.html.twig' %}
+
+{% block title %}Détail du contrôle de l'élève{% endblock %}
+
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid py-2" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config ~ 'fond.jpg') }}'); background-size: cover;">
+        <div class="row">
+            {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+            <div class="col-md-10 mx-auto">
+                {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white text-center">
+                    {% if controlEleve.inscription.eleve.photo %}
+                    <div class="text-center mb-1">
+                        <img src="{{ asset('dossier/eleves/' ~ controlEleve.inscription.eleve.photo) }}" alt="Photo de {{ controlEleve.inscription.eleve.prenom }} {{ controlEleve.inscription.eleve.nom }}" class="rounded-circle shadow-lg img-fluid" style="max-width: 100px;">
+                    </div>
+                {% endif %}
+                        <h5>{{ controlEleve.inscription.eleve.nomComplet }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-hover table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Matricule</th>
+                                    <td>{{ controlEleve.inscription.eleve.matricule|upper }}</td>
+                                    <th>Classe</th>
+                                    <td>{{ controlEleve.inscription.classe.nom|upper }}</td>
+                                    <th>Année scolaire</th>
+                                    <td>{{ (controlEleve.promo - 1) ~ "-" ~ controlEleve.promo }}</td>
+                                    <th class="{{ controlEleve.etat == 'justifié' ? 'bg-success' : 'bg-warning' }} text-center">État</th>
+                                    <td class="{{ controlEleve.etat == 'justifié' ? 'bg-success text-white' : 'bg-warning text-dark' }}">{{ controlEleve.etat|capitalize }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Date de Naissance</th>
+                                    <td>{{ controlEleve.inscription.eleve.dateNaissance ? controlEleve.inscription.eleve.dateNaissance|date('d/m/Y') : '' }} - {{ controlEleve.inscription.eleve.age }} ans</td>
+                                </tr>
+                                <tr>
+                                    <th>Téléphone</th>
+                                    <td>{{ controlEleve.inscription.eleve.telephone }}</td>
+                                </tr>
+                                {% if controlEleve.event %}
+                                    <tr>
+                                        <th>Matière</th>
+                                        <td>{{ controlEleve.event.matiere.nom|capitalize }} / {{ controlEleve.event.start|date("d/m/Y H:i") }} - {{ controlEleve.event.end|date("H:i") }}</td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <th>Saisie par</th>
+                                    <td>{{ controlEleve.saisiePar.nomComplet }} le {{ controlEleve.dateSaisie|date('d/m/Y H:i:s') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="my-4">
+                            <h6 class="bg-success text-white text-center py-2">Justificatif d'absence/retard</h6>
+
+                            {% if controlEleve.etat == 'justifié' %}
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th>Motif</th>
+                                        <td>{{ controlEleve.commentaireJustificatif|capitalize }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Saisie par</th>
+                                        <td>{{ controlEleve.saisieJustificatif.nomComplet }} le {{ controlEleve.dateJustificatif|date('d/m/Y H:i:s') }}</td>
+                                    </tr>
+
+                                    {% if controlEleve.justificatif %}
+                                        <tr>
+                                            <th>Justificatif</th>
+                                            <td><a href="{{ asset('dossier/eleves/justificatifs/' ~ controlEleve.justificatif) }}" target="_blank"><i class="fas fa-file-pdf fs-3"></i></a></td>
+                                        </tr>
+                                    {% endif %}
+                                </table>
+                            {% else %}
+                                <div>
+                                    {{ include('gandaal/administration/pedagogie/admin/gestion_absence/_form.html.twig', {'button_label': 'Valider'}) }}
+                                </div>
+                            {% endif %}
+                            {# <a class="btn btn-warning mt-2" href="{{ path('app_gandaal_administration_pedagogie_admin_gestion_absence_edit', {'id': controlEleve.id, etablissement: etablissement.id}) }}">
+                                Modifier
+                            </a> #}
+                        </div>
+                    </div>
+
+                    <h6 class="bg-dark text-white text-center py-2">Récapitulatif des contrôles</h6>
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th class='text-center'>Type</th>
+                                <th class='text-center'>Total</th>
+                                <th class='text-center'>Justifié</th>
+                                <th class='text-center'>Non Justifié</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Absences</td>
+                                <td class='text-center'>{{ absences.total }}</td>
+                                <td class='text-center'>{{ absences.justifie }}</td>
+                                <td class='text-center'>{{ absences.non_justifie }}</td>
+                            </tr>
+                            <tr>
+                                <td>Retards</td>
+                                <td class='text-center'>{{ retards.total }}</td>
+                                <td class='text-center'>{{ retards.justifie }}</td>
+                                <td class='text-center'>{{ retards.non_justifie }}</td>
+                            </tr>
+                            <tr>
+                                <td>Exclusions</td>
+                                <td class='text-center'>{{ exclusions.total }}</td>
+                                <td class='text-center'>{{ exclusions.justifie }}</td>
+                                <td class='text-center'>{{ exclusions.non_justifie }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table des contrôles -->
+                <div class="my-4">
+                    <h6 class="bg-primary text-white text-center py-2">Détails des contrôles</h6>
+                    <table class="table table-striped table-bordered table-hover text-center">
+                        <thead class='text-center'>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>État</th>
+                                <th>Matière</th>
+                                <th>Justificatif</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for control in controls %}
+                                <tr>
+                                    <td>{{ control.dateControl|date('d/m/Y') }}</td>
+                                    <td>{{ control.type|capitalize }}</td>
+                                    <td class="{{ control.etat == 'justifié' ? 'bg-success text-white' : 'bg-warning text-dark' }}">{{ control.etat|capitalize }}</td>
+                                    <td>{{ control.event ? control.event.matiere.nom :'' }}</td>
+                                    <td>
+                                        {% if control.justificatif %}
+                                            <a href="{{ asset('dossier/eleves/justificatifs/' ~ control.justificatif) }}" target="_blank"><i class="fas fa-file-pdf"></i> Voir</a>
+                                        {% else %}
+                                            Aucun
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="my-4">
+                    <h6 class="bg-info text-white text-center py-2">Récapitulatif par matière</h6>
+                    <table class="table table-striped table-bordered table-hover text-center">
+                        <thead>
+                            <tr>
+                                <th>Matière</th>
+                                <th>Absences</th>
+                                <th>Retards</th>
+                                <th>Exclusions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for matiere, recap in recapParMatiere %}
+                                <tr>
+                                    <td class='text-start'>{{ matiere|capitalize }}</td>
+                                    <td class='text-center'>{{ recap.absences }}</td>
+                                    <td class='text-center'>{{ recap.retards }}</td>
+                                    <td class='text-center'>{{ recap.exclusions }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="d-flex justify-content-between my-3">
+                    <a class="btn btn-light" href="javascript:history.back()">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </a>
+                    <a class="btn btn-warning" href="{{ path('app_gandaal_administration_pedagogie_admin_gestion_absence_edit', {'id': controlEleve.id, etablissement: etablissement.id}) }}">
+                        Modifier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

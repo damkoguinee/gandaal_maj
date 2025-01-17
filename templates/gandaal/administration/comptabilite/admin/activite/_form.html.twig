@@ -1,0 +1,14 @@
+{{ form_errors(form) }}
+{{ form_start(form) }}
+    <div class="row  mb-1">
+        <label class="form-label mx-1" for="">Activité <a href="{{path('app_gandaal_administration_comptabilite_admin_config_actvite_scolaire_new', {etablissement : etablissement.id}) }}" class="btn btn-sm btn-warning"><i class="fas fa-plus"></i></a></label>
+        <div class="mx-1">{{ form_widget(form.activite) }}</div>
+    </div>
+    <div class="row mb-1">
+        {{ form_row(form.montant) }}
+    </div>
+    <div class="row mb-1">
+        {{ form_row(form.type) }}
+    </div>
+    <button class="btn btn-primary ">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}

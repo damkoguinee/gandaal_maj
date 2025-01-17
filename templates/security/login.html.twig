@@ -1,0 +1,184 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row align-items-center px-4  py-4 mx-auto" style="background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        <div class="row my-1 justify-content-center">                  
+            <div class="card" style="width: 8rem;">
+                <img src="{{asset(chemin_images_config)}}gandaal.jpg" class="card-img-top m-auto" alt="Logo" style="width: 8rem; height: 8rem">
+            </div>
+        </div>
+
+        <div class="row w-100 mx-auto justify-content-center" style="background-color:#152736; color: white;">
+            
+            <div class="col-12 m-auto text-center" style="background-color:#152736;">
+                <div class="row justify-content-center">
+                    <img width="100" height="40" src="{{asset(chemin_images_config)}}drapeau.png" class="card-img-top">
+                    
+                </div>
+                <div class="d-flex  align-items-center">
+
+                    <div class="col-md-4 col-12 my-2 text-center">
+                        {% if entreprise.logo %}    
+                            {# <img src="{{asset(chemin_images_config ~ entreprise.logo)}}" class="img-fluid"> #}
+                            <img src="{{asset(chemin_images_config) ~ entreprise.logo}}" class="img-fluid" alt="image logo" width='150' height='86'>
+                        {% else %}
+                            <img src="{{asset(chemin_images_config)}}default.jpg" class="img-fluid">
+                        {% endif %}
+                    </div>  
+
+                    <form method="post">
+                        {% if error %}
+                            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                        {% endif %}
+
+                        {% if app.user %}
+                            <div class="mb-3">
+                                Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
+                            </div>
+                        {% endif %}
+
+                        {% if licenceExpiree %}
+                            <div class="text-center alert alert-danger fs-5" id="scrollingTextttttt">
+                                Cher Client, Votre licence a expiré le {{ licence.dateFin|date('d/m/Y') }}. 
+                                Veuillez contacter votre gestionnaire DAMKO pour procéder au renouvellement afin de continuer à utiliser le logiciel.
+                                Nous vous remercions de votre confiance.
+                                
+                                <!-- Bouton pour contacter le gestionnaire -->
+                                <a href="mailto:responsable-commercial@damkocompany.com" class="btn btn-danger mt-2">Contacter le gestionnaire</a>
+                                
+                                <!-- Bouton pour procéder au paiement -->
+                                <a href="{{licence.lienPaiement}}" class="btn btn-primary mt-2">Renouveler la licence</a>
+                            </div>
+                        {% elseif alerteExpiration %}
+                            <div class="text-center alert alert-warning fs-5" id="scrollingTextttttt">
+                                Cher Client, Votre licence arrivera à expiration le {{ licence.dateFin|date('d/m/Y') }}. 
+                                Nous vous invitons à prendre contact avec votre gestionnaire DAMKO pour procéder à la régularisation.
+                                Nous vous remercions de votre confiance.
+                                
+                                <!-- Bouton pour contacter le gestionnaire -->
+                                <a href="mailto:responsable-commercial@damkocompany.com" class="btn btn-warning mt-2">Contacter le gestionnaire</a>
+                                
+                                <!-- Bouton pour procéder au paiement -->
+                                <a href="{{licence.lienPaiement}}" class="btn btn-primary mt-2">Renouveler la licence</a>
+                            </div>
+                        {% endif %}
+
+                        
+
+                        <h1 class="h5 my-3 font-weight-normal">Accéder à votre espace {{entreprise.nom|ucwords}}</h1>
+
+                        <div class="form-group">
+                            <label for="inputUsername">Votre identifiant<sup>*</sup></label>
+                            <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPassword">Mot de passe<sup>*</sup></label>
+                            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="promo" class="form-label">Année-Scolaire<sup>*</sup></label>
+                            {% set currentYear = "now"|date("Y") %}
+                            {% set previousYear = currentYear - 3 %}
+                            <select id="promo" name="promo" class="form-select" required>
+                                <option value=""></option>
+                                {% for year in range(previousYear, currentYear) %}
+                                    {% set nextYear = year + 1 %}
+                                    <option value="{{ nextYear }}">{{ year ~ '-' ~ nextYear }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <button class="btn btn-lg btn-primary my-2 w-100" type="submit">
+                            Connexion
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 col-12 mx-auto p-4 mt-5 bg-light border border-danger border-3 rounded shadow-lg">
+            <legend class="text-center p-2" style="background-color:#152736; color: white; font-size: 20px; border-radius: 5px;">
+                À Propos de la licence et du logiciel Gandaal
+            </legend>
+
+            <div class="text-center mt-4">
+                <p class="mb-2" style="font-weight: bold; font-size: 16px;">Gandaal est un logiciel complet de gestion scolaire, couvrant tous les niveaux d'éducation, de la maternelle à l'université.</p>
+                <p class="mb-4">Il permet une gestion intégrée et efficace des services administratifs, pédagogiques et financiers des établissements scolaires.</p>
+            </div>
+
+            <div class="text-center mt-2">
+                <p><strong>Siège Social :</strong> Labé, République de Guinée</p>
+                <p><strong>Matricule N° :</strong> 11978</p>
+                <p><strong>NIF :</strong> 482907474</p>
+            </div>
+
+            <div class="text-center mt-3">
+                <p><strong>Téléphone :</strong> (+224) 628 19 66 28</p>
+                <p><strong>Email :</strong> <a href="mailto:responsable-commercial@damkocompany.com" style="text-decoration: none; color: #d9534f;">responsable-commercial@damkocompany.com</a></p>
+            </div>
+
+            <div class="text-center mt-3">
+                <p><strong>Numéro de licence :</strong> {{licence.numeroLicence}}</p>
+                <p><strong>Date de souscription :</strong> {{licence.dateDebut|date('d/m/Y')}}</p>
+                {% if licence.typeLicence != 'illimité' %}
+                    <p style="color: red; font-weight: bold;"><strong>Valable jusqu'au :</strong> {{licence.dateFin|date('d/m/Y')}}</p>
+                    
+                {% else %}
+                    <p style="color: red; font-weight: bold;"><strong>Valadité :</strong>Licence Illimitée</p>
+                    
+                {% endif %}
+                
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="https://wa.me/00224628196628" target="_blank" style="text-decoration: none; color: #25D366; font-size: 24px; margin-right: 15px;">
+                    <i class="fab fa-whatsapp"></i> <!-- Icône WhatsApp -->
+                </a>
+                <a href="https://www.facebook.com/share/qPPBv4ueSigLjZaj/" target="_blank" style="text-decoration: none; color: #3b5998; font-size: 24px; margin-right: 15px;">
+                    <i class="fab fa-facebook-f"></i> <!-- Icône Facebook -->
+                </a>
+            </div>
+
+            <div class="text-center mt-4">
+                <img src="{{ asset('images/config/copyright.jpg') }}" alt="Copyright" height="40">
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        .container-fluid {
+            width: 100%;
+            padding: 0;
+        }
+        .container-fluid > .row {
+            margin-top : 50%;
+        }
+        .card {
+            width: 6rem;
+            height: 6rem;
+        }
+        .card-img-top {
+            width: 6rem;
+            height: 6rem;
+        }
+        .col-12 {
+            margin-bottom: 1rem;
+        }
+        .form-control {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}

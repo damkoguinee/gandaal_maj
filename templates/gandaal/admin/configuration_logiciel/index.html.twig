@@ -1,0 +1,50 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}configuration{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_admin_site.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto mt-1" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+
+        <div class="col-sm-12 col-md-10 m-auto  mt-1">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="4" class="text-center bg-info text-white">
+                            Liste des configuration_logiciels 
+                            <a class="btn btn-warning" href="{{ path('app_gandaal_admin_configuration_logiciel_new', {'etablissement': etablissement.id}) }}">Enregistrer une configuration_logiciel</a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Caisse par defaut</th>
+                        <th class="bg-info text-white">document élève</th>
+                        <th class="bg-info text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, configuration_logiciel in configuration_logiciels %}
+                    <tr>
+                        <td class="text-center">
+                            {{ (key +1) }}                            
+                        </td>
+                        <td>{{ configuration_logiciel.caisseDefaut ? configuration_logiciel.caisseDefaut.nom : '' }}</td>
+                        <td class="text-center">{{ configuration_logiciel.documentEleve }}</td>
+                        <td class="text-center">
+                            <a class="btn btn-warning" href="{{ path('app_gandaal_admin_configuration_logiciel_edit', {'id': configuration_logiciel.id, 'etablissement' : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">Aucune configuration_logiciel enregistrée</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit LienFamilial{% endblock %}
+
+{% block body %}
+    <h1>Edit LienFamilial</h1>
+
+    {{ include('gandaal/administration/scolarite/lien_familial/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_gandaal_administration_scolarite_lien_familial_index') }}">back to list</a>
+
+    {{ include('gandaal/administration/scolarite/lien_familial/_delete_form.html.twig') }}
+{% endblock %}

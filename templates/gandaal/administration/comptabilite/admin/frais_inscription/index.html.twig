@@ -1,0 +1,51 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}frais inscription{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_admin.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+                <table class="table table-bordered table-striped table-hover align-middle">
+
+                    <thead class="sticky-top bg-light text-center">
+                        <tr>
+                            <th colspan="5" class="text-center bg-info text-white">
+                                <a class="btn btn-light text-center" href="{{path("app_gandaal_administration_comptabilite_admin_frais_inscription_new", {etablissement : etablissement.id})}}">Ajouter</a>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>N°</th>
+                            <th>Niveau</th>
+                            <th>Description</th>
+                            <th>Montant</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, frais_inscription in frais_inscriptions %}
+                        <tr>
+                            <td class="text-center">{{ key + 1 }}</td>
+                            <td>{{ frais_inscription.cursus.nom|ucwords }}</td>
+                            <td>{{ frais_inscription.description|ucwords }}</td>
+                            <td class="text-center">{{ frais_inscription.montant|number_format(0,',',' ') }}</td>
+                            <td class="text-center">
+                                <a class="btn btn-success" href="{{ path('app_gandaal_administration_comptabilite_admin_frais_inscription_show', {'id': frais_inscription.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_admin_frais_inscription_edit', {'id': frais_inscription.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colsPan="5">Aucun frais enregistré</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

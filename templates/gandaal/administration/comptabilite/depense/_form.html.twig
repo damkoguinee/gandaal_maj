@@ -1,0 +1,49 @@
+{{ form_errors(form) }}
+{{ form_start(form) }}
+    <div class="row  mb-1">
+        <label class="form-label mx-1" for="">Catégorie dépense <a href="{{path('app_gandaal_administration_comptabilite_categorie_depense_new', { etablissement : etablissement.id }) }}" class="btn btn-sm btn-warning"><i class="fas fa-plus"></i></a></label>
+        <div class="mx-1">{{ form_widget(form.categorieDepense) }}</div>
+    </div>
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.montant) }}
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.devise) }}
+        </div>
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.modePaie) }}
+        </div>
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.numeroPaie) }}
+        </div>
+    </div>
+    <div class="row mb-1">        
+
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.banquePaie) }}
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.caisse) }}
+        </div>
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.tva) }}
+        </div>
+    </div>
+
+    <div class="row mb-1">  
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.dateOperation) }}
+        </div>      
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.description) }}
+        </div>
+
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.justificatif) }}
+        </div>
+    </div>
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}

@@ -1,0 +1,51 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Détail du devoir{% endblock %}
+
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg'); background-size: cover; background-position: center;">
+        {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+        
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        {# {{dump(form)}} #}
+                        <button class="btn btn-primary">Soumettre</button>
+                    {{ form_end(form) }}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const noteInputs = document.querySelectorAll('.note-input');
+
+            noteInputs.forEach((input, index) => {
+                input.addEventListener('keydown', function(event) {
+                    // Si "Entrée" est pressée
+                    if (event.key === "Enter") {
+                        event.preventDefault(); // Empêche la soumission du formulaire
+                        const nextInput = noteInputs[index + 1]; // Sélectionne le champ suivant
+                        if (nextInput) {
+                            nextInput.focus(); // Donne le focus au champ suivant
+                        }
+                    }
+                });
+            });
+
+            // Mettre le focus sur le premier champ dès le chargement de la page
+            if (noteInputs.length > 0) {
+                noteInputs[0].focus();
+            }
+        });
+    </script>
+{% endblock %}

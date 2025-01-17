@@ -1,0 +1,73 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}modification cours{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        <div class="row">
+            {# {% include "gandaal/_common/_nav_pedagogie_2.html.twig" %} #}
+            <div class="col-sm-12 col-md-6 border border-danger border-4 rounded-2 p-2 ">
+                <h4>Modifier un cours/TD</h4>            
+                {{ include('gandaal/administration/pedagogie/admin/calendar/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+                <div class="card shadow-sm mb-4">
+                    {% if personnelActif is not empty %}
+                    
+                        {% if personnelActif.personnel.photo %}
+                            <div class="card-header bg-info text-white text-center">
+                                <img src="{{ asset('dossier/personnels/' ~ personnelActif.personnel.photo) }}" alt="Photo de {{ personnelActif.personnel.prenom }} {{ personnelActif.personnel.nom }}" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                            </div>
+                        {% endif %}
+                        <div class="card-body mb-0 pb-0">
+                            <table class="table table-bordered table-striped table-hover align-middle">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="2">
+                                            <table class="table table-bordered table-striped table-hover align-middle m-0 p-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Matricule</th>
+                                                        <td>{{ personnelActif.personnel.matricule|strtoupper }}</td>
+                                                        <th>Type</th>
+                                                        <td>{{ personnelActif.personnel.typeUser|capitalize }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Prénom & Nom</th>
+                                        <td>{{ personnelActif.personnel.nomComplet }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date de Naissance</th>
+                                        <td>{{ personnelActif.personnel.dateNaissance ? personnelActif.personnel.dateNaissance|date('d/m/Y') : '' }} - {{ personnelActif.personnel.age }} an(s)</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <th><i class="fas fa-phone-alt"></i> Téléphone</th>
+                                        <td>{{ personnelActif.personnel.telephone }}</td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                    {% endif %}
+                </div>
+
+            </div>
+            
+        </div>
+
+        <a class="btn btn-light" href="javascript:history.back()">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+{% endblock %}

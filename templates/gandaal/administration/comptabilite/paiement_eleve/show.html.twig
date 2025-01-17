@@ -1,0 +1,126 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail paiement{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        <h4 class='bg-warning'>Détail du paiement {{paiement_eleve.reference}} de {{paiement_eleve.inscription.eleve.nomComplet}} matricule N° {{paiement_eleve.inscription.eleve.matricule}}</h4>
+
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <tbody>
+                
+                <tr>
+                    <th>Type de paiement</th>
+                    <td>{{ paiement_eleve.typePaie }}</td>
+                </tr>
+                <tr>
+                    <th>Montant</th>
+                    <td>{{ paiement_eleve.montant|number_format(0,',',' ') }}</td>
+                </tr>
+                <tr>
+                    <th>Mode de paiement</th>
+                    <td>{{ paiement_eleve.modePaie.nom|ucfirst }}</td>
+                </tr>
+                <tr>
+                    <th>Caisse</th>
+                    <td>{{ paiement_eleve.caisse.nom|ucfirst }}</td>
+                </tr>
+                <tr>
+                    <th>Devise</th>
+                    <td>{{ paiement_eleve.devise.nom|ucfirst }}</td>
+                </tr>
+                <tr>
+                    <th>Taux</th>
+                    <td>{{ paiement_eleve.taux }}</td>
+                </tr>
+            
+                <tr>
+                    <th>Banque</th>
+                    <td>{{ paiement_eleve.banquePaie }}</td>
+                </tr>
+
+                <tr>
+                    <th>Numero/Bordereau</th>
+                    <td>{{ paiement_eleve.numeroPaie }}</td>
+                </tr>
+                <tr>
+                    <th>Date de Paiement</th>
+                    <td>{{ paiement_eleve.dateOperation ? paiement_eleve.dateOperation|date('d/m/Y H:i:s') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Date de Saisie</th>
+                    <td>{{ paiement_eleve.dateSaisie ? paiement_eleve.dateSaisie|date('d/m/Y H:i:s') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Saisie Par</th>
+                    <td>{{ paiement_eleve.saisiePar.nomComplet}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {% if paiement_lies is not empty %}
+            <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                <thead class="sticky-top bg-light text-center">
+                    <form>
+                        <tr>
+                            <th colspan="6" class="text-center bg-info text-white">liste des paiements liés</th>
+                        </tr>
+                    </form>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Elève</th>
+                        <th class="bg-info text-white">Type</th>
+                        <th class="bg-info text-white">Montant</th>
+                        <th class="bg-info text-white">Date</th>
+                        {# <th class="bg-info text-white">Saisie Par</th> #}
+                        <th class="bg-info text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, paiement_lie in paiement_lies %}
+                        <tr>
+                            <td class="text-center">{{ key + 1 }}</td>
+                            <td class="text-start">{{ paiement_lie.inscription.eleve.nomComplet }}</td>
+                            <td class="text-start">{{ paiement_lie.typePaie|ucfirst }}</td>
+                            <td class="text-end">{{ paiement_lie.montant|number_format(0,',',' ') }}</td>
+                            <td class="text-center">{{ paiement_lie.dateOperation|date("d/m/Y") }}</td>
+                            {# <td class="text-center">{{ paiement_lie.saisiePar.nomComplet() }}</td> #}
+                            
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center">
+                                    <a class="btn btn-success mx-1" href="{{ path('app_gandaal_administration_comptabilite_paiement_eleve_show', {'id': paiement_lie.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+
+                                    <form method="post" action="{{ path('app_gandaal_administration_comptabilite_paiement_eleve_confirm_delete', {'id': paiement_lie.id, 'etablissement': etablissement.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ paiement_lie.id) }}">
+                                        <input type="hidden" name="param" value="simple">
+                                        <button class="btn btn-danger">Annuler</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5">Aucun paiement lié</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        
+        <div class="d-flex justify-content-between">
+
+            <a class="btn btn-light" href="javascript:history.back()"><i class="fas fa-arrow-left"></i>Retour</a>       
+
+            {# <a href="{{ path('app_gandaal_administration_comptabilite_paiement_eleve_edit', {'id': paiement_eleve.id}) }}">edit</a> #}
+
+            <form method="post" action="{{ path('app_gandaal_administration_comptabilite_paiement_eleve_confirm_delete', {'id': paiement_eleve.id, 'etablissement': etablissement.id}) }}" >
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ paiement_eleve.id) }}">
+                <input type="hidden" name="param" value="general">
+                <button class="btn btn-danger">Tout annuler</button>
+            </form>
+        </div>
+{% endblock %}

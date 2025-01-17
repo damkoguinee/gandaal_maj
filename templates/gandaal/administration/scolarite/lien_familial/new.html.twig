@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New LienFamilial{% endblock %}
+
+{% block body %}
+    <h1>Create new LienFamilial</h1>
+
+    {{ include('gandaal/administration/scolarite/lien_familial/_form.html.twig') }}
+
+    <a href="{{ path('app_gandaal_administration_scolarite_lien_familial_index') }}">back to list</a>
+{% endblock %}

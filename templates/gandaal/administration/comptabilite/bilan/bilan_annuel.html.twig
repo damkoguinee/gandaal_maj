@@ -1,0 +1,204 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Bilan annuel{% endblock %}
+
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 90vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg'); background-size: cover; background-attachment: fixed;">
+        <div class="col-sm-12 col-md-12 my-4">
+            {{ include('gandaal/_common/_messages_flash.html.twig') }} 
+
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-info text-white text-center">
+                    <h4>Bilan Comptable</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover align-middle">
+                            <thead class="sticky-top bg-light text-center shadow-sm">
+                                <tr>
+                                    <th colspan="4" class="bg-info text-white">Bilan Comptable</th>
+                                </tr>
+                                <tr>
+                                    <th class="bg-info text-white">Nouveaux</th>
+                                    <th class="bg-info text-white">Anciens</th>
+                                    <th class="bg-info text-white">Scolarité</th>
+                                    <th class="bg-info text-white">Totaux</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table class="table table-bordered table-hover align-middle">
+                                            <tbody>
+                                                {% for data in dataPaiements %}
+                                                    <tr class="table-primary">
+                                                        <td colspan="2" class="text-center rounded shadow-sm">
+                                                            <strong>{{ data.cursus.nom|ucwords }}</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nombre</td>
+                                                        <td class="text-end">{{ data.nbre|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Cumul des Paiements</td>
+                                                        <td class="text-end text-success">{{ data.totalPaiement|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Reste à payer</td>
+                                                        <td class="text-end text-danger">{{ data.resteApayer|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Taux Recouvrement</td>
+                                                        <td class="text-end">{{ data.tauxRecouvrement|number_format(2,',',' ') }}%</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table class="table table-bordered table-hover align-middle">
+                                            <tbody>
+                                                {% for data in dataPaiementsReinscrits %}
+                                                    <tr class="table-secondary">
+                                                        <td colspan="2" class="text-center rounded shadow-sm">
+                                                            <strong>{{ data.cursus.nom|ucwords }}</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nombre</td>
+                                                        <td class="text-end">{{ data.nbre|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Cumul des Paiements</td>
+                                                        <td class="text-end text-success">{{ data.totalPaiement|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Reste à payer</td>
+                                                        <td class="text-end text-danger">{{ data.resteApayer|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Taux Recouvrement</td>
+                                                        <td class="text-end">{{ data.tauxRecouvrement|number_format(2,',',' ') }}%</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+
+                                    <td>
+                                        <table class="table table-bordered table-hover align-middle">
+                                            <tbody>
+                                                {% for data in dataPaiementsScolarite %}
+                                                    <tr class="table-success">
+                                                        <td colspan="2" class="text-center rounded shadow-sm">
+                                                            <strong>{{ data.cursus.nom|ucwords }}</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nombre</td>
+                                                        <td class="text-end">{{ data.nbre|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Cumul des Paiements</td>
+                                                        <td class="text-end text-success">{{ data.totalPaiement|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Reste à payer</td>
+                                                        <td class="text-end text-danger">{{ data.resteApayer|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Taux Recouvrement</td>
+                                                        <td class="text-end">{{ data.tauxRecouvrement|number_format(2,',',' ') }}%</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+
+                                    <td>
+                                        <table class="table table-bordered table-hover align-middle">
+                                            <tbody>
+                                                {% for data in dataPaiementsTotal %}
+                                                    <tr class="table-warning">
+                                                        <td colspan="2" class="text-center rounded shadow-sm">
+                                                            <strong>{{ data.cursus.nom|ucwords }}</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nombre</td>
+                                                        <td class="text-end">{{ data.nbre|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Cumul des Paiements</td>
+                                                        <td class="text-end text-success">{{ data.totalPaiement|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Reste à payer</td>
+                                                        <td class="text-end text-danger">{{ data.resteApayer|number_format(0,',',' ') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Taux Recouvrement</td>
+                                                        <td class="text-end">{{ data.tauxRecouvrement|number_format(2,',',' ') }}%</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div class="card-body p-0">
+                    <table class="table table-bordered table-striped table-hover align-middle mb-0">
+                        <thead class="sticky-top bg-dark text-white">
+                            <tr>
+                                <th class="text-center">N°</th>
+                                <th class="text-center">Matricule</th>
+                                <th class="text-center">Prénom & Nom</th>
+                                <th class="text-center">Téléphone</th>
+                                <th class="text-center">Filiation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for classe, data in groupedByClass %}
+                                <tr class="table-warning text-dark">
+                                    <th colspan="5" class="text-left">{{ classe }}</th>
+                                </tr>
+                                {% for inscription in data.inscriptions %}
+                                    <tr>
+                                        <td class="text-center">{{ loop.index }}</td>
+                                        <td>{{ inscription.eleve.matricule }}</td>
+                                        <td>{{ inscription.eleve.nomComplet }}</td>
+                                        <td class="text-center">{{ inscription.eleve.telephone }}</td>
+                                        <td>
+                                            {% for filiation in inscription.eleve.filiations %}
+                                                {% if filiation.lienFamilial == 'père' %}
+                                                    {{ filiation.prenom|ucwords }}
+                                                {% endif %}
+                                            {% endfor %}
+                                            &
+                                            {% for filiation in inscription.eleve.filiations %}
+                                                {% if filiation.lienFamilial == 'mère' %}
+                                                    {{ filiation.prenom|ucwords ~ " " ~ filiation.nom|strtoupper }}
+                                                    
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

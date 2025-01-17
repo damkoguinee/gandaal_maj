@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tuteur index{% endblock %}
+
+{% block body %}
+    <h1>Tuteur index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Roles</th>
+                <th>Password</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Email</th>
+                <th>Telephone</th>
+                <th>Adresse</th>
+                <th>Ville</th>
+                <th>Pays</th>
+                <th>Matricule</th>
+                <th>Sexe</th>
+                <th>DateNaissance</th>
+                <th>LieuNaissance</th>
+                <th>Statut</th>
+                <th>Photo</th>
+                <th>TypeUser</th>
+                <th>LienFamilial</th>
+                <th>Profession</th>
+                <th>LieuTravail</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tuteur in tuteurs %}
+            <tr>
+                <td>{{ tuteur.id }}</td>
+                <td>{{ tuteur.username }}</td>
+                <td>{{ tuteur.roles ? tuteur.roles|json_encode : '' }}</td>
+                <td>{{ tuteur.password }}</td>
+                <td>{{ tuteur.nom }}</td>
+                <td>{{ tuteur.prenom }}</td>
+                <td>{{ tuteur.email }}</td>
+                <td>{{ tuteur.telephone }}</td>
+                <td>{{ tuteur.adresse }}</td>
+                <td>{{ tuteur.ville }}</td>
+                <td>{{ tuteur.pays }}</td>
+                <td>{{ tuteur.matricule }}</td>
+                <td>{{ tuteur.sexe }}</td>
+                <td>{{ tuteur.dateNaissance ? tuteur.dateNaissance|date('Y-m-d') : '' }}</td>
+                <td>{{ tuteur.lieuNaissance }}</td>
+                <td>{{ tuteur.statut }}</td>
+                <td>{{ tuteur.photo }}</td>
+                <td>{{ tuteur.typeUser }}</td>
+                <td>{{ tuteur.lienFamilial }}</td>
+                <td>{{ tuteur.profession }}</td>
+                <td>{{ tuteur.lieuTravail }}</td>
+                <td>
+                    <a href="{{ path('app_gandaal_administration_scolarite_tuteur_show', {'id': tuteur.id}) }}">show</a>
+                    <a href="{{ path('app_gandaal_administration_scolarite_tuteur_edit', {'id': tuteur.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="22">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_tuteur_new') }}">Create new</a>
+{% endblock %}

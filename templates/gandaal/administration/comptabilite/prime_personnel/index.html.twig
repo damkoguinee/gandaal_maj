@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PrimePersonnel index{% endblock %}
+
+{% block body %}
+    <h1>PrimePersonnel index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Montant</th>
+                <th>Periode</th>
+                <th>Promo</th>
+                <th>DateOperation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for prime_personnel in prime_personnels %}
+            <tr>
+                <td>{{ prime_personnel.id }}</td>
+                <td>{{ prime_personnel.montant }}</td>
+                <td>{{ prime_personnel.periode }}</td>
+                <td>{{ prime_personnel.promo }}</td>
+                <td>{{ prime_personnel.dateOperation ? prime_personnel.dateOperation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_gandaal_administration_comptabilite_prime_personnel_show', {'id': prime_personnel.id}) }}">show</a>
+                    <a href="{{ path('app_gandaal_administration_comptabilite_prime_personnel_edit', {'id': prime_personnel.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_comptabilite_prime_personnel_new') }}">Create new</a>
+{% endblock %}

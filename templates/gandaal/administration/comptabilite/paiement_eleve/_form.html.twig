@@ -1,0 +1,103 @@
+
+<form  method="POST">
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-12">
+            {# <label class="form-label" for="">Recherchez un élève</label> #}
+            <input type="text" name="search" placeholder="{{search ? search.nomComplet : 'recherchez un élève'}}" class="form-control" id="search_user" placeholder="Récherchez un éleve">
+            <input type="hidden" name="id_eleve" value="{{search ? search.id : ''}}">
+        </div>
+        <div class="bg-light text-white" id="result-search"></div>
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-12">
+            <label class="form-label" for="type">Type de paiement</label>
+            <select name="type" required id="type" class="form-select">
+                <option value=""></option>
+                {# <option value="general">Frais Généraux</option> #}
+                <option value="reste_scolarite_annuel">Reste Scolarité Annuel</option>
+                <option value="inscription">Frais Ins/Reins</option>
+                {% for tranche in tranches %}
+                    <option value="{{tranche.id}}">{{tranche.nom|ucfirst}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="bg-light text-white" id="result-search"></div>
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-6">
+            <label class="form-label" for="montantPaye">Montant Payé</label>
+            <input type="text" name="montant" class="form-control" onKeyUp="formatMontant(this)" id="montantPaye">
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="form-label" for="devise">Devise</label>
+            <select name="devise" required id="type" class="form-select" id="devise">
+                {% if session_devise is not empty %}
+                    <option value="{{session_devise.id}}">{{session_devise.nom|ucfirst}}</option>
+                {% endif %}
+                
+                {% for devise in devises %}
+                    <option value="{{devise.id}}">{{devise.nom|ucfirst}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="form-label" for="taux">Taux</label>
+            <input type="text" name="taux" value="{{session_taux ? session_taux : 1}}" required class="form-control" id="taux">
+        </div>               
+    </div>
+
+    <div class="row mb-1"> 
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="modePaie">Mode de Paie</label>
+            <select name="modePaie" required id="type" class="form-select" id="modePaie">
+                {% if session_modePaie is not empty %}
+                    <option value="{{session_modePaie.id}}">{{session_modePaie.nom|ucfirst}}</option>
+                {% else %}
+                    <option value=""></option>
+                {% endif %}
+                {% for modePaie in modePaies %}
+                    <option value="{{modePaie.id}}">{{modePaie.nom|ucfirst}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="numeroPaie">Numéro Paie/Bordereau</label>
+            <input type="text" name="numeroPaie" value="{{session_numeroPaie ? session_numeroPaie : ""}}" class="form-control" id="numeroPaie">
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="banquePaie">Banque Paie</label>
+            <input type="text" name="banquePaie" value="{{session_banquePaie ? session_banquePaie : ""}}" class="form-control" id="banquePaie">
+        </div>               
+    </div>
+
+    <div class="row mb-1"> 
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="caisse">Caisse de dépôt</label>
+            <select name="caisse" required id="type" class="form-select" id="caisse">
+                {% if session_caisse is not empty %}
+                    <option value="{{session_caisse.id}}">{{session_caisse.nom|ucfirst}}</option>
+                {% else %}
+                    <option value=""></option>
+                {% endif %}
+                {% for caisse in caisses %}
+                    <option value="{{caisse.id}}">{{caisse.nom|ucfirst}}</option>
+                {% endfor %}
+
+                {# <option value="" ></option>
+                {% for caisse in caisses %}
+                    <option value="{{ caisse.id}}" {% if app.session.get('configLogiciel') is defined and app.session.get('configLogiciel').caisseDefaut.id == caisse.id %}
+                    selected
+                {% endif %}>{{ caisse.nom | ucwords }}</option>
+                {% endfor %} #}
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="datePaie">Date Paiement</label>
+            <input type="date" name="datePaie" class="form-control" id="datePaie" value="{{"now"|date("Y-m-d")}}">
+        </div>
+        <input type="hidden" name="paiement_eleve" value="paiement_eleve">            
+    </div>
+    <button class="btn btn-primary mb-2">{{ button_label|default('Ajouter') }}</button>
+</form>

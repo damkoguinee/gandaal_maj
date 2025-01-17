@@ -1,0 +1,40 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail formation{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_admin_site.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-12">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <tbody>
+                        <tr>
+                            <th>Niveau</th>
+                            <td>{{ formation.nom }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nom</th>
+                            <td>{{ formation.nom }}</td>
+                        </tr>
+                        <tr>
+                            <th>Code</th>
+                            <td>{{ formation.code|ucfirst }}</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-between my-4">
+                    <a class="btn btn-light" href="{{ path('app_gandaal_admin_site_formation_index', {etablissement : etablissement.id}) }}">Retour</a>
+
+                    <a class="btn btn-warning" href="{{ path('app_gandaal_admin_site_formation_edit', {'id': formation.id, etablissement : etablissement.id}) }}">Modifier</a>
+
+                    {{ include('gandaal/admin_site/formation/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

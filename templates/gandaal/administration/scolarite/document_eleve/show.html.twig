@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DocumentEleve{% endblock %}
+
+{% block body %}
+    <h1>DocumentEleve</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ document_eleve.id }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ document_eleve.type }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ document_eleve.nom }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_document_eleve_index') }}">back to list</a>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_document_eleve_edit', {'id': document_eleve.id}) }}">edit</a>
+
+    {{ include('gandaal/administration/scolarite/document_eleve/_delete_form.html.twig') }}
+{% endblock %}

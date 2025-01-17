@@ -1,0 +1,101 @@
+<form method="POST">
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-12">
+            <input type="text" name="search" placeholder="{{search ? search.nomComplet : 'recherchez un élève'}}" class="form-control" id="search_user" placeholder="Récherchez un élève">
+            <input type="hidden" name="id_eleve" value="{{search ? search.id : ''}}">
+        </div>
+        <div class="bg-light text-white" id="result-search"></div>
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-6">
+            <label for="periode" class="form-label">Période*</label>
+            {# <select class="form-select" name="periodes[]" multiple id="periode" aria-label="Sélectionnez une ou plusieurs périodes">
+                <option value="janvier">Janvier</option>
+                <option value="fevrier">Février</option>
+                <option value="mars">Mars</option>
+                <option value="avril">Avril</option>
+                <option value="mai">Mai</option>
+                <option value="juin">Juin</option>
+                <option value="juillet">Juillet</option>
+                <option value="aout">Août</option>
+                <option value="septembre">Septembre</option>
+                <option value="octobre">Octobre</option>
+                <option value="novembre">Novembre</option>
+                <option value="decembre">Décembre</option>
+            </select> #}
+            <select name="periodes[]" multiple id="periode" class="form-select mx-1">
+                <option value="">-- Sélectionnez --</option>
+                <option value="01">Janvier</option>
+                <option value="02">Février</option>
+                <option value="03">Mars</option>
+                <option value="04">Avril</option>
+                <option value="05">Mai</option>
+                <option value="06">Juin</option>
+                <option value="07">Juillet</option>
+                <option value="08">Août</option>
+                <option value="09">Septembre</option>
+                <option value="10">Octobre</option>
+                <option value="11">Novembre</option>
+                <option value="12">Décembre</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mb-1">
+        <div class="col-sm-12 col-md-6">
+            <label class="form-label" for="montantPaye">Montant Payé*</label>
+            <input type="text" name="montant" required class="form-control" onKeyUp="formatMontant(this)" id="montantPaye">
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="form-label" for="devise">Devise</label>
+            <select name="devise" required id="devise" class="form-select">
+                {% for devise in devises %}
+                    <option value="{{devise.id}}">{{devise.nom|ucfirst}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="form-label" for="taux">Taux</label>
+            <input type="text" name="taux" value="1" required class="form-control" id="taux">
+        </div>               
+    </div>
+
+    <div class="row mb-1"> 
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="modePaie">Mode de Paiement</label>
+            <select name="modePaie" required class="form-select" id="modePaie">                  
+                {% for modePaie in modePaies %}
+                    <option value="{{modePaie.id}}">{{modePaie.nom|ucfirst}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="numeroPaie">Numéro Paie/Bordereau</label>
+            <input type="text" name="numeroPaie" class="form-control" id="numeroPaie">
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="banquePaie">Banque Paie</label>
+            <input type="text" name="banquePaie" class="form-control" id="banquePaie">
+        </div>               
+    </div>
+
+    <div class="row mb-1"> 
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="caisse">Caisse*</label>
+            <select name="caisse" required class="form-select" id="caisse">
+                <option value=""></option>
+                {% for caisse in caisses %}
+                    <option value="{{caisse.id}}">{{caisse.nom|ucfirst}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label class="form-label" for="datePaie">Date Paiement</label>
+            <input type="datetime-local" name="datePaie" class="form-control" max="{{ "now"|date("Y-m-d H:i") }}" id="datePaie" value="{{"now"|date("Y-m-d H:i")}}">
+        </div>
+        <input type="hidden" name="avance_personnel" value="avance_personnel">            
+    </div>
+    
+    <button class="btn btn-primary mb-2">{{ button_label|default('Ajouter') }}</button>
+</form>

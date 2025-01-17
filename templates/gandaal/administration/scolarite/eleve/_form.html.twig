@@ -1,0 +1,186 @@
+<div class="container-fluid">
+    {% if step == 'step_one' %}
+        {# Étape 1: Inscription de l'élève #}
+        {{ form_start(form_eleve) }}
+        {{form_start(form_document)}}
+            <div class="row m-1 p-1 border border-2 border-dark rounded">
+                <legend class="text-center fw-bold">Informations de l'élève</legend>
+                <div class="row my-0 py-0">        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_eleve.matricule) }}
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_eleve.categorie) }}
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_eleve.nom) }}
+                    </div>        
+                    <div class="col-sm-12 col-md-4">
+                        {{ form_row(form_eleve.prenom) }}
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_eleve.sexe) }}
+                    </div> 
+                </div>
+                <div class="row my-0 py-0">        
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form_eleve.dateNaissance) }}
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form_eleve.lieuNaissance) }}
+                    </div> 
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_eleve.nationalite) }}
+                    </div>       
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_eleve.telephone) }}
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_eleve.email) }}
+                    </div> 
+                </div>
+                <div class="row my-0 py-0">        
+                    <div class="col-sm-12 col-md-6">
+                        {{ form_row(form_eleve.adresse) }}
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form_eleve.ville) }}
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form_eleve.pays) }}
+                    </div> 
+                </div>
+                <div class="row my-0 py-0">        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_eleve.ecoleOrigine) }}
+                    </div>
+                    <div class="col-sm-12 col-md-4">
+                        {{ form_row(form_eleve.photo) }}
+                    </div>
+
+
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form_document.nom) }}
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        {{ form_row(form_document.type) }}
+                    </div>
+                </div>              
+
+                <div class="mt-3 d-flex justify-content-end">
+                    <button type="submit" name="step_one" class="btn btn-primary btn-sm"><i class="fas fa-arrow-right"></i> Suivant</button>
+                </div>
+            </div>
+            {{ form_end(form_eleve) }}
+            {{form_end(form_document)}}
+    {% elseif step == 'step_two' %}
+        {# Étape 2: Informations de la filiation et du tuteur #}
+        {{ form_start(form_filiation) }}
+        {{ form_start(form_filiation_mere) }}
+        {{ form_start(form_tuteur) }}
+            <div class="row m-1 p-1 border border-2 border-dark rounded">
+                <legend class="text-center fw-bold">Informations des parents</legend>
+                <div class="row mb-4">
+                    <div class="col-5">
+                        <input type="text" name="search" class="form-control" id="search_user" placeholder="Récherchez un frère ou une soeur">
+                    </div>   
+                    <div class="bg-success bg-opacity-50 text-white" id="result-search"></div>
+                </div>
+                <div class="row my-0 py-0">        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation.nom) }}
+                    </div>        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation.prenom) }}
+                    </div>   
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation.telephone) }}
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation.email) }}
+                    </div>       
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation.profession) }}
+                    </div>        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation.lieuTravail) }}
+                    </div>   
+                </div>
+
+                <div class="row my-0 py-0">        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation_mere.nom) }}
+                    </div>        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation_mere.prenom) }}
+                    </div>   
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation_mere.telephone) }}
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation_mere.email) }}
+                    </div>       
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation_mere.profession) }}
+                    </div>        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_filiation_mere.lieuTravail) }}
+                    </div>   
+                </div>
+                
+                <div class="row my-0 py-0">        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_tuteur.nom) }}
+                    </div>        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_tuteur.prenom) }}
+                    </div>   
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_tuteur.telephone) }}
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_tuteur.email) }}
+                    </div>       
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_tuteur.profession) }}
+                    </div>        
+                    <div class="col-sm-12 col-md-2">
+                        {{ form_row(form_tuteur.lieuTravail) }}
+                    </div>   
+                </div>
+                <div class="mt-3 d-flex justify-content-between">
+                    {# <button type="submit" name="previous_step" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Retour</button> #}
+
+                    <a class="btn btn-secondary btn-sm" href="javascript:history.back()">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </a>
+                    <button type="submit" name="step_two" class="btn btn-primary btn-sm"><i class="fas fa-arrow-right"></i> Suivant</button>
+                </div>
+            </div>
+        {{ form_end(form_filiation) }}
+        {{ form_end(form_filiation_mere) }}
+        {{ form_end(form_tuteur) }}
+    {% elseif step == 'step_three' %}
+        {# Étape 3: Informations d'inscription #}
+        {{ form_start(form_inscription) }}
+            <div class="row m-1 p-1 border border-2 border-dark rounded">
+                <legend class="text-center fw-bold">Informations sur le parcours scolaire</legend>
+                <div class="row my-0 py-0">      
+                    {{ form_row(form_inscription.classe) }}                
+                    {{ form_row(form_inscription.remiseInscription) }}        
+                    {{ form_row(form_inscription.remiseScolarite) }}        
+                    {{ form_row(form_inscription.etatScol) }}        
+                    {{ form_row(form_inscription.statut) }}        
+                </div>
+                <div class="mt-3 d-flex justify-content-between">
+                    {# <button type="submit" name="previous_step" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Retour</button> #}
+                    <a class="btn btn-secondary btn-sm" href="javascript:history.back()">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </a>
+                    <button type="submit" name="step_three" class="btn btn-primary btn-sm"><i class="fas fa-arrow-right"></i> Suivant</button>
+                </div>
+            </div>
+        {{ form_end(form_inscription) }}
+    
+    {% endif %}
+</div>

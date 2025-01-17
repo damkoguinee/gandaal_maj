@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Salaire{% endblock %}
+
+{% block body %}
+    <h1>Create new Salaire</h1>
+
+    {{ include('gandaal/admin_site/salaire/_form.html.twig') }}
+
+    <a href="{{ path('app_gandaal_admin_site_salaire_index') }}">back to list</a>
+{% endblock %}

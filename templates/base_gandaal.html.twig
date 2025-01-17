@@ -1,0 +1,126 @@
+{# templates/base.html.twig #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="description" content="ecole, maternelle, recherche">
+        <title>{% block title %}Gandaal{% endblock %}</title>
+        {% if etablissement.entreprise is defined %}
+            <link rel="icon" href="{{ asset(chemin_images_config) }}logo.jpg" type="image/png">
+        {% endif %}
+        
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('all-styles') }}
+        {% endblock %}
+        <link rel="manifest" href="{{ asset('build/pwa-manifest.json') }}">
+        {% block autres %}
+            <script>
+                function printDiv(divId) {
+                    var contentToPrint = document.getElementById(divId).innerHTML;
+                    var originalContent = document.body.innerHTML;
+
+                    document.body.innerHTML = contentToPrint;
+                    window.print();
+                    document.body.innerHTML = originalContent;
+                }
+            </script>
+
+            <style>
+                @media print {
+                    .no-print {
+                        display: none;
+                    }
+                    .print-black-text td, .print-black-text th {
+                        color: black !important;
+                        background-color: white !important;
+                        font-size: 14px !important;
+                        border: 2px solid grey !important;
+                    }
+                }
+
+                /* Ajout de styles personnalisés pour un aspect plus moderne */
+                .table {
+                    font-size: 1rem;
+                }
+                thead th, tfoot th {
+                    background-color: #495057 !important;
+                    color: #f8f9fa !important;
+                }
+                td {
+                    font-size: 0.95rem;
+                    padding: 10px;
+                }
+                th {
+                    padding: 15px;
+                    font-size: 1.1rem;
+                }
+            </style>
+        {% endblock %}
+    </head>
+    <body style="background-image: url({{ asset('images/config/fond.jpg') }});">
+        {% block body %}
+            {% block header %}
+                <nav class="navbar navbar-expand-lg navbar-dark" id="nav-scroll" style="height:70px; background-color:#152736;">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="{{ path('app_home') }}">
+                            {% if etablissement.entreprise.logo is not empty %}
+                                <img src="{{asset(chemin_images_config) ~ etablissement.entreprise.logo}}" height="55" alt="image logo">
+
+                                
+                            {% else %}
+                                <img src="{{ asset('images/config/default.jpg') }}" height="55" alt="image logo">
+                            {% endif %}
+                        </a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse " id="navbarSupportedContent">
+                            {% block ul_menu %}
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-start">
+                                    <li class="nav-item">
+                                        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_etablissement_home", {etablissement : etablissement.id})}}">Accueil</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="">Stock</a>
+                                    </li>
+                                </ul>
+                            {% endblock %}
+                            <div class="contact-search-container-bottom d-flex justify-content-between align-items-center">
+                                {% if not app.user %}
+                                    <a class="text-white text-decoration-none d-inline-block p-2" href=" {{ path("app_login") }} ">
+                                        <i class="fa-solid fa-circle-user mx-2"></i>Connexion
+                                    </a>
+                                {% else %}
+                                    <a class="text-success text-decoration-none d-inline-block p-2" href="{{path("app_gandaal_personnel", {etablissement : etablissement.id})}}">
+                                        <i class="fa-solid fa-circle-user mx-2"></i> {{ app.user.username |ucwords }}
+                                    </a>
+                                    <a class="text-white text-decoration-none d-inline-block p-2 text-danger" href=" {{ path("app_logout") }} ">
+                                        <i class="fa-solid fa-circle-user mx-2 text-danger"></i><span class="text-danger fw-bold">Déconnexion</span>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            {% endblock %}
+            {% block carousel %}
+                <div id="carouselExampleAutoplaying" class="carousel slide py-2" data-bs-ride="carousel">
+                </div>
+            {% endblock %}
+            {% block main %}
+                <main>
+                    {% block produits %}
+                    {% endblock %}
+                    {% block scroll %}
+                        <button class="scroll" id="scrollButton" title="Go-to-top" onclick="scrollToTop()">
+                            <i class="fa-solid fa-backward-step fa-rotate-90"></i>
+                        </button>
+                    {% endblock %}
+                </main>
+            {% endblock %}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('all-scripts') }}
+        {% endblock %}
+    </body>
+</html>

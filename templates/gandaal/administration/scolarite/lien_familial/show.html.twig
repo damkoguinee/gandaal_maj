@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}LienFamilial{% endblock %}
+
+{% block body %}
+    <h1>LienFamilial</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ lien_familial.id }}</td>
+            </tr>
+            <tr>
+                <th>LienParent</th>
+                <td>{{ lien_familial.lienParent }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_lien_familial_index') }}">back to list</a>
+
+    <a href="{{ path('app_gandaal_administration_scolarite_lien_familial_edit', {'id': lien_familial.id}) }}">edit</a>
+
+    {{ include('gandaal/administration/scolarite/lien_familial/_delete_form.html.twig') }}
+{% endblock %}

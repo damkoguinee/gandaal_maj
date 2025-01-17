@@ -1,0 +1,333 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Bulletins{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto body" style="min-height: 100vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg');">
+
+        <div class="col-sm-12 col-md-12 m-0 p-0 sticky-top" style="overflow:auto;">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            {% set cumulBrutGeneral = 0 %}
+            {% set cumulHeuresGeneral = 0 %}
+            {% set cumulPrimeGeneral = 0 %}
+            {% set cumulAvanceGeneral = 0 %}
+            {% set cumulNetGeneral = 0 %}
+            {% set colspan = 6 + matieres|length %}
+
+            <table class="table table-bordered table-striped table-hover align-middle m-0 p-0" style="font-size: 10px;">
+                <thead class="sticky-top bg-light text-center" >
+                    <tr>
+                        <th colspan="{{colspan}}">
+                            <div class="row bg-info text-white py-2">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                    <a class="btn btn-warning my-1" aria-current="page" href="{{path("app_gandaal_administration_pedagogie_devoir_eleve_index", {etablissement : etablissement.id})}}">Notes</a>
+                                    <form class="form">
+
+                                        <select name="classe" class="form-select" id="selectClasse" onChange="this.form.submit()">
+                                            {% if search_classe %}
+                                                <option value="{{search_classe.id}}">{{search_classe.nom|strtoupper }}</option>
+                                            {% else %}
+                                                <option value="">Sélectionnez une classe</option>
+                                                
+                                            {% endif %}
+                                            
+                                            <option value="">Sélectionnez une classe</option>
+                                            {% for classe in classes %}
+                                                <option value="{{ classe.id }}">{{ classe.nom }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+                                    <form class="form">
+                                        <select name="periode" id="periode" class="form-select mx-1" onChange="this.form.submit()">
+                                            <option value="">-- Sélectionnez un mois --</option>
+                                            <option value="01" {% if periode_select == "01" %}selected{% endif %}>Janvier</option>
+                                            <option value="02" {% if periode_select == "02" %}selected{% endif %}>Février</option>
+                                            <option value="03" {% if periode_select == "03" %}selected{% endif %}>Mars</option>
+                                            <option value="04" {% if periode_select == "04" %}selected{% endif %}>Avril</option>
+                                            <option value="05" {% if periode_select == "05" %}selected{% endif %}>Mai</option>
+                                            <option value="06" {% if periode_select == "06" %}selected{% endif %}>Juin</option>
+                                            <option value="07" {% if periode_select == "07" %}selected{% endif %}>Juillet</option>
+                                            <option value="08" {% if periode_select == "08" %}selected{% endif %}>Août</option>
+                                            <option value="09" {% if periode_select == "09" %}selected{% endif %}>Septembre</option>
+                                            <option value="10" {% if periode_select == "10" %}selected{% endif %}>Octobre</option>
+                                            <option value="11" {% if periode_select == "11" %}selected{% endif %}>Novembre</option>
+                                            <option value="12" {% if periode_select == "12" %}selected{% endif %}>Décembre</option>
+                                        </select>
+                                    </form>
+                                    <form class="form">
+                                        <select name="trimestre" id="type" class="form-select" onChange="this.form.submit()">
+                                            <option value="">Sélectionnez le trimestre</option>
+                                            {% if search_classe ? (search_classe.formation.cursus.fonctionnement == 'trimestre') : '' %}
+                                        
+                                                <option value="1" {% if trimestre == 1 %}selected{% endif %}>1er Trimestre</option>
+                                                <option value="2" {% if trimestre == 2 %}selected{% endif %}>2ème Trimestre</option>
+                                                <option value="3" {% if trimestre == 3 %}selected{% endif %}>3ème Trimestre</option>
+                                            {% else %}
+                                                <option value="1" {% if trimestre == 1 %}selected{% endif %}>1er Semestre</option>
+                                                <option value="2" {% if trimestre == 2 %}selected{% endif %}>2ème Semestre</option>                                              
+                                            {% endif %}
+                                            
+                                            <option value="annuel" {% if trimestre == "annuel" %}selected{% endif %}>Annuel</option>
+                                        </select>
+                                    </form>
+                                    {% if trimestre is not empty or periode_select is not empty %}
+                                        <button target="_blank" class="btn btn-warning my-1" onclick="printDiv('printSection')"><i class="fa fa-file-pdf"></i>Synthèse</button>
+
+                                        {% if trimestre == 'annuel' %}
+                                            <a target="_blank" class="btn btn-warning my-1" href="{{path("app_gandaal_administration_pedagogie_pdf_bulletin_annuel", {classe : search_classe ? search_classe.id : 0, trimestre : trimestre })}}"><i class="fa fa-file-pdf"></i>Bulletins</a>
+                                        {% else %}
+                                            <a target="_blank" class="btn btn-warning my-1" href="{{path("app_gandaal_administration_pedagogie_pdf_bulletin", {classe : search_classe ? search_classe.id : 0, periode : periode_select, trimestre : trimestre })}}"><i class="fa fa-file-pdf"></i>Bulletins</a>
+                                            
+                                        {% endif %}
+
+                                        <a target="_blank" class="btn btn-warning my-1" href="{{path("app_gandaal_administration_pedagogie_pdf_classement", {etablissement : etablissement.id, classe : search_classe ? search_classe.id : 0, periode : periode_select, trimestre : trimestre })}}"><i class="fa fa-file-pdf"></i>Classement</a>
+                                        <a target="_blank" class="btn btn-warning my-1" href="{{path("app_gandaal_administration_pedagogie_pdf_bulletin_annuel", {etablissement : etablissement.id, classe : search_classe ? search_classe.id : 0, periode : periode_select, trimestre : trimestre, origine : 'général' })}}"><i class="fa fa-file-pdf"></i>Général</a>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+
+            <div id="printSection">
+                {% if search_classe is not empty %}
+                    <table class="table table-bordered table-striped table-hover align-middle m-0 p-0" style="font-size: 10px;">
+                        <thead class="sticky-top bg-light text-center print-black-text" >
+                            <tr>
+                                <th colspan="{{colspan}}" class="bg-info text-white text-end" style="font-size : 14px;">
+                                    <div class="d-flex justify-content-between align-items-center ">
+                                        <span class="mx-2">{{etablissement.nom|ucwords}}</span>
+                                        <span class="mx-2">Année-Scolaire {{ promo -1   }}-{{ promo   }}</span>
+                                        <span class="mx-2">Classe: {{search_classe.nom|strtoupper}}</span>
+                                        {% if periode %}{% endif %}
+                                        <span class="mx-2">Période: 
+                                            {% if periode is not empty %}
+                                                {% if module is empty %}
+                                                    {{ mois_francais|capitalize }}
+                
+                                                {% else %}                                    
+                                                    {{ module.nom|capitalize }}
+                                                {% endif %}
+                                            {% else %}
+                                                {% if search_classe ? (search_classe.formation.cursus.fonctionnement == 'trimestre') : '' %}
+
+                                                    {{ trimestre == 1 ? (trimestre ~ "er Trimestre" ) : (trimestre == 'annuel' ? ('Annuel' ): (trimestre ~"ème Trimestre"))}}
+                                                {% else %}
+                                                    {{ trimestre == 1 ? (trimestre ~ "er Semestre" ) : (trimestre == 'annuel' ? ('Annuel' ): (trimestre ~"ème Semestre"))}}
+                                                {% endif %}
+                                            
+                                            {% endif %}
+                                        </span>
+                                        {% set totalAbsences = 0 %}
+                                        {% for controle in controles %}
+                                            {% if controle.type == 'absence' or controle.type == 'absence global' %}
+                                                {% set totalAbsences = totalAbsences + controle.nbControles %}
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {# Affichage du total des absences et absences globales cumulées en premier #}
+                                        {% if totalAbsences > 0 %}
+                                            <span class="mx-2">Absence(s) : {{ totalAbsences }}</span>
+                                        {% endif %}
+
+                                        {# Affichage des autres types de contrôles #}
+                                        {% for controle in controles %}
+                                            {% if controle.type != 'absence' and controle.type != 'absence global' %}
+                                                <span class="mx-2">{{ controle.type|capitalize }}(s) : {{ controle.nbControles }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+
+
+                                    </div>
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th class="bg-info text-white text-end" colspan="4" class="text-end">Matières</th>
+                                {% for matiere in matieres %}
+                                    <th class="bg-info text-white" >{{ matiere.nom|capitalize }}</th>
+                                {% endfor %}
+                                <th class="bg-info text-white" rowspan="3">Moyenne</th>
+                                <th class="bg-info text-white" rowspan="3">Rang</th>
+                            </tr>
+                            <tr>
+                                <th class="bg-info text-white text-end" colspan="4">Coefficients des matières</th>
+                                {% for matiere in matieres %}
+                                    <th class="bg-info text-white">{{ matiere.coef }}</th>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th class="bg-info text-white" >N°</th>
+                                <th class="bg-info text-white" >Prénom & Nom</th>
+                                <th class="bg-info text-white" >Né(e) le</th>
+                                <th class="bg-info text-white" >Matricule</th>
+                                {% for matiere in matieres %}
+                                    <th class="bg-info text-white" >Note</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 12px;" class="print-black-text">
+                            {% for id, data in moyennesParEleve %}
+                                {% set inscription = data.inscription %}
+                                <tr>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-between">
+                                            {{ loop.index }}
+                                            {% if trimestre == 'annuel' %}
+                                                <a target="_blank" class="btn btn-warning fs-6 no-print" href="{{path("app_gandaal_administration_pedagogie_pdf_bulletin_annuel", {classe : search_classe.id, inscription : inscription.id, periode : periode_select, trimestre : trimestre })}}">
+                                                    <i class="fa fa-file-pdf fs-6"></i>
+                                                </a>
+                                            {% else %}
+                                                <a target="_blank" class="btn btn-warning fs-6 no-print" href="{{path("app_gandaal_administration_pedagogie_pdf_bulletin", {classe : search_classe.id, inscription : inscription.id, periode : periode_select, trimestre : trimestre })}}">
+                                                    <i class="fa fa-file-pdf fs-6"></i>
+                                                </a>
+                                                
+                                            {% endif %}
+                                            
+                                        </div>
+
+                                    </td>
+                                    <td>{{ inscription.eleve.prenom|ucwords }} {{ inscription.eleve.nom|strtoupper }}</td>
+                                    <td>{{ inscription.eleve.dateNaissance|date('d/m/Y') }}</td>
+                                    <td class="text-center">{{ inscription.eleve.matricule }}</td>
+                                    {% for matiereId, details in data.moyennes %}
+                                        <td class="text-center">
+                                            {{ details.moyenne == 'NE' ? 'NE' : details.moyenne|number_format(2, '.', '') }}
+                                        </td>
+                                    {% endfor %}
+                                    <td class="text-center">
+                                        {{ moyenneGenerale[id] == 'NE' ? 'NE' : moyenneGenerale[id]|number_format(2, '.', '') }}
+                                    </td>
+                                    <td>{{ data.rang ? (data.rang == 1 ? data.rang ~ '<sup>er</sup>' : data.rang ~ '<sup>ème</sup>') | raw : 'N/A' }}</td>
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="print-black-text">
+                            <tr>
+                                <th class="bg-info text-white text-end" colspan="4">Moyenne Classe par matière</th>
+                                {% for matiere in matieres %}
+                                    <th class="bg-info text-white text-center">
+                                        {{ moyennesParMatiere ? moyennesParMatiere[matiere.id]|number_format(2) : 'NE' }}
+                                    </th>
+                                {% endfor %}
+                                <th class="bg-info text-white text-center">{{ moyenneClasse|number_format(2) }}</th>
+                                
+                            </tr>
+                        
+                            <tr>
+                                <th class="bg-info text-white text-end" colspan="4">Effectif de la classe</th>
+                                <th class="bg-info text-white text-center">{{ effectifEvalue }}/{{ effectifClasse }}</th>
+                                <th class=" text-center" rowspan="5" colspan="{{2 + matieres|length}}"  style="border :0px solid white">
+        
+                                    <div class="print m-auto d-flex justify-content-center align-items-center mx-4">
+                                        {% if search_classe.formation.cursus.nom == 'collège' or search_classe.formation.cursus.nom == 'lycée' or search_classe.formation.cursus.nom == 'université' %}
+                                            {% if search_classe.formation.cursus.nom == 'collège' %}
+                                                <div>
+                                                    <div style="margin-bottom : 85px;" class="text-center">{{responsable_college ? responsable_college.fonction.nom|ucwords : 'Censeur'}}</div>
+                                                    <div class="text-center">{{responsable_college ? (responsable_college.nom|strtoupper ~ " " ~ responsable_college.prenom|ucwords) : ''}}</div>
+                                                </div>
+                                                {# <div>
+                                                    <div style="margin-bottom : 85px;" class="text-center">{{responsable ? responsable.fonction.nom|ucwords : 'Administrateur Général'}}</div>
+                                                    <div class="text-center">{{responsable ? (responsable.nom|strtoupper ~ " " ~ responsable.prenom|ucwords) : ''}}</div>
+                                                </div> #}
+                                            {% else %}
+                                                <div>
+                                                    <div style="margin-bottom : 85px;" class="text-center">{{responsable_lycee ? responsable_lycee.fonction.nom|ucwords : 'Proviseur'}}</div>
+                                                    <div class="text-center">{{responsable_lycee ? (responsable_lycee.nom|strtoupper ~ " " ~ responsable_lycee.prenom|ucwords) : ''}}</div>
+                                                </div>
+                                                {# <div>
+                                                    <div style="margin-bottom : 85px;" class="text-center">{{responsable ? responsable.fonction.nom|ucwords : 'Administrateur Général'}}</div>
+                                                    <div class="text-center">{{responsable ? (responsable.nom|strtoupper ~ " " ~ responsable.prenom|ucwords) : ''}}</div>
+                                                </div> #}
+                                            {% endif %}
+                                        {% else %}
+        
+                                            {# <div>
+                                                <div style="margin-bottom : 85px;" class="text-center">{{search_classe.responsable.sexe == 'm' ? 'Le Maitre' : 'La Maitresse'}}</div>
+                                                <div class="text-center">{{search_classe.responsable.nom|strtoupper ~ " " ~ search_classe.responsable.prenom|ucwords}}</div>
+                                            </div> #}
+                                            <div>
+                                                <div style="margin-bottom : 85px;" class="text-center">{{responsable_primaire.sexe == 'm' ? 'Le Directeur' : 'La Directrice'}}</div>
+                                                <div class="text-center">{{responsable_primaire.nom|strtoupper ~ " " ~ responsable_primaire.prenom|ucwords}}</div>
+                                            </div>
+                                            
+                                        {% endif %}
+                                    </div>
+        
+                                </th>
+                            </tr>
+                            {# <tr>
+                                <th class="bg-info text-white text-end" colspan="4">Effectif évalué</th>
+                                <th class="bg-info text-white text-center"></th>
+                            </tr> #}
+                            <tr>
+                                <th class="bg-info text-white text-end" colspan="4">Moyenne Générale de la classe</th>
+                                <th class="bg-info text-white text-center">{{ moyenneClasse|number_format(2) }}</th>
+                            </tr>
+                            
+                            <tr>
+                                <th class="bg-info text-white text-end" colspan="4">Moyenne Min</th>
+                                <th class="bg-info text-white text-center">{{ moyennePlusFaible|number_format(2) }}</th>
+                            </tr>
+                            <tr>
+                                <th class="bg-info text-white text-end" colspan="4">Moyenne Max</th>
+                                <th class="bg-info text-white text-center">{{ moyennePlusElevee|number_format(2) }}</th>
+                            </tr>
+                            <tr>
+                                <th class="bg-info text-white text-end" colspan="4">Écart Type</th>
+                                <th class="bg-info text-white text-center">{{ ecartType|number_format(2) }}</th>
+                                
+                            </tr>
+                        </tfoot>
+                        
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block autres %}
+<script>
+function printDiv(divId) {
+    var contentToPrint = document.getElementById(divId).innerHTML;
+    var originalContent = document.body.innerHTML;
+
+    document.body.innerHTML = contentToPrint;
+    window.print();
+    document.body.innerHTML = originalContent;
+}
+</script>
+<style>
+@media print {
+    .no-print {
+        display: none;
+    }
+   
+    
+
+    .print-black-text td {
+        color: black !important; /* Remplacer le texte blanc par du noir */
+        background-color: white !important; /* Fond en gris */
+        font-size : 14px !important;
+        border : 2px solid grey !important;
+
+    }
+    .print-black-text th {
+        color: black !important; /* Remplacer le texte blanc par du noir */
+        background-color: white !important; /* Fond en gris */
+        font-size : 14px !important;
+        border : 2px solid grey !important;
+
+    }
+}
+</style>
+
+{% endblock %}
+

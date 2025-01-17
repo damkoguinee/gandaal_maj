@@ -1,0 +1,29 @@
+<ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-start">
+    
+        
+    <li class="nav-item">
+        {% if app.user.typeUser == 'eleve' %}
+            <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_eleve", {etablissement : etablissement.id, inscription : inscription.id})}}">Accueil</a>
+        {% else %}
+            <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_eleve_parent")}}">Accueil</a>
+        {% endif %}
+            
+    </li>
+    
+
+    <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_eleve_calendar", {etablissement : etablissement.id, inscription : inscription.id})}}">Mon Planning</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_eleve_paiement", {etablissement : etablissement.id, inscription : inscription.id})}}">Mes Paiements</a>
+    </li>
+    
+    <li class="nav-item">
+        <a class="nav-link active btn btn-danger text-light m-1" aria-current="page" href="{{path("app_gandaal_eleve_devoir", {etablissement : etablissement.id, inscription : inscription.id})}}">Mes Notes</a>
+    </li>
+
+    
+    
+    
+</ul>

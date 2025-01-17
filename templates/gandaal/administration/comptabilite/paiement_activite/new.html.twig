@@ -1,0 +1,175 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}ajout paiement{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        <div class="row">
+            <div class="col-sm-12 col-md-6 border border-danger border-4 rounded-2 p-2 ">
+                <h4>Ajouter un paiement</h4>            
+                {{ include('gandaal/administration/comptabilite/paiement_activite/_form.html.twig') }}
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+                <div class="card shadow-sm mb-4">
+                    {% if eleve is not empty %}
+                    
+                        {% if eleve.photo %}
+                            <div class="card-header bg-info text-white text-center">
+                                <img src="{{ asset('dossier/eleves/' ~ eleve.photo) }}" alt="Photo de {{ eleve.prenom }} {{ eleve.nom }}" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                            </div>
+                        {% endif %}
+                        <div class="card-body mb-0 pb-0">
+                            <table class="table table-bordered table-striped table-hover align-middle">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="2">
+                                            <table class="table table-bordered table-striped table-hover align-middle m-0 p-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Matricule</th>
+                                                        <td>{{ eleve.matricule|strtoupper }}</td>
+                                                        <th>Type</th>
+                                                        <td>{{ eleve.categorie ? eleve.categorie|strtoupper : 'interne' }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Prénom & Nom</th>
+                                        <td>{{ eleve.nomComplet }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date de Naissance</th>
+                                        <td>{{ eleve.dateNaissance ? eleve.dateNaissance|date('d/m/Y') : '' }} - {{ eleve.age }} an(s)</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <th><i class="fas fa-phone-alt"></i> Téléphone</th>
+                                        <td>{{ eleve.telephone }}</td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-body my-0 py-0">
+                            <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                                <thead class="sticky-top bg-light text-center">
+                                    <tr>
+                                        <th colspan="6" class="text-center bg-info text-white">
+                                            Liste des activités {{(dernier_promo -1 )~ "-" ~ dernier_promo}}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-info text-white">N°</th>
+                                        <th class="bg-info text-white">Nom</th>
+                                        <th class="bg-info text-white">Montant</th>
+                                        <th class="bg-info text-white">Remise</th>
+                                        <th class="bg-info text-white">Type</th>
+                                        <th class="bg-info text-white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for key, inscription in inscriptions %}
+                                        <tr>
+                                            <td class="text-center">{{ key + 1 }}</td>
+                                            <td class="text-start">{{ inscription.tarifActivite.activite.nom|ucfirst }}</td>
+                                            <td class="text-end">{{ inscription.tarifActivite.montant|number_format(0,',',' ') }}</td>
+                                            <td class="text-end">{{ inscription.remise|number_format(0,',',' ') }}</td>
+                                            <td class="text-center">{{ inscription.tarifActivite.type|ucfirst }}</td>
+                                            <td class="text-center">
+                                                <form method="post" action="{{ path('app_gandaal_administration_scolarite_inscription_activite_delete', {'id': inscription.id, 'etablissement' : etablissement.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ inscription.id) }}">
+                                                    <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="6">Aucune activité enregistrée</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <table class="table table-bordered table-striped table-hover align-middle my-2">
+
+                                <thead class="sticky-top bg-light text-center">
+                                    <form>
+                                        <tr>
+                                            <th colspan="6" class="text-center bg-info text-white">
+                                                Historique des paiements
+                                                <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_paiement_activite_historique", {eleve : eleve.id})}}" ><i class="fa fa-file-pdf fs-5 text-success"></i></a>
+                                            </th>
+                                        </tr>
+                                    </form>
+                                    <tr>
+                                        <th class="bg-info text-white">N°</th>
+                                        <th class="bg-info text-white">Activite</th>
+                                        <th class="bg-info text-white">Période</th>
+                                        <th class="bg-info text-white">Montant</th>
+                                        <th class="bg-info text-white">Date</th>
+                                        <th class="bg-info text-white">actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% set cumulHistorique = 0 %}
+                                    {% for key, historique in historiques %}
+                                        {% set cumulHistorique =  cumulHistorique + historique.montant %}
+                                        <tr>
+                                            <td class="text-center">
+                                                {{ key + 1 }}
+                                                <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_paiement_activite_recu", {id : historique.id})}}" ><i class="fa fa-file-pdf fs-5 text-success"></i></a>
+                                            </td>
+                                            <td class="text-start">{{ historique.inscription.tarifActivite.activite.nom|ucfirst }}</td>
+                                            <td class="text-start">{{ historique.periode|ucfirst }}</td>
+                                            <td class="text-end">{{ historique.montant|number_format(0,',',' ') }}</td>
+                                            <td class="text-center">{{ historique.dateOperation|date("d/m/Y") }}</td>                                            
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center">
+                                                    <a class="btn btn-success mx-1" href="{{ path('app_gandaal_administration_comptabilite_paiement_activite_show', {'id': historique.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+
+                                                    <form method="post" action="{{ path('app_gandaal_administration_comptabilite_paiement_activite_confirm_delete', {'id': historique.id, 'etablissement': etablissement.id}) }}" >
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ historique.id) }}">
+                                                        <input type="hidden" name="param" value="simple">
+
+                                                        <button class="btn btn-danger">Annuler</button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="5">Aucun paiement enregistré</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3" class="bg-info text-white ">Cumul</th>
+                                        <th Class="text-end bg-info text-white text-nowrap">{{cumulHistorique|number_format(0,',',' ')}}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+
+                            
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+            
+        </div>
+
+        <a class="btn btn-light" href="javascript:history.back()">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}nouveau frais inscription{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_admin.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            {{ include('gandaal/administration/comptabilite/admin/frais_inscription/_form.html.twig') }}
+            
+        </div>
+    </div>
+{% endblock %}

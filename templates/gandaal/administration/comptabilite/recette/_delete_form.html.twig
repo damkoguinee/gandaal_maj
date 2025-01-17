@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_gandaal_administration_comptabilite_recette_delete', {id : recette.id, etablissement : etablissement.id}) }}" onsubmit="return confirm('Etes-vous sûr de vouloir sipprimer cette recette ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recette.id) }}">
+    <button class="btn btn-danger">Supprimer</button>
+</form>

@@ -1,0 +1,80 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste personnel{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_secretariat.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-12">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="9" class="text-center bg-info text-white">
+                            <div class="row align-items-center ">
+                                <div class="col-3">
+                                    <a class="btn btn-warning text-center" href="{{path("app_gandaal_administration_secretariat_admin_personnel_new", {etablissement : etablissement.id})}}">Ajouter un personnel</a>
+                                </div>
+
+                                <div class="col-5">
+                                    <input type="text" name="search" class="form-control" id="search_user" placeholder="Récherchez un personnel">
+                                </div>   
+                                <div class="bg-light text-white" id="result-search"></div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Matricule</th>
+                        <th class="bg-info text-white">Prénom & Nom</th>
+                        <th class="bg-info text-white">Sexe</th>
+                        <th class="bg-info text-white">Téléphone</th>
+                        <th class="bg-info text-white">Fonction</th>
+                        <th class="bg-info text-white">Date d'embauche</th>
+                        <th class="bg-info text-white">Statut</th>
+                        <th class="bg-info text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, personnelActif in personnelsActif %}
+                    <tr>
+                        <td class="text-center">{{ key + 1 }}</td>
+                        <td class="text-center">{{ personnelActif.personnel.matricule|strtoupper }}</td>
+                        <td>{{ personnelActif.personnel.prenom|ucfirst ~ " " ~ personnelActif.personnel.nom|strtoupper }}</td>
+                        <td class="text-center">{{ personnelActif.personnel.sexe }}</td>
+                        <td class="text-center">{{ personnelActif.personnel.telephone }}</td>
+                        
+                                               
+                        {% if (personnelActif.personnel.typeUser == 'enseignant') %}
+                            <td>enseignant</td>
+                            <td class="text-center">{{ personnelActif.personnel.dateDebut ? personnelActif.personnel.dateDebut|date("d/m/Y") : "" }}</td>
+                            <td>{{ personnelActif.personnel.statut|ucfirst }}</td>
+                            <td class="text-center">
+                                <a class="btn btn-success" href="{{ path('app_gandaal_administration_secretariat_admin_enseignant_show', {'id': personnelActif.personnel.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                <a class="btn btn-warning" href="{{ path('app_gandaal_administration_secretariat_admin_enseignant_edit', {'id': personnelActif.personnel.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                            </td>
+                        {% else %}
+                            <td>{{ personnelActif.personnel.fonction ? personnelActif.personnel.fonction.nom|ucfirst : '' }}</td>
+                            <td class="text-center">{{ personnelActif.personnel.dateDebut ? personnelActif.personnel.dateDebut|date("d/m/Y") : "" }}</td>
+                            <td>{{ personnelActif.personnel.statut|ucfirst }}</td>
+                            <td class="text-center">
+                                <a class="btn btn-success" href="{{ path('app_gandaal_administration_secretariat_admin_personnel_show', {'id': personnelActif.personnel.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                <a class="btn btn-warning" href="{{ path('app_gandaal_administration_secretariat_admin_personnel_edit', {'id': personnelActif.personnel.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                            </td>
+                            
+                        {% endif %}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="9">Aucun personnel enregistré</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

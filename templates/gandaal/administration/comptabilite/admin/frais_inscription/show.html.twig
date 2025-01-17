@@ -1,0 +1,40 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail frais inscription{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_admin.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <tbody>
+                        <tr>
+                            <th>Niveau</th>
+                            <td>{{ frais_inscription.cursus.nom }}</td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td>{{ frais_inscription.description|ucfirst }}</td>
+                        </tr>
+                        <tr>
+                            <th>Montant</th>
+                            <td>{{ frais_inscription.montant|number_format(0,',',' ') }}</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-between my-4">
+                    <a class="btn btn-light" href="{{ path('app_gandaal_administration_comptabilite_admin_frais_inscription_index', {etablissement : etablissement.id}) }}">Retour</a>
+
+                    <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_admin_frais_inscription_edit', {'id': frais_inscription.id, etablissement : etablissement.id}) }}">Modifier</a>
+
+                    {{ include('gandaal/administration/comptabilite/admin/frais_inscription/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,386 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+a{
+    text-decoration: none;
+    list-style: none;
+    color: #313031;
+}
+
+li{
+    text-decoration: none;
+    list-style: none;
+}
+body{
+    background-color: #f2f4f6;
+}
+.promo {
+    background-color: #ffd600;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    min-height: 50px;
+
+    overflow: hidden;
+    height: 30px; /* Ajustez la hauteur selon vos préférences */
+    position: relative;
+}
+
+#scrollingText {
+    white-space: nowrap; /* Empêche le texte de passer à la ligne */
+    animation: scrollText 10s linear infinite; /* Ajustez la durée selon vos préférences */
+}
+
+@keyframes scrollText {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+.nav-item > .nav-link {
+    font-family: Barlow Condensed;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 25px;
+    letter-spacing: 0;
+}
+
+/* partie card-categories  */
+section {
+    /* margin: 50px 0px 30px 0 ;
+    padding: 10px ; */
+    
+}
+.trait-h1{
+    border-bottom: 3px solid #cd6969;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+.titre-h1 {
+    color: #181518;
+    font-weight: bold;
+    font-size: 35px;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 50px;
+
+}
+
+.btn-voir-tout {
+    color: #181518;
+    font-size: 22px;
+    font-weight: bold;
+
+}
+
+.btn-voir-tout:hover {
+    color: #7ce0f1;
+    font-size: 22px;
+    font-weight: bold;
+    background-color: #380944 !important;
+}
+
+.section-categories {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.card-categorie {
+    width: 390px;
+    height: 195px;
+    margin: 4px;
+    position: relative;
+    min-height: 180px;
+    overflow: hidden;
+}
+
+.card-description {
+    position: relative;
+    padding: 30px 0 30px 30px;
+}
+
+.card-name {
+    font-size: 30px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.card-discount {
+    font-size: 14px;
+    color: #ffd600;
+    line-height: 24px;
+}
+
+.card-div-button {
+    position: relative;
+    margin-top: 30px;
+    display: inline-block;
+}
+.card-categorie-img {
+    position: absolute;
+    height: 100%;
+    object-fit: fill;
+    width: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.card-categorie:hover .card-categorie-img {
+    transform: scale(1.2);
+}
+
+/* Ajoutez cette règle pour masquer la div par défaut */
+.contact-search-container-top {
+    display: none !important;
+}
+
+.contact-search-container-bottom {
+    display: flex !important;
+}
+
+
+/* partie section meilleures ventes */
+
+.section-product-ventes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px 0px;
+}
+section .img-product{
+    width: 14rem !important;
+    height: 16rem !important;
+    margin-bottom: 20px;
+}
+
+.img-product img{
+    width: 150px;
+    height: 140px;
+    object-fit: cover;
+    object-position: 50% 50%;
+    border-radius: 100px;
+    transition: transform 1.1s;
+}
+
+.img-product:hover{
+    background-color: #71b1e6;
+}
+
+.img-product img:hover{    
+    -ms-transform: scale(1.1); /* IE 9 */
+    -webkit-transform: scale(1.1); /* Safari 3-8 */
+    transform: scale(1.1);       
+}
+
+.top-ventes {
+    position: relative;
+}
+
+.top-ventes::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100px; /* Hauteur de l'arc de cercle */
+    background: #e9e4e4;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    z-index: 1;
+}
+
+.section-product-ventes {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px 0;
+    position: relative;
+    z-index: 2;
+}
+
+.services {
+    padding: 50px 0px 250px 0px;
+    position: relative;
+    width: 100%;
+    height: 200px; /* Hauteur de l'arc de cercle */
+    background: #e9e4e4;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    z-index: 1;
+}
+
+.section-contact {
+    background: #e9e4e4;
+    padding-bottom: 50px;
+}
+
+
+
+
+.top-ventes {
+    position: relative;
+}
+
+.top-ventes::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100px; /* Hauteur de l'arc de cercle */
+    background: #e9e4e4;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    z-index: 1;
+}
+
+.services {
+    padding: 50px 0px 250px 0px;
+    position: relative;
+    width: 100%;
+    height: 200px; /* Hauteur de l'arc de cercle */
+    background: #e9e4e4;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    z-index: 1;
+}
+
+.collaborateurs {
+    margin-top: 50px;
+}
+.collaborateurs img{
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+
+}
+
+.social-icons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 1000;
+}
+
+.social-icon {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #ffffff; /* Couleur de l'icône */
+    background-color: #0ec0ec; /* Couleur de fond de l'icône */
+    border-radius: 50%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: #0056b3; /* Couleur de fond au survol */
+}
+
+#scrollButton {
+    display: none;
+    position: fixed;
+    bottom: 300px;
+    right: 20px;
+    font-size: 24px;
+    background-color: #65099b; /* Couleur de fond du bouton */
+    color: #ffffff; /* Couleur du texte du bouton */
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#scrollButton:hover {
+    background-color: #0056b3; /* Couleur de fond au survol */
+}
+
+footer {
+    background-color: #476a96;
+    color: white;
+}
+
+footer a{
+    color: white;
+}
+
+.miniature { height: 50px; width: 50px;}
+.img-banniere-miniature { height: 90px; width: 150px;}
+
+/* Ajoutez une règle pour afficher la div lorsque le burger menu est actif */
+@media (max-width: 991.98px) {
+    .contact-search-container-top {
+        display: flex !important;
+    }
+
+    /* .contact-search-container-bottom {
+        display: none !important;
+    } */
+}
+
+/* adaptter pour le mode mobile */
+@media only screen and (max-width: 500px) {
+
+    section .img-product{
+        width: 18rem !important;
+        height: 20rem !important;
+        margin-bottom: 20px;
+    }
+    
+    .img-product img{
+        width: 180px !important;
+        height: 170px !important;
+        object-fit: cover;
+        object-position: 50% 50%;
+        border-radius: 100px;
+        transition: transform 1.1s;
+    }
+}
+
+.btn-primary {
+    background-color:#152736 !important;
+}
+
+.bg-info {
+    background-color:#193c51 !important;
+}
+
+.btn-info {
+    background-color: #53c3e9 !important;
+}
+
+.navbar-toggler .burger-icon {
+    background-color: white;
+    display: inline-block;
+    width: 40px;
+    height: 2px;
+    border-radius: 1px;
+    margin: 8px 0;
+}
+
+@media print {
+    .no-print {
+        display: none;
+    }
+}
+
+
+
+

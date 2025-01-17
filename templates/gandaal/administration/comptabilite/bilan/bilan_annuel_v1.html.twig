@@ -1,0 +1,289 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Bilan annuel{% endblock %}
+
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 90vh; background-image: url('{{ asset(chemin_images_config) }}fond.jpg'); background-size: cover; background-attachment: fixed;">
+        <div class="col-sm-12 col-md-12 my-4">
+            {{ include('gandaal/_common/_messages_flash.html.twig') }} 
+
+            <div class="card shadow-lg border-0" >
+                <div class="card-header bg-info text-white text-center">
+                    <h4>Bilan Comptable <button target="_blank" class="btn btn-warning my-1" onclick="printDiv('printSection')"><i class="fa fa-file-pdf"></i>Imprimer</button></h4>
+                </div>
+                <div class="card-body p-4" id="printSection">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover align-middle">
+                            <thead class="sticky-top bg-light text-center">
+                                <tr>
+                                    <th class="bg-info text-white" colspan="21">Bilan Comptable </th>
+                                </tr>
+                                <tr>
+                                    <th class="bg-info text-white" rowspan="2"></th>
+                                    {% for niveau in cursus %}
+                                        <th class="bg-info text-white" colspan="4">{{ niveau.nom|ucwords }}</th>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    {% for niveau in cursus %}
+                                        <th class="text-info">Nbre</th>
+                                        <th class="text-success">Payé</th>
+                                        <th class="text-danger">Reste</th>
+                                        <th class="text-warning">TR</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="bg-info text-white">Inscrits</th>
+                                    {% for paiement in dataPaiements %}
+                                        <td class='text-nowrap text-end'>{{ paiement.nbre }}</td>
+                                        <td class='text-nowrap text-end text-success'>{{ paiement.totalPaiement|number_format(0,',',' ') }}</td>
+                                        <td class='text-nowrap text-end text-danger'>{{ paiement.resteApayer|number_format(0,',',' ') }}</td>
+                                        <td class='text-nowrap text-end text-warning'>{{ paiement.tauxRecouvrement|number_format(2,',',' ') }}%</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <th class="bg-info text-white">Réinscrits</th>
+                                    {% for paiement in dataPaiementsReinscrits %}
+                                        <td class='text-nowrap text-end'>{{ paiement.nbre }}</td>
+                                        <td class='text-nowrap text-end text-success'>{{ paiement.totalPaiement|number_format(0,',',' ') }}</td>
+                                        <td class='text-nowrap text-end text-danger'>{{ paiement.resteApayer|number_format(0,',',' ') }}</td>
+                                        <td class='text-nowrap text-end text-warning'>{{ paiement.tauxRecouvrement|number_format(2,',',' ') }}%</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <th class="bg-info text-white">Scolarité</th>
+                                    {% for paiement in dataPaiementsScolarite %}
+                                        <td class='text-nowrap text-end'>{{ paiement.nbre }}</td>
+                                        <td class='text-nowrap text-end text-success'>{{ paiement.totalPaiement|number_format(0,',',' ') }}</td>
+                                        <td class='text-nowrap text-end text-danger'>{{ paiement.resteApayer|number_format(0,',',' ') }}</td>
+                                        <td class='text-nowrap text-end text-warning'>{{ paiement.tauxRecouvrement|number_format(2,',',' ') }}%</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class="table-warning">
+                                    <th class="bg-info text-white">Totaux</th>
+                                    {% set cumulEff = 0 %}
+                                    {% set cumulPaie = 0 %}
+                                    {% set cumulReste = 0 %}
+                                    {% for paiement in dataPaiementsTotal %}
+                                        {% set cumulEff = cumulEff + paiement.nbre %}
+                                        {% set cumulPaie = cumulPaie + paiement.totalPaiement %}
+                                        {% set cumulReste = cumulReste + paiement.resteApayer %}
+                                        <td class='text-nowrap text-end'>{{ paiement.nbre }}</td>
+                                        <td class='text-nowrap text-end bg-success text-white'>{{ paiement.totalPaiement|number_format(0,',',' ') }}</td>
+                                        <td class='text-nowrap text-end bg-danger text-white'>{{ paiement.resteApayer|number_format(0,',',' ') }}</td>
+                                        <td class='text-nowrap text-end bg-warning text-dark'>{{ paiement.tauxRecouvrement|number_format(2,',',' ') }}%</td>
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered table-striped table-hover align-middle">
+                            <thead class="text-center">
+                                <tr>
+                                    <th class="bg-info text-white">Bilan</th>
+                                    <th class="bg-info text-info">Eff</th>
+                                    <th class="bg-info text-white">Montant Prév</th>
+                                    <th class="bg-info text-success">Montant Payé</th>
+                                    <th class="bg-info text-danger">Reste à Payer</th>
+                                    <th class="bg-info text-warning">TR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bg-info text-white">Entrées Scolarité</td>
+                                    <td class="text-center text-info">{{ cumulEff|number_format(0,',',' ') }}</td>
+                                    <td class="text-end">{{ (cumulPaie + cumulReste)|number_format(0,',',' ') }}</td>
+                                    <td class="text-end text-success">{{ (cumulPaie)|number_format(0,',',' ') }}</td>
+                                    <td class="text-end text-danger">{{ (cumulReste)|number_format(0,',',' ') }}</td>
+                                    <td class="text-end text-warning">{{ ((cumulPaie / (cumulPaie + cumulReste))*100)|number_format(2,',',' ') }}%</td>
+                                </tr>
+                                {% set cumulPrevScolarite = cumulPaie + cumulReste %}
+                                {% set cumulRealScolarite = cumulPaie %}
+
+                                {% set cumulPrevAutres = 0 %}
+                                {% set cumulRealAutres = 0 %}
+
+                                {% for paiementsParType in paiementsParTypes %}
+                                    {% set cumulPrevAutres = cumulPrevAutres + 0 %}
+                                    {% set cumulRealAutres = cumulRealAutres + paiementsParType.sommeMontant %}
+                                    <tr>
+                                        <td class="bg-info text-white">{{ paiementsParType.typeMouvement|ucwords }}(s)</td>
+                                        <td class="text-center text-info">{{ paiementsParType.nbre|number_format(0,',',' ') }}</td>
+                                        <td class="text-end">--</td>
+                                        <td class="text-end text-success">{{ (paiementsParType.sommeMontant|abs)|number_format(0,',',' ') }}</td>
+                                        <td class="text-end text-danger">--</td>
+                                        <td class="text-end text-warning">--</td>
+                                    </tr>
+                                {% endfor %}
+
+                                {% set cumulPrevSalaires = 0 %}
+                                {% set cumulRealSalaires = 0 %}
+
+                                {% for type, paiementSalaire in paiementSalaires %}
+
+                                    {% set cumulPrevSalaires = cumulPrevSalaires + paiementSalaire.prev %}
+                                    {% set cumulRealSalaires = cumulRealSalaires + paiementSalaire.totalPaiement %}
+                                    <tr>
+                                        <td class="bg-info text-white">{{ type|ucwords }}(s)</td>
+                                        <td class="text-center text-info">{{ paiementSalaire.nbre|number_format(0,',',' ') }}</td>
+                                        <td class="text-end">{{ (paiementSalaire.prev|abs)|number_format(0,',',' ') }}</td>
+                                        <td class="text-end text-success">{{ (paiementSalaire.totalPaiement|abs)|number_format(0,',',' ') }}</td>
+                                        <td class="text-end text-danger">{{ ((paiementSalaire.prev - (- paiementSalaire.totalPaiement))|abs)|number_format(0,',',' ') }}</td>
+                                        <td class="text-end text-warning">{{ (paiementSalaire.tauxRecouvrement)|abs|number_format(2,',',' ') }}%</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr class="bg-success text-white">
+                                    <th>Bénéfice</th>
+                                    <th colspan="5">
+                                        <div class="row">
+                                            <div class="col-md-6">Prévisionnel : ~{{ (cumulPrevScolarite + cumulPrevAutres - cumulPrevSalaires)|number_format(0,',',' ') }}</div>
+                                            <div class="col-md-6">Réel : {{ (cumulRealScolarite + cumulRealAutres - cumulRealSalaires)|number_format(0,',',' ') }}</div>
+                                        </div>
+                                    </th>
+                                </tr>
+                                <tr >
+                                    <th class="bg-info text-white">Dettes/Créances</th>
+                                    <th class="bg-info text-white" colspan="5" >
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            {% for soldeDette in soldeDettes %}
+                                                <div class="bg-danger bg-opacity-75 text-white py-2 px-1">Dettes {{soldeDette.mouvement.devise.nom|strtoupper}} : {{ (soldeDette.totalMontant)|number_format(0,',',' ') }}</div>
+                                            {% endfor %}
+                                            {% for soldeCreance in soldeCreances %}
+                                                <div class="bg-warning bg-opacity-75 text-white py-2 px-1">Créances {{soldeCreance.mouvement.devise.nom|strtoupper}} : {{ (soldeCreance.totalMontant|abs)|number_format(0,',',' ') }}</div>
+                                            {% endfor %}
+                                            {% set cumulSoldeGnf = 0 %}
+                                            {% for soldeGenerau in soldeGeneraux %}
+                                                {% if soldeGenerau.mouvement.devise.nom == 'gnf' %}
+                                                    {% set cumulSoldeGnf = cumulSoldeGnf + (soldeGenerau.totalMontant)  %}
+                                                {% endif %}
+
+                                                <div class="bg-success bg-opacity-75 text-white py-2 px-1">Solde {{soldeGenerau.mouvement.devise.nom|strtoupper}} : {{ (soldeGenerau.totalMontant|abs)|number_format(0,',',' ') }}</div>
+                                            {% endfor %}
+                                        </div>                                            
+                                    </th>
+                                    <tr class="bg-primary text-white">
+                                        <th>Solde</th>
+                                        <th colspan="5" class="text-center bg-primary">{{ (cumulRealScolarite + cumulRealAutres - cumulRealSalaires - (cumulSoldeGnf))|number_format(0,',',' ') }}
+                                        </th>
+                                    </tr>
+
+                                    <tr class="bg-secondary text-white">
+                                        <th>Montant des abandons</th>
+                                        <th colspan="5" class="text-center bg-secondary">{{ (cumulPaiementAbandons)|number_format(0,',',' ') }}
+                                        </th>
+                                    </tr>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="card-body p-0 mt-2">
+                        <table class="table table-bordered table-striped table-hover align-middle mb-0">
+                            <thead class="sticky-top bg-dark text-white">
+                                <tr>
+                                    <th colspan='7'>Liste des élèves ayant abandonnés {{ promo - 1 }} - {{ promo }}</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center">N°</th>
+                                    <th class="text-center">Matricule</th>
+                                    <th class="text-center">Prénom & Nom</th>
+                                    <th class="text-center">Téléphone</th>
+                                    <th class="text-center">Filiation</th>
+                                    <th class="text-center">Paiement</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for classe, data in groupedByClass %}
+                                    <tr class="table-warning text-dark">
+                                        <th colspan="7" class="text-left">{{ classe }}</th>
+                                    </tr>
+                                    {% for item in data.inscriptions %}
+                                        <tr>
+                                            <td class="text-center">{{ loop.index }}</td>
+                                            <td>{{ item.inscription.eleve.matricule }}</td>
+                                            <td>{{ item.inscription.eleve.nomComplet }}</td>
+                                            <td class="text-center">{{ item.inscription.eleve.telephone }}</td>
+                                            <td>
+                                                {% for filiation in item.inscription.eleve.filiations %}
+                                                    {% if filiation.lienFamilial == 'père' %}
+                                                        {{ filiation.prenom|ucwords }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                &
+                                                {% for filiation in item.inscription.eleve.filiations %}
+                                                    {% if filiation.lienFamilial == 'mère' %}
+                                                        {{ filiation.prenom|ucwords ~ " " ~ filiation.nom|strtoupper }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                            
+                                            <td class="text-end text-nowrap">{{ item.paiement|number_format(0, ',', ' ') }}</td>
+                            
+                                            <td class="text-center">
+                                                <a class="btn btn-success mx-1 no-print" href="{{ path('app_gandaal_administration_scolarite_eleve_show', {'id': item.inscription.id, etablissement: etablissement.id}) }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                            
+                        </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block autres %}
+    <script>
+        function printDiv(divId) {
+            var contentToPrint = document.getElementById(divId).innerHTML;
+            var originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = contentToPrint;
+            window.print();
+            document.body.innerHTML = originalContent;
+        }
+    </script>
+
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .print-black-text td, .print-black-text th {
+                color: black !important;
+                background-color: white !important;
+                font-size: 14px !important;
+                border: 2px solid grey !important;
+            }
+        }
+
+        /* Ajout de styles personnalisés pour un aspect plus moderne */
+        .table {
+            font-size: 1rem;
+        }
+        thead th, tfoot th {
+            background-color: #495057 !important;
+            color: #f8f9fa !important;
+        }
+        td {
+            font-size: 0.95rem;
+            padding: 10px;
+        }
+        th {
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+    </style>
+{% endblock %}

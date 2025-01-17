@@ -1,0 +1,51 @@
+{
+  "icons": [
+    {
+      "src": "/public/build/icons/icon_512x512.8fa0431a8baff7c48a95d332e35a7664.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/public/build/icons/icon_256x256.ec2106673ae80acbcca93f60edd2e13d.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/public/build/icons/icon_512x512.8fa0431a8baff7c48a95d332e35a7664.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/public/build/icons/icon_192x192.f57560ffa5f4658fc8d047b9b3e2b5a8.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "name": "Gandaal",
+  "short_name": "Gandaal",
+  "orientation": "portrait",
+  "display": "fullscreen",
+  "start_url": "/public/gandaal/home/",
+  "description": "Application de gestion scolaire.",
+  "background_color": "#ffffff",
+  "theme_color": "#317EFB",
+  "scope": "/",
+  "id": "/appGandaal",
+  "display_override": [
+    "fullscreen",
+    "minimal-ui"
+  ],
+  "screenshots": [
+    {
+      "src": "/public/images/config/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/public/images/config/screenshot-mobile.png",
+      "sizes": "720x1280",
+      "type": "image/png"
+    }
+  ]
+}

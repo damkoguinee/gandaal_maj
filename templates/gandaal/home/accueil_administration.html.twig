@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}accueil direction{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+
+        <div class="alert alert-success text-center fs-5 fw-bold" style="display: flex; justify-content:space-around; ">
+            <a class="btn btn-light" href="javascript:history.back()">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+
+            <a class="btn btn-primary" href="{{path("app_gandaal_home")}}">Accueil</a>
+            {% if is_granted("ROLE_ADMIN") %}    
+                <a class="btn btn-warning" href="{{path("app_gandaal_admin_site_cursus_index", {etablissement : etablissement.id, cursus : cursus ? cursus.id : ''})}}">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </a>
+            {% endif %}
+            <div>
+                <label class="text-success ml-5"><i class="fa fa-user"></i> {{app.user.username}}</label>    
+
+                <a class="btn btn-danger" href="{{path("app_logout")}}">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+
+            </div>         
+        </div>
+
+        <div class="row align-items-center py-5" style="margin: auto; margin-top: 1rem; width:80%; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+            <div class=" fs-4 fw-bold text-center m-0 p-0">{{etablissement.nom|ucwords}}</div>
+
+            <div class="row"> 
+                <img height="30" src="{{asset(chemin_images_config)}}drapeau.png">
+            </div>
+
+            <div class="text-center mb-2"><img width="50" height="50" src="{{asset(chemin_images_config)}}symbole.png"></div>
+
+            <div class="col m-auto mt-1">
+                <a class="btn btn-light" href="{{path("app_gandaal_administration_secretaraiat_statistique_index", {etablissement : etablissement.id, cursus : cursus ? cursus.id : ''})}}">
+                    <div class="card" style="width: 9rem;">
+                    <img src="{{asset(chemin_images_config)}}secretariat.jpg" class="card-img-top m-auto" alt="..."style="width: 5rem; height: 5rem">
+                    <div class="card-bod m-auto" style="width: 9rem;">
+                        <h6 class="card-title" style="text-align: center;">Secrétariat</h6>
+                    </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col m-auto mt-1">
+                <a class="btn btn-light" href="{{path("app_gandaal_administration_scolarite_eleve_index", {etablissement : etablissement.id, cursus : cursus ? cursus.id : ''})}}">
+                    <div class="card" style="width: 9rem;">
+                    <img src="{{asset(chemin_images_config)}}scolarite.jpg" class="card-img-top m-auto" alt="..."style="width: 5rem; height: 5rem">
+                    <div class="card-bod m-auto" style="width: 9rem;">
+                        <h6 class="card-title" style="text-align: center;">Pôle Scolarité</h6>
+                    </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col m-auto mt-1">
+                <a class="btn btn-light" href="{{path("app_gandaal_administration_comptabilite_paiement_eleve_new", {etablissement : etablissement.id, cursus : cursus ? cursus.id : ''})}}">
+                    <div class="card" style="width: 9rem;">
+                    <img src="{{asset(chemin_images_config)}}comptabilite.jpg" class="card-img-top m-auto" alt="..."style="width: 5rem; height: 5rem">
+                    <div class="card-bod m-auto" style="width: 9rem;">
+                        <h6 class="card-title" style="text-align: center;">Pôle Comptabilité</h6>
+                    </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col m-auto mt-1">
+                <a class="btn btn-light" href="{{path("app_gandaal_administration_pedagogie_admin_classe_repartition_index", {etablissement : etablissement.id, cursus : cursus ? cursus.id : ''})}}">
+                    <div class="card" style="width: 9rem;">
+                    <img src="{{asset(chemin_images_config)}}pedagogie.jpg" class="card-img-top m-auto" alt="..."style="width: 5rem; height: 5rem">
+                    <div class="card-bod m-auto" style="width: 9rem;">
+                        <h6 class="card-title" style="text-align: center;">Pôle Pédagogie</h6>
+                    </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

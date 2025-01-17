@@ -1,0 +1,21 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}ajout d'un élève{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_scolarite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_externe.html.twig" %}
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}        
+            
+            {{ include('gandaal/administration/scolarite/eleve/externe/_form.html.twig') }}
+            
+
+            <a class="btn btn-light" href="javascript:history.back()">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+        </div>
+    </div>
+{% endblock %}

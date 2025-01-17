@@ -1,0 +1,16 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}nouveau fonctionnement scolaire{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_admin_site.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-12">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            {{ include('gandaal/admin_site/fonctionnement_scolaire/_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}Modification module{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_pedagogie_admin.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+
+        {% include "gandaal/_common/_nav_pedagogie_menu.html.twig" %}
+        <div class="col-sm-12 col-md-10">
+
+            {{ include('gandaal/administration/pedagogie/admin/configuration_module/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+            <div class="d-flex justify-content-between">
+
+                <a class='btn btn-light my-4' href="{{ path('app_gandaal_administration_pedagogie_admin_configuration_module_index', {etablissement : etablissement.id}) }}">Retour</a>
+
+                {{ include('gandaal/administration/pedagogie/admin/configuration_module/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

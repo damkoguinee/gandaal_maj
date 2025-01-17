@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit PaiementsSalairesPersonnel{% endblock %}
+
+{% block body %}
+    <h1>Edit PaiementsSalairesPersonnel</h1>
+
+    {{ include('administration/comptabilite/paiement_salaire/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_nhema_personnel_paiement_salaire_index' , {etablissement : etablissement.id}) }}">back to list</a>
+
+    {{ include('administration/comptabilite/paiement_salaire/_delete_form.html.twig') }}
+{% endblock %}

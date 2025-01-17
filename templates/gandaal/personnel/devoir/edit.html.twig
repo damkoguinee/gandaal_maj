@@ -1,0 +1,24 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}modification du devoir{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/personnel/_common/_nav_espace_enseignant.html.twig" %}
+
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');  background-size: cover; background-attachment: fixed;">
+        <div class="col-sm-12 col-md-8 m-auto mt-1 bg-info text-white p-4">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            {{ include('gandaal/personnel/devoir/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+            <div class="d-flex justify-content-between"> 
+
+                <a class="btn btn-light" href="{{ path('app_gandaal_personnel_devoir', {'etablissement' : etablissement.id, 'classe': devoir_eleve.classe.id, 'personnelActif': personnel.id, 'trimestre' : 'annuel'}) }}">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+                {{ include('gandaal/personnel/devoir/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

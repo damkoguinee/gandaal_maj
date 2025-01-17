@@ -1,0 +1,21 @@
+{{ form_start(form) }}
+    <label class="form-label" for="">Formations*</label>
+    <select name="formations[]" multiple class="form-select" aria-label="Sélectionnez une ou plusieurs formations">
+        {% if frais_scolarite.id is not empty %}
+            <option value="{{frais_scolarite.formation.id}}" selected>{{frais_scolarite.formation.code}}</option>
+        {% endif %}
+        {% for formation in formations %}
+            <option value="{{ formation.id }}">
+                {{ formation.code }} {# Affiche le code de la formation #}
+            </option>
+        {% endfor %}
+    </select>
+
+    {{ form_row(form.tranche) }} {# Affiche le champ tranche #}
+
+    {{ form_row(form.montant) }} {# Affiche le champ montant #}
+
+    {{ form_row(form.dateLimite) }} {# Affiche le champ dateLimite #}
+
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}

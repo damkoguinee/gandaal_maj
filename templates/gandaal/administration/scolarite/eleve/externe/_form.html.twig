@@ -1,0 +1,149 @@
+<div class="container-fluid">
+{{ form_start(form_eleve) }}
+
+    <div class="row m-1 p-1 border border-2 border-dark rounded">
+        <legend class="text-center fw-bold">Informations de l'élève</legend>
+
+        <div class="row my-0 py-0">        
+            <div class="col-sm-12 col-md-2">
+                {{ form_row(form_eleve.matricule) }}
+            </div>
+            <div class="col-sm-12 col-md-2">
+                {{ form_row(form_eleve.categorie) }}
+            </div>
+            <div class="col-sm-12 col-md-2">
+                {{ form_row(form_eleve.nom) }}
+            </div>        
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(form_eleve.prenom) }}
+            </div>
+            <div class="col-sm-12 col-md-2">
+                {{ form_row(form_eleve.sexe) }}
+            </div> 
+        </div>
+        <div class="row my-0 py-0">        
+            <div class="col-sm-12 col-md-3">
+                {{ form_row(form_eleve.dateNaissance) }}
+            </div>
+            <div class="col-sm-12 col-md-2">
+                {{ form_row(form_eleve.lieuNaissance) }}
+            </div>
+            <div class="col-sm-12 col-md-2">
+                {{ form_row(form_eleve.nationalite) }}
+            </div>        
+            <div class="col-sm-12 col-md-2">
+                {{ form_row(form_eleve.telephone) }}
+            </div>
+            <div class="col-sm-12 col-md-2">
+                {{ form_row(form_eleve.email) }}
+            </div> 
+        </div>
+        <div class="row my-0 py-0">        
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(form_eleve.adresse) }}
+            </div>
+            <div class="col-sm-12 col-md-3">
+                {{ form_row(form_eleve.ville) }}
+            </div>
+            <div class="col-sm-12 col-md-3">
+                {{ form_row(form_eleve.pays) }}
+            </div> 
+        </div>
+        <div class="row my-0 py-0">        
+            <div class="col-sm-12 col-md-3">
+                {{ form_row(form_eleve.ecoleOrigine) }}
+            </div>
+            <div class="col-sm-12 col-md-9">
+                {{ form_row(form_eleve.photo) }}
+            </div>
+        </div>              
+
+        
+    </div>
+    {{ form_start(form_filiation) }}
+    {{ form_start(form_filiation_mere) }}
+        <div class="row m-1 p-1 border border-2 border-dark rounded">
+            <legend class="text-center fw-bold">Informations des parents</legend>
+            <div class="row mb-4">
+                <div class="col-5">
+                    <input type="text" name="search" class="form-control" id="search_user" placeholder="Récherchez un frère ou une soeur">
+                </div>   
+                <div class="bg-success bg-opacity-50 text-white" id="result-search"></div>
+            </div>
+            <div class="row my-0 py-0">        
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation.nom) }}
+                </div>        
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation.prenom) }}
+                </div>   
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation.telephone) }}
+                </div>
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation.email) }}
+                </div>       
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation.profession) }}
+                </div>        
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation.lieuTravail) }}
+                </div>   
+            </div>
+
+            <div class="row my-0 py-0">        
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation_mere.nom) }}
+                </div>        
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation_mere.prenom) }}
+                </div>   
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation_mere.telephone) }}
+                </div>
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation_mere.email) }}
+                </div>       
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation_mere.profession) }}
+                </div>        
+                <div class="col-sm-12 col-md-2">
+                    {{ form_row(form_filiation_mere.lieuTravail) }}
+                </div>   
+            </div>
+            
+        </div>
+
+        {% if eleve.id is empty %}
+
+            <div class="row m-1 p-1 border border-2 border-dark rounded">
+                <legend class="text-center fw-bold">Ajout des activités</legend>
+                <div class="row my-0 py-0">
+                    <div class="col-sm-12 col-md-6">     
+                        <label class="form-label" for="">Activités*</label>
+                        <select name="tarifs[]" multiple class="form-select" aria-label="Sélectionnez une ou plusieurs activités">
+                            {% if inscription_activite.id is not empty %}
+                                <option value="{{inscription_activite.tarifActivite.id}}" selected>{{inscription_activite.tarifActivite.activite.nom ~" "~ inscription_activite.tarifActivite.montant|number_format(0,',',' ') ~ " "~ inscription_activite.tarifActivite.type|ucfirst}}</option>
+                            {% endif %}
+                            {% for tarif in tarifs %}
+                                <option value="{{ tarif.id}}">
+                                    {{ tarif.activite.nom ~" "~ tarif.montant|number_format(0,',',' ') ~ " "~ tarif.type|ucfirst }} 
+                                </option>
+                            {% endfor %}
+                        </select> 
+                    </div>
+                    <div class="col-sm-12 col-md-6"> 
+                        <div class="col-12">{{form_row(form_activite.remise)}}</div>                 
+                        <div class="col-12">{{form_row(form_activite.dateInscription)}}</div>  
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    
+        <button class="btn btn-primary mb-2 w-4 m-auto">Valider</button>            
+        
+    {{ form_end(form_filiation) }}
+    {{ form_end(form_filiation_mere) }}
+    {{form_end(form_eleve)}}
+    
+</div>

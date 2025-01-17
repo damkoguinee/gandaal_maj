@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Filiation{% endblock %}
+
+{% block body %}
+    <h1>Edit Filiation</h1>
+
+    {{ include('gandaal/administration/scolarite/filiation/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_gandaal_administration_scolarite_filiation_index') }}">back to list</a>
+
+    {{ include('gandaal/administration/scolarite/filiation/_delete_form.html.twig') }}
+{% endblock %}

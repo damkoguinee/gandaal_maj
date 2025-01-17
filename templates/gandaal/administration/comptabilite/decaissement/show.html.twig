@@ -1,0 +1,80 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail décaissement{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <tbody>
+                    <tr>
+                        <th>Référence</th>
+                        <td>{{ decaissement.reference }}</td>
+                    </tr>
+                    <tr>
+                        <th>Collaborateur</th>
+                        <td>{{ decaissement.collaborateur.prenom|ucwords ~ " " ~ decaissement.collaborateur.nom |strtoupper }}</td>
+                    </tr>
+                    <tr>
+                        <th>Motif</th>
+                        <td>{{ decaissement.description|ucfirst }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Montant</th>
+                        <td>{{ decaissement.devise.nom == 'gnf' ? decaissement.montant|number_format(0,',',' ') : decaissement.montant|number_format(2,',',' ') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Devise</th>
+                        <td>{{ decaissement.devise.nom|strtoupper }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mode de Paiement</th>
+                        <td>{{ decaissement.modePaie.nom|ucfirst }}</td>
+                    </tr>
+                    <tr>
+                        <th>Numéro paiement</th>
+                        <td>{{ decaissement.numeroPaie }}</td>
+                    </tr>
+                    <tr>
+                        <th>Banque Chèque</th>
+                        <td>{{ decaissement.banquePaie }}</td>
+                    </tr>
+                    <tr>
+                        <th>Caisse de retrait</th>
+                        <td>{{ decaissement.caisse.nom|ucfirst }}</td>
+
+                    </tr>
+                    <tr>
+                        <th>Date décaissement</th>
+                        <td>{{ decaissement.dateOperation ? decaissement.dateOperation|date('d/m/Y') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date de Saisie</th>
+                        <td>{{ decaissement.dateSaisie ? decaissement.dateSaisie|date('d/m/Y H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Traité par</th>
+                        <td>{{ decaissement.saisiePar.prenom|ucwords ~ " " ~ decaissement.saisiePar.nom |strtoupper }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between">
+
+                <a class="btn btn-light" href="{{ path('app_gandaal_administration_comptabilite_decaissement_index', { etablissement : etablissement.id}) }}">Retour</a>
+                {% if is_granted("ROLE_MODIFICATION") %}
+                    <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_decaissement_edit', {'id': decaissement.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                {% endif %}
+                {% if is_granted("ROLE_SUPPRESSION") %}
+                    {{ include('gandaal/administration/comptabilite/decaissement/_delete_form.html.twig') }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

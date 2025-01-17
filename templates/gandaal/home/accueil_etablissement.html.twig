@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}accueil établissement{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+
+        <div class="alert alert-success text-center fs-5 fw-bold" style="display: flex; justify-content:space-around; ">
+            <a class="btn btn-light" href="javascript:history.back()">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+
+            <a class="btn btn-primary" href="{{path("app_gandaal_home")}}">Accueil</a>
+            {% if app.request is defined %}
+                {% set host = app.request.host %}
+                {% if 'local' in host or '127.0.0.1' in host %}
+                    {% if config is defined and config is not empty and config.cheminSauvegarde is not empty %}
+                        <a class="btn btn-light" href="{{ path('app_sauvegarde_bdd', {'etablissement': etablissement.id}) }}">
+                            <i class="fas fa-save"></i>
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+            {% if is_granted("ROLE_ADMIN") %}    
+                <a class="btn btn-warning" href="{{path("app_gandaal_admin_site_cursus_index", {etablissement : etablissement.id})}}">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </a>
+            {% endif %}
+            <div>
+                <label class="text-success ml-5">
+                    {# {% for personnel in app.user.personnelActifs %}
+                        {{dump(personnel)}}
+                        
+                    {% endfor %} #}
+                    <a class="text-success text-decoration-none d-inline-block p-2" href="{{path("app_gandaal_personnel", {etablissement : etablissement.id})}}">
+                        <i class="fa fa-user"></i> {{app.user.username}}
+                    </a>
+                </label>    
+
+                <a class="btn btn-danger" href="{{path("app_logout")}}">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+
+            </div>         
+        </div>
+
+        <div class="row align-items-center py-5" style="margin: auto; margin-top: 1rem; width:80%; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+            <div class=" fs-4 fw-bold text-center m-0 p-0">{{etablissement.nom|ucwords}}</div>
+
+            <div class="row"> 
+                <img height="30" src="{{asset(chemin_images_config)}}drapeau.png">
+            </div>
+
+            <div class="text-center mb-2"><img width="50" height="50" src="{{asset(chemin_images_config)}}symbole.png"></div>
+            <div class="row justify-content-center">
+                {% if "maternelle" in rattachements and "primaire" in rattachements and "collège" in rattachements and "lycée" in rattachements %}
+
+                    <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center mb-3">
+                        <a class="btn btn-light" href="{{ path('app_gandaal_administration_home', {etablissement: etablissement.id}) }}">
+                            <div class="card" style="width: 9rem;">
+                                <img src="{{asset(chemin_images_config) ~ etablissement.entreprise.logo}}" class="card-img-top" alt="..." style="width: 7rem; height: 7rem; margin: 0 auto;">
+                                
+                                <div class="card-body m-auto" style="width: 9rem;">
+                                    <h5 class="card-title" style="text-align: center;">Complexe</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+
+                
+                {% for niveau in liste_cursus %}              
+                    {% if niveau.nom in rattachements %}
+                        <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center mb-3">
+                            <a class="btn btn-light" href="{{ path('app_gandaal_administration_home', { etablissement: etablissement.id, cursus: niveau.id }) }}">
+                                <div class="card" style="width: 9rem;">
+                                    <img src="{{ asset(chemin_images_config ~ niveau.nom) }}.jpg" class="card-img-top" alt="..." style="width: 7rem; height: 7rem; margin: 0 auto;">
+                                    <div class="card-bod" style="width: 9rem;">
+                                        <h5 class="card-title text-center">{{ niveau.nom | ucfirst }}</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                {% if is_granted('ROLE_DEV') %}
+                    <div class="col m-auto mt-1">
+                        <a class="btn btn-light" href="">
+                            <div class="card" style="width: 9rem;">
+                                <img src="{{ asset(chemin_images_config) }}acces.jpg" class="card-img-top m-auto" alt="..." style="width: 7rem; height: 7rem">
+                                <div class="card-bod m-auto" style="width: 9rem;">
+                                    <h5 class="card-title" style="text-align: center; text-transform:uppercase;">accès site</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col m-auto mt-1">
+                        <a class="btn btn-light" href="cantine/choix.php">
+                            <div class="card" style="width: 9rem;">
+                                <img src="{{ asset(chemin_images_config) }}cantine.jpg" class="card-img-top m-auto" alt="..." style="width: 7rem; height: 7rem">
+                                <div class="card-bod m-auto" style="width: 9rem;">
+                                    <h5 class="card-title" style="text-align: center;">CANTINE</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col m-auto mt-1">
+                        <a class="btn btn-light" href="immogestion.php">
+                            <div class="card" style="width: 9rem;">
+                                <img src="{{ asset(chemin_images_config) }}immo.jpg" class="card-img-top m-auto" alt="..." style="width: 7rem; height: 7rem">
+                                <div class="card-bod m-auto" style="width: 9rem;">
+                                    <h5 class="card-title" style="text-align: center;">GEST IMMO</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+
+        </div>
+    </div>
+{% endblock %}

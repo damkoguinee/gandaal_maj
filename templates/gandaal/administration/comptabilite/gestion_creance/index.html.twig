@@ -1,0 +1,183 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste des créances{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_creances.html.twig" %}        
+
+        <div class="col-sm-12 col-md-10" style="overflow:auto;">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            {# {% set nbrePages = paiements.nbrePages %}
+            {% set pageEncours = paiements.pageEncours %} 
+            {% set id = etablissement.id %} #}
+        
+            <table class="table table-bordered table-striped table-hover align-middle" >
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="10" class="text-center bg-info text-white">
+                            liste des créances Année-Scolaire {{(promo - 1) ~ "-" ~ promo}}
+                            /
+                            {% if classe is not empty %}
+                                {{classe.nom|strtoupper|exposantClasse|raw}} /
+                            {% endif %}
+                            {% if tranche is not empty %}
+                                {{tranche.nom|ucfirst|exposantClasse|raw}}
+                            {% endif %}
+                            <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_creances_scolarite", {etablissement : etablissement.id, classe : (classe ? classe.id : ''), tranche : (tranche ? tranche.id : '')})}}" ><i class="fa fa-file-pdf fs-5 text-success"></i></a>
+
+                            <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_relance_scolarite", {etablissement : etablissement.id, classe : (classe ? classe.id : ''), tranche : (tranche ? tranche.id : ''), creances : 'creances'})}}" ><i class="fa fa-envelope"></i></a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="10" class="text-center bg-info text-white">
+                            <form class="form w-100">
+
+                                <div class="row align-items-center ">
+                                    
+                                    <div class="col-4">
+                                        <select name="classe" id="classe" class="form-select" onchange="this.form.submit()">
+                                            {% if classe is not empty %}
+                                                <option value="{{classe.id}}">{{classe.nom|ucfirst}}</option>
+                                            {% else %}
+                                                <option value=""></option>
+                                            {% endif %}
+                                            <option value=""></option>
+
+                                            {% for classe in classes %}
+                                                <option value="{{classe.id}}">{{classe.nom|ucfirst}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <select name="tranche" id="tranche" class="form-select" onchange="this.form.submit()">
+                                            {% if tranche is not empty %}
+                                                <option value="{{tranche.id}}">{{tranche.nom|ucfirst}}</option>
+                                            {% else %}
+                                                <option value=""></option>
+                                            {% endif %}                                            
+                                            <option value=""></option>
+                                            {% for tranche in tranches %}
+                                                <option value="{{tranche.id}}">{{tranche.nom|ucfirst}}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Récherchez un élève">
+                                    </div>   
+                                    {# <div class="bg-light text-white" id="result-search"></div> #}
+                                </div>
+                            </form>
+                        </th>
+                    <tr>
+                    <tr>
+                        <th class="bg-info text-white">N°</th>
+                        <th class="bg-info text-white">Matricule</th>
+                        <th class="bg-info text-white">Prénom & Nom</th>
+                        <th class="bg-info text-white">Téléphone</th>
+                        <th class="bg-info text-white">Classe</th>
+                        <th class="bg-info text-white">Remise</th>
+                        <th class="bg-info text-white">Montant Payé</th>
+                        <th class="bg-info text-white">Reste à payer</th>
+                        <th class="bg-info text-white">actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set cumulReste = 0 %}
+                    {% for key, donnee in donnees %}
+                        <tr>
+                            <td class="text-center">
+                                {{ (key +1) }}
+                            </td>
+                            <td class="text-center">{{ donnee.inscription.eleve.matricule }}</td>
+                            <td>{{ donnee.inscription.eleve.nomComplet }}</td>
+                            <td class="text-center">{{ donnee.inscription.eleve.telephone|strtoupper}}</td>
+                            <td class="text-center">{{ donnee.inscription.classe.nom|strtoupper|exposantClasse|raw }}</td>
+                            <td class="text-center">{{ donnee.inscription.remiseScolarite }}%</td>
+                            <td class="text-end text-nowrap">{{ donnee.paiement|number_format(0,',',' ')}}</td>
+                            <td>
+                                <table class="table table-bordered table-striped table-hover align-middle">
+                                    <tbody>
+                                        {% set totalReste = 0 %}
+                                        {% for tranche_reste, reste in donnee.restes %}  
+                                            {% set totalReste = totalReste + reste %} 
+                                            {% set cumulReste = cumulReste + reste %}                        
+
+                                            <tr>
+                                                <td>{{ tranche_reste }}</td>
+                                                <td class="text-end text-nowrap">{{ reste|number_format(0,',',' ')}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        {% if donnee.restes|length > 1 %}
+                                        
+                                            {% if tranche is empty  %}
+                                                <tr>
+                                                    <th class="text-danger">Total Restant</th>
+                                                    <th class="text-end text-nowrap text-danger">{{ totalReste|number_format(0,',',' ')}}</th>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+                                        
+                                    </tbody>
+                                </table>
+                            </td>
+                                                
+                            <td class="text-center">
+                                <div class="d-flex">
+                                    <a href="{{path("app_gandaal_administration_comptabilite_paiement_eleve_new", {etablissement : etablissement.id, id_user_search : donnee.inscription.eleve.id})}}" class="btn btn-success m-1">Payé</a>
+
+                                    <a class="btn btn-warning" target="_blank"  href="{{path("app_gandaal_administration_comptabilite_pdf_relance_scolarite", {etablissement : etablissement.id, inscription : donnee.inscription.id, classe : (classe ? classe.id : ''), tranche : (tranche ? tranche.id : ''), creances : 'creances'})}}" ><i class="fa fa-envelope"></i></a>
+
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="10">Aucun élève en retard de paiement</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="7" class="text-danger">Cumul des créances</th>
+                        <th class="text-end text-nowrap text-danger">{{ cumulReste|number_format(0,',',' ')}}</th>
+                    </tr>
+                </tfoot>
+            </table>
+            {# {% set path = 'app_gandaal_administration_comptabilite_paiement_eleve_index'  %}
+                                  
+            {% if nbrePages > 1 %}                    
+
+                {% if nbrePages %}
+                    <nav aria-label="Page navigation example ">
+                        <ul class="pagination justify-content-start">
+                            {% if pageEncours > 1 %}
+                                <li class="page-item ">
+                                    <a class="page-link" href="{{path(path, {etablissement : id, pageEncours : (pageEncours - 1), search : search})}}">&lt;</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled" ><a class="page-link">&lt;</a></li>
+                            {% endif %}
+                            {% for page in 1..nbrePages %}                
+                                <li class="page-item {{ ( page == pageEncours) ? 'active' : ''}} "><a class="page-link" href="{{path(path, {etablissement : id, pageEncours : page, search : search})}}">{{page}}</a></li>
+                            {% endfor %}
+                            {% if pageEncours < nbrePages %}
+                                <li class="page-item "><a class="page-link" href="{{path(path, {etablissement : id,pageEncours : pageEncours + 1, search : search} ) }}">&gt;</a></li>
+                            {% else %}
+                                <li class="page-item disabled "><a href="" class="page-link" >&gt;</a></li>
+                            {% endif %}
+                            </li>
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% endif %} #}
+        </div>
+    </div>
+{% endblock %}

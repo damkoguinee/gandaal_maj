@@ -1,0 +1,109 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail de l'élève{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_scolarite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  col-sm-12 col-md-10 m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }}
+                <!-- Informations de l'élève -->
+        <div class="card shadow-sm mb-4">
+            {% if inscription.photo %}
+                <div class="card-header bg-info text-white text-center">
+                    <img src="{{ asset('dossier/eleves/' ~ inscription.photo) }}" alt="Photo de {{ inscription.prenom }} {{ inscription.nom }}" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title bg-info text-white text-center">Informations de l'élève</h5>
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <tbody>
+                        <tr>
+                            <th>Prénom & Nom</th>
+                            <td>{{ inscription.prenom|ucfirst ~ " " ~ inscription.nom|strtoupper }}</td>
+                        </tr>
+                        <tr>
+                            <th>Sexe</th>
+                            <td>{{ inscription.sexe }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date de Naissance</th>
+                            <td>{{ inscription.dateNaissance ? inscription.dateNaissance|date('d/m/Y') : '' }} </td>
+                        </tr>
+                        <tr>
+                            <th>Lieu de Naissance</th>
+                            <td>{{ inscription.lieuNaissance|ucfirst }}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-phone-alt"></i> Téléphone</th>
+                            <td>{{ inscription.telephone }}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-envelope"></i> Email</th>
+                            <td>{{ inscription.email }}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-map-marker-alt"></i> Adresse</th>
+                            <td>{{ inscription.adresse|ucfirst }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pays/Ville</th>
+                            <td>{{ inscription.ville|ucfirst }} {{ inscription.pays|ucfirst }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Informations de filiation -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title bg-success text-white text-center">Informations de filiation</h5>
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <tbody>
+                        <tr>
+                            <th>Filiation</th>
+                            <td>
+                                <div class="d-flex justify-content-around">
+                                    <div class="mb-3">
+                                        <p><strong>{{ inscription.prenomp|ucfirst }}</strong></p>
+                                        <p><i class="fas fa-phone"></i> {{ inscription.telephonep }}</p>
+                                        <p><i class="fas fa-envelope"></i> {{ inscription.emailp }}</p>
+                                        <p><i class="fas fa-briefcase"></i> {{ inscription.professionp }}</p>
+                                        <p><i class="fas fa-home"></i> {{ inscription.lieuTravailp|ucfirst }}</p>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <p><strong>{{ inscription.prenomm|ucfirst }}</strong></p>
+                                        <p><i class="fas fa-phone"></i> {{ inscription.telephonem }}</p>
+                                        <p><i class="fas fa-envelope"></i> {{ inscription.emailm }}</p>
+                                        <p><i class="fas fa-briefcase"></i> {{ inscription.professionm }}</p>
+                                        <p><i class="fas fa-home"></i> {{ inscription.lieuTravailm|ucfirst }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tuteur</th>
+                            <td>
+                                <div class="mb-3">
+                                    <p><strong>{{ inscription.prenomt|ucfirst }}</strong></p>
+                                    <p><i class="fas fa-phone"></i> {{ inscription.telephonet }}</p>
+                                    <p><i class="fas fa-envelope"></i> {{ inscription.emailt }}</p>
+                                    <p><i class="fas fa-briefcase"></i> {{ inscription.professiont }}</p>
+                                    <p><i class="fas fa-home"></i> {{ inscription.lieuTravailt|ucfirst }}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between my-4">
+            <a class="btn btn-light" href="{{ path('app_gandaal_administration_scolarite_preinscription_index', { 'etablissement': etablissement.id }) }}">Retour</a>
+            <a class="btn btn-warning" href="{{ path('app_gandaal_administration_scolarite_preinscription_edit', { 'id': inscription.id, 'etablissement': etablissement.id }) }}">Modifier</a>
+            {{ include('gandaal/administration/scolarite/preinscription/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

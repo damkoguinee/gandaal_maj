@@ -1,0 +1,88 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail versement{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %}
+
+        <div class="col-sm-12 col-md-10">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <tbody>
+                    <tr>
+                        <th>Référence</th>
+                        <td>{{ versement.reference }}</td>
+                    </tr>
+                    <tr>
+                        <th>Collaborateur</th>
+                        <td>{{ versement.collaborateur.prenom|ucwords ~ " " ~ versement.collaborateur.nom |strtoupper }}</td>
+                    </tr>
+                    <tr>
+                        <th>Motif</th>
+                        <td>{{ versement.description|ucfirst }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Montant</th>
+                        <td>{{ versement.devise.nom == 'gnf' ? versement.montant|number_format(0,',',' ') : versement.montant|number_format(2,',',' ') }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Taux</th>
+                        <td>{{ versement.devise.nom == 'gnf' ? versement.taux|number_format(0,',',' ') : versement.taux|number_format(2,',',' ') }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Devise</th>
+                        <td>{{ versement.devise.nom|strtoupper }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mode de Paiement</th>
+                        <td>{{ versement.modePaie.nom|ucfirst }}</td>
+                    </tr>
+                    <tr>
+                        <th>Numéro paiement</th>
+                        <td>{{ versement.numeroPaie }}</td>
+                    </tr>
+                    <tr>
+                        <th>Banque Chèque</th>
+                        <td>{{ versement.banquePaie }}</td>
+                    </tr>
+                    <tr>
+                        <th>Caisse de retrait</th>
+                        <td>{{ versement.caisse.nom|ucfirst }}</td>
+
+                    </tr>
+                    <tr>
+                        <th>Date décaissement</th>
+                        <td>{{ versement.dateOperation ? versement.dateOperation|date('d/m/Y') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date de Saisie</th>
+                        <td>{{ versement.dateSaisie ? versement.dateSaisie|date('d/m/Y H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Traité par</th>
+                        <td>{{ versement.saisiePar.prenom|ucwords ~ " " ~ versement.saisiePar.nom |strtoupper }}</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between">
+
+                <a class="btn btn-light" href="{{ path('app_gandaal_administration_comptabilite_versement_index', { etablissement : etablissement.id}) }}">Retour</a>
+
+                {% if is_granted("ROLE_MODIFICATION") %}
+                    <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_versement_edit', {'id': versement.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                {% endif %}
+                {% if is_granted("ROLE_SUPPRESSION") %}
+                    {{ include('gandaal/administration/comptabilite/versement/_delete_form.html.twig') }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

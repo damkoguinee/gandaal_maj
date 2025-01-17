@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salaire index{% endblock %}
+
+{% block body %}
+    <h1>Salaire index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>SalaireBrut</th>
+                <th>TauxHoraire</th>
+                <th>Promo</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for salaire in salaires %}
+            <tr>
+                <td>{{ salaire.id }}</td>
+                <td>{{ salaire.salaireBrut }}</td>
+                <td>{{ salaire.tauxHoraire }}</td>
+                <td>{{ salaire.promo }}</td>
+                <td>
+                    <a href="{{ path('app_gandaal_admin_site_salaire_show', {'id': salaire.id}) }}">show</a>
+                    <a href="{{ path('app_gandaal_admin_site_salaire_edit', {'id': salaire.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_admin_site_salaire_new') }}">Create new</a>
+{% endblock %}

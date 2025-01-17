@@ -1,0 +1,51 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}liste fonctionnement scolaire{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_admin_site.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="row m-auto" style="min-height: 100vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+
+        <div class="col-sm-12 col-md-12">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="sticky-top bg-light text-center">
+                    <tr>
+                        <th colspan="5" class="text-center bg-info text-white">
+                            <a class="btn btn-light text-center" href="{{path("app_gandaal_admin_site_fonctionnement_scolaire_new", {etablissement : etablissement.id})}}">Ajouter</a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>N°</th>
+                        <th>Nom</th>
+                        <th>Date de début</th>
+                        <th>Date de fin</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, fonctionnement_scolaire in fonctionnement_scolaires %}
+                    <tr>
+                        <td class="text-center">{{ key + 1 }}</td>
+                        <td>{{ fonctionnement_scolaire.nom|capitalize }}</td>
+                        <td>{{ fonctionnement_scolaire.dateDebut ? fonctionnement_scolaire.dateDebut|date("d/m/Y") : '' }}</td>
+                        <td>{{ fonctionnement_scolaire.dateFin ? fonctionnement_scolaire.dateFin|date("d/m/Y") : '' }}</td>
+                        <td class="text-center">
+                            <a class="btn btn-success" href="{{ path('app_gandaal_admin_site_fonctionnement_scolaire_show', {'id': fonctionnement_scolaire.id, etablissement : etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                            <a class="btn btn-warning" href="{{ path('app_gandaal_admin_site_fonctionnement_scolaire_edit', {'id': fonctionnement_scolaire.id, etablissement : etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">Aucun fonctionnement_scolaire enregistré</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        
+        </div>
+    </div>
+{% endblock %}

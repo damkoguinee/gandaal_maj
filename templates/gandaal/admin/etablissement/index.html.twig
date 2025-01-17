@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}liste des sites{% endblock %}
+
+{% block body %}
+    <div class="row my-2 mx-0 px-0">
+        {% include "gandaal/_common/_nav_admin.html.twig" %}
+        <div class="col-sm-12 col-md-10 mx-0 px-0">
+            {{ include("gandaal/_common/_messages_flash.html.twig") }}
+
+            <div class="container-fluid mx-0 px-0" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+
+                {{include("gandaal/_common/_entete.html.twig")}}
+
+                <table class="table table-bordered table-striped table-hover align-middle">
+
+                    <thead class="sticky-top bg-light text-center">
+                        <tr>
+                            <th colspan="6" class="text-center bg-info text-white">Liste des sites
+                                <a class="btn btn-light text-center" href="{{path("app_gandaal_admin_etablissement_new")}}">Ajouter</a>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>N°</th>
+                            <th>Nom</th>
+                            <th>Téléphone</th>
+                            <th>Email</th>
+                            <th>Adresse</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, etablissement in etablissements %}
+                            <tr>
+                                <td>{{ key + 1 }}</td>
+                                <td>{{ etablissement.nom }}</td>
+                                <td>{{ etablissement.telephone }}</td>
+                                <td>{{ etablissement.email }}</td>
+                                <td>{{ etablissement.adresse }}</td>
+                                <td class="text-center">
+                                    <a class="btn btn-success" href="{{ path('app_gandaal_admin_etablissement_show', {'id': etablissement.id}) }}"><i class="fa fa-eye"></i></a>
+                                    <a class="btn btn-warning" href="{{ path('app_gandaal_admin_etablissement_edit', {'id': etablissement.id}) }}"><i class="fa fa-edit"></i></a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6">Aucun site enregistré</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

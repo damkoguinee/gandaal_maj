@@ -1,0 +1,23 @@
+{
+  "entrypoints": {
+    "all-scripts": {
+      "js": [
+        "/public/build/runtime.a12578ba.js",
+        "/public/build/992.489b866b.js",
+        "/public/build/all-scripts.c907126c.js"
+      ],
+      "css": [
+        "/public/build/all-scripts.d9309bd8.css"
+      ]
+    },
+    "all-styles": {
+      "js": [
+        "/public/build/runtime.a12578ba.js"
+      ],
+      "css": [
+        "/public/build/639.c9827521.css",
+        "/public/build/all-styles.c80d7aef.css"
+      ]
+    }
+  }
+}

@@ -1,0 +1,150 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}ajout avance{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        <div class="row">
+            {# {% include "gandaal/_common/_nav_comptabilite_2.html.twig" %} #}
+            <div class="col-sm-12 col-md-6 border border-danger border-4 rounded-2 p-2 ">
+                <h4>Ajouter une avance</h4>            
+                {{ include('gandaal/administration/comptabilite/avance_personnel/_form.html.twig') }}
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+                <div class="card shadow-sm mb-4">
+                    {% if personnelActif is not empty %}
+                    
+                        {% if personnelActif.personnel.photo %}
+                            <div class="card-header bg-info text-white text-center">
+                                <img src="{{ asset('dossier/personnels/' ~ personnelActif.personnel.photo) }}" alt="Photo de {{ personnelActif.personnel.prenom }} {{ personnelActif.personnel.nom }}" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                            </div>
+                        {% endif %}
+                        <div class="card-body mb-0 pb-0">
+                            <table class="table table-bordered table-striped table-hover align-middle">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="2">
+                                            <table class="table table-bordered table-striped table-hover align-middle m-0 p-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Matricule</th>
+                                                        <td>{{ personnelActif.personnel.matricule|strtoupper }}</td>
+                                                        <th>Type</th>
+                                                        <td>{{ personnelActif.personnel.typeUser|capitalize }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Prénom & Nom</th>
+                                        <td>{{ personnelActif.personnel.nomComplet }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date de Naissance</th>
+                                        <td>{{ personnelActif.personnel.dateNaissance ? personnelActif.personnel.dateNaissance|date('d/m/Y') : '' }} - {{ personnelActif.personnel.age }} an(s)</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <th><i class="fas fa-phone-alt"></i> Téléphone</th>
+                                        <td>{{ personnelActif.personnel.telephone }}</td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-body my-0 py-0">
+                            <table class="table table-bordered table-striped table-hover align-middle my-2">
+                                <thead class="sticky-top bg-light text-center">
+                                    <tr>
+                                        <th colspan="6" class="text-center bg-info text-white">
+                                            Liste des avances {{ (dernier_promo - 1) ~ "-" ~ dernier_promo }}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-info text-white">N°</th>
+                                        <th class="bg-info text-white">Montant</th>
+                                        <th class="bg-info text-white">Mode paie</th>
+                                        <th class="bg-info text-white">Caisse</th>
+                                        <th class="bg-info text-white">Date Opération</th>
+                                        <th class="bg-info text-white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% set cumulGeneral = 0 %}
+                                    
+                                    {% for periode, avancesPeriode in avances %}
+                                        <tr>
+                                            <th colspan="6" class="bg-secondary text-white text-center">
+                                                {{ periode|date('m-Y') }} <!-- Période en tant que section -->
+                                            </th>
+                                        </tr>
+                                        
+                                        {% set totalPeriode = 0 %}
+                                        
+                                        {% for key, avance in avancesPeriode %}
+                                            <tr>
+                                                <td class="text-center">{{ key + 1 }}</td>
+                                                <td class="text-end">{{ avance.montant|abs|number_format(0,',',' ') }}</td>
+                                                <td class="text-end">{{ avance.modePaie.nom|capitalize }}</td>
+                                                <td class="text-end">{{ avance.caisse.nom|capitalize }}</td>
+                                                <td class="text-end">{{ avance.dateOperation|date("d/m/Y") }}</td>
+                                                <td class="text-center">
+                                                    <div class="d-flex justify-content-center">
+                                                        <a class="btn btn-success mx-1" href="{{ path('app_gandaal_administration_comptabilite_avance_personnel_show', {'id': avance.id, etablissement : etablissement.id}) }}">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                            
+                                                        <form method="post" action="{{ path('app_gandaal_administration_comptabilite_avance_personnel_confirm_delete', {'id': avance.id, 'etablissement': etablissement.id}) }}">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ avance.id) }}">
+                                                            <input type="hidden" name="param" value="simple">
+                                                            <button class="btn btn-danger">Annuler</button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% set totalPeriode = totalPeriode + avance.montant|abs %}
+                                        {% endfor %}
+                                        
+                                        {% if avancesPeriode|length > 1 %}
+                                            <tr>
+                                                <th colspan="6" class="text-center bg-light">Total pour {{ periode|capitalize }}: {{ totalPeriode|number_format(0,',',' ') }}</th>
+                                            </tr>
+                                        {% endif %}
+                                        
+                                        {% set cumulGeneral = cumulGeneral + totalPeriode %}
+                                    {% endfor %}
+                                    
+                                    {% if avances|length > 1 %}
+                                        <tr>
+                                            <th colspan="6" class="text-center bg-info text-white">Cumul Général: {{ cumulGeneral|number_format(0,',',' ') }}</th>
+                                        </tr>
+                                    {% endif %}
+                                    
+                                    {% if avances is empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center">Aucune avance enregistrée</td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                    
+                                              
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+            
+        </div>
+
+        <a class="btn btn-light" href="javascript:history.back()">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+{% endblock %}

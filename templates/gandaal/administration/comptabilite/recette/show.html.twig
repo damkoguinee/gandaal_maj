@@ -1,0 +1,76 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}détail recette{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_comptabilite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid  col-sm-12 col-md-10 m-auto" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {{ include("gandaal/_common/_messages_flash.html.twig") }} 
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <tbody>
+                    {% if recette.inscription is not empty %}
+                        <tr>
+                            <th>Elève</th>
+                            <td>{{ recette.inscription.eleve.nomComplet ~ " N° mat: " ~ recette.inscription.eleve.matricule}}</td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ recette.description }}</td>
+                    </tr>
+                    <tr>
+                        <th>Catégorie</th>
+                        <td>{{ recette.categorie.nom | ucwords }}</td>
+                    </tr>
+                    <tr>
+                        <th>Montant</th>
+                        <td>{{ recette.devise.nom == 'gnf' ? (recette.montant)|number_format(0,',',' ') : ( recette.montant)|number_format(2,',',' ') }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Montant</th>
+                        <td>{{ recette.devise.nom == 'gnf' ? recette.tva|number_format(0,',',' ') : recette.tva|number_format(2,',',' ') }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Devise</th>
+                        <td>{{ recette.devise.nom|strtoupper }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mode de Paiement</th>
+                        <td>{{ recette.modePaie.nom|ucfirst }}</td>
+                    </tr>
+                    <tr>
+                        <th>Compte de retraît</th>
+                        <td>{{recette.caisse.nom|ucfirst }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date recette</th>
+                        <td>{{ recette.dateOperation ? recette.dateOperation|date('d/m/Y') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date de Saisie</th>
+                        <td>{{ recette.dateSaisie ? recette.dateSaisie|date('d/m/Y H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Traité par</th>
+                        <td>{{ recette.saisiePar.prenom|ucwords ~ " " ~ recette.saisiePar.nom |strtoupper }}</td>
+                    </tr>                    
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between my-2">
+
+                <a class="btn btn-light" href="{{ path('app_gandaal_administration_comptabilite_recette_index', {etablissement : etablissement.id}) }}">Retour</a>
+                {% if is_granted("ROLE_MODIFICATION") %}
+                    <a class="btn btn-warning" href="{{ path('app_gandaal_administration_comptabilite_recette_edit', {id : recette.id, etablissement : etablissement.id}) }}">Modifier</a>
+                {% endif %}
+                {% if is_granted("ROLE_SUPPRESSION") %}
+                    {{ include('gandaal/administration/comptabilite/recette/_delete_form.html.twig') }}
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

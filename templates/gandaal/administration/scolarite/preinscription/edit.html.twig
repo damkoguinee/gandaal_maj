@@ -1,0 +1,17 @@
+{% extends 'base_gandaal.html.twig' %}
+{% block title %}modification élève{% endblock %}
+{% block ul_menu %}
+    {% include "gandaal/_common/_nav_scolarite.html.twig" %}
+{% endblock %}
+
+{% block produits %}
+    <div class="container-fluid mx-0 px-0" style="min-height: 90vh; background-image: url('{{asset(chemin_images_config)}}fond.jpg');">
+        {# <h5>Ajouter un élève</h5> #}
+        {{ include("gandaal/_common/_messages_flash.html.twig") }}
+        
+        
+        {{ include('gandaal/administration/scolarite/preinscription/_form.html.twig', {'button_label': 'Modifier'}) }}
+        
+        <a class="btn btn-light my-2" href="{{ path('app_gandaal_administration_scolarite_preinscription_index', {etablissement : etablissement.id}) }}">Retour</a>
+    </div>
+{% endblock %}

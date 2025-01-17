@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ConfigActiviteScolaire{% endblock %}
+
+{% block body %}
+    <h1>ConfigActiviteScolaire</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ config_activite_scolaire.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ config_activite_scolaire.nom }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_comptabilite_admin_config_actvite_scolaire_index') }}">back to list</a>
+
+    <a href="{{ path('app_gandaal_administration_comptabilite_admin_config_actvite_scolaire_edit', {'id': config_activite_scolaire.id}) }}">edit</a>
+
+    {{ include('gandaal/administration/comptabilite/admin/config_actvite_scolaire/_delete_form.html.twig') }}
+{% endblock %}

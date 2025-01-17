@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PrimePersonnel{% endblock %}
+
+{% block body %}
+    <h1>PrimePersonnel</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ prime_personnel.id }}</td>
+            </tr>
+            <tr>
+                <th>Montant</th>
+                <td>{{ prime_personnel.montant }}</td>
+            </tr>
+            <tr>
+                <th>Periode</th>
+                <td>{{ prime_personnel.periode|date('m-Y') }}</td>
+            </tr>
+            <tr>
+                <th>Promo</th>
+                <td>{{ prime_personnel.promo }}</td>
+            </tr>
+            <tr>
+                <th>DateOperation</th>
+                <td>{{ prime_personnel.dateOperation ? prime_personnel.dateOperation|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_comptabilite_prime_personnel_index') }}">back to list</a>
+
+    <a href="{{ path('app_gandaal_administration_comptabilite_prime_personnel_edit', {'id': prime_personnel.id}) }}">edit</a>
+
+    {{ include('gandaal/administration/comptabilite/prime_personnel/_delete_form.html.twig') }}
+{% endblock %}

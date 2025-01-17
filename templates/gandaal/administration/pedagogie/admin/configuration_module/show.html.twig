@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ConfigurationModule{% endblock %}
+
+{% block body %}
+    <h1>ConfigurationModule</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ configuration_module.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ configuration_module.nom }}</td>
+            </tr>
+            <tr>
+                <th>Période</th>
+                <td>{{ configuration_module.periode|capitalize }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gandaal_administration_pedagogie_admin_configuration_module_index') }}">back to list</a>
+
+    <a href="{{ path('app_gandaal_administration_pedagogie_admin_configuration_module_edit', {'id': configuration_module.id}) }}">edit</a>
+
+    {{ include('gandaal/administration/pedagogie/admin/configuration_module/_delete_form.html.twig') }}
+{% endblock %}
